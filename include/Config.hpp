@@ -56,13 +56,16 @@ class Config
 		
 		// Config	&operator=( const Config &rhs);
 
-		void		get_servers( std::ifstream &conf_file, std::string &line, server_data &server, bool &brackets);
-		void		get_locations( std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets);
+		std::vector<ConfigStruct>	get_servers_conf( void) const;
+
+		void		fill_servers( std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets);
+		void		fill_locations( std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets);
 		void		fill_conf_vector( const std::string &filename);
 
 		~Config( void);
 };
 
 std::vector<std::string>	string_to_vector(const std::string &string, const char delimiter, size_t space_pos);
+void 						printConfig(const std::vector<ConfigStruct> &servers_conf); //tmp print function for debug
 
 #endif
