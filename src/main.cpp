@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 01:12:29 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/21 02:32:50 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/21 22:35:43 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	main(void)
 	try 
 	{
 		config.fill_conf_vector(filename);
+		printConfig(config.get_servers_conf());
 	}
 	catch (std::exception &e)
 	{
