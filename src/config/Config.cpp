@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.f.            +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/20 18:49:17 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/21 00:58:24 by jdufour          ###   ########.fr       */
+/*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
+/*   Updated: 2024/11/22 02:55:34 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,8 +223,6 @@ void    Config::fill_conf_vector( const std::string &filename)
 		throw std::runtime_error("Unclosed brackets in conf file");
 	}
 }
-
-ConfigStruct	Config::get_element( int n) const { return (_servers_conf[n]); }
 
 Config::~Config( void) {}
 

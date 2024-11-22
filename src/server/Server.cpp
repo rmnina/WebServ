@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/22 02:50:16 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/22 02:56:19 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int Server::createSocket()
 int Server::setSocket()
 {
 	if (bind(_server_socket, _info->ai_addr, _info->ai_addrlen) == -1) 
-    {
+	{
 		std::cerr << _name << ": bind failed on " << _name << std::endl;
 		return (FAILURE);
 	}
@@ -102,28 +102,28 @@ int Server::receiveRequest()
 
 	_new_socket = accept(_server_socket, NULL, NULL);
 	if (_new_socket == -1) 
-    {
+	{
 		std::cerr << "Error on awaiting connection (accept) on " << _name << std::endl;
 		return (FAILURE);
 	}
 	if (fcntl(_server_socket, F_SETFL, O_NONBLOCK) == -1) 
-    {
+	{
 		std::cerr << "Error on set nonblocking on " << _name << std::endl;
 		return (FAILURE);
 	}
 	while (true) 
-    {
+	{
 		for (int i = 0; i < MAX_REQ_SIZE; ++i) 
 			buff[i] = 0;
 		_nb_bytes =
 			static_cast< int >(recv(_new_socket, buff, MAX_REQ_SIZE, 0));
 		if (_nb_bytes == -1 && (errno != EAGAIN && errno != EWOULDBLOCK)) 
-        {
+		{
 			std::cerr << "Error on recv on " << _name << std::endl;
 			close(_new_socket);
 		} 
-        else if (_nb_bytes == 0) 
-        {
+		else if (_nb_bytes == 0) 
+		{
 			std::cout << "client disconnected on " << _name << std::endl;
 			close(_new_socket);
 		}
