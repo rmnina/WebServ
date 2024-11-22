@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/Config.hpp"
+#include "../../include/config/Config.hpp"
 
 Config::Config( void) {}
 
@@ -223,6 +223,8 @@ void    Config::fill_conf_vector( const std::string &filename)
 		throw std::runtime_error("Unclosed brackets in conf file");
 	}
 }
+
+ConfigStruct	Config::get_element( int n) const { return (_servers_conf[n]); }
 
 Config::~Config( void) {}
 

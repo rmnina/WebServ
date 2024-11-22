@@ -6,21 +6,27 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 01:12:29 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/21 22:35:43 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/22 02:44:11 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/Config.hpp"
+#include "../include/config/Config.hpp"
+#include "../include/server/Handler.hpp"
 
 int	main(void)
 {
-	Config		config;
 	std::string	filename = "test.conf";
+	Config	config;
+
+	config.fill_conf_vector(filename);
+	Handler	handler(config.get_servers_conf());
 	
 	try 
 	{
-		config.fill_conf_vector(filename);
-		printConfig(config.get_servers_conf());
+		// printConfig(handler.get_servers_conf());
+		handler.loadServ();
+		handler.launchServers();
+		handler.handleEvents();
 	}
 	catch (std::exception &e)
 	{

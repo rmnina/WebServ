@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:15 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/21 02:08:58 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/22 02:42:29 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,7 @@
 # include <string>
 # include <fstream>
 # include <exception>
-
-typedef std::map<std::string, std::vector<std::string> >				server_data;
-typedef	server_data 													location_i_data;
-typedef std::vector<std::map<std::string, std::vector<std::string> > >	location_data;
-
-
-struct ConfigStruct
-{
-	enum type
-	{
-		SERVER_VECTOR,
-		LOCATION_MAP
-	} ContainerType;
-
-	server_data 	serverData;
-	location_data	locationData;
-
-	ConfigStruct(const server_data &map) : ContainerType(SERVER_VECTOR), serverData(map) {}
-	ConfigStruct(const location_data &vector): ContainerType(LOCATION_MAP), locationData(vector) {}
-};
-
+# include "ConfigStruct.hpp"
 
 class Config
 {
@@ -53,10 +33,11 @@ class Config
 	public:
 		Config( void);
 		// Config( const Config &src);
-		
 		// Config	&operator=( const Config &rhs);
 
 		std::vector<ConfigStruct>	get_servers_conf( void) const;
+		ConfigStruct				get_element( int n) const;
+		
 
 		void		fill_servers( std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets);
 		void		fill_locations( std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets);

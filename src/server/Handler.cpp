@@ -1,0 +1,121 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Handler.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
+/*   Updated: 2024/11/22 02:46:41 by jdufour          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/server/Handler.hpp"
+#include "../../include/server/Signal.hpp"
+#include "../../include/config/Config.hpp"
+
+volatile int g_sig = 0;
+
+Handler::Handler() : _nbServ(0) {}
+
+Handler::Handler( const std::vector<ConfigStruct> servers_conf) : _servers_conf(servers_conf) {}
+
+void	Handler::loadServ()
+{
+	printConfig(_servers_conf);
+	for (std::vector<ConfigStruct>::iterator it = _servers_conf.begin(); it < _servers_conf.end(); it += 2)
+	{
+		std::string	name = it->get_server_value("server_name")[1];
+		std::cout << "name " << name << std::endl;
+		std::string	hostname = "localhost";
+		std::string	port = it->get_server_value("listen")[1];
+		std::cout << "port " << port << std::endl;
+		Server	server = Server( name, hostname, port);
+		_servers.push_back(new Server(name, hostname, port));
+	}
+}
+
+Handler::Handler(const Handler &src)
+{
+	*this = src;
+}
+
+Handler &Handler::operator=(const Handler &rhs)
+{
+	this->_epfd = epoll_create1(0);
+	this->_nbServ = rhs._nbServ;
+	this->_epfd = rhs._epfd;
+	for (int i = 0; i < _nbServ; i++) 
+		_servers.push_back(new Server(rhs._servers[i]->getName(), rhs._servers[i]->getHost(), rhs._servers[i]->getPort()));
+	return (*this);
+}
+
+int Handler::launchServers()
+{
+	_epfd = epoll_create1(0);
+	if (_epfd == -1) 
+	{
+		std::cerr << "Error on epoll_create" << std::endl;
+		return (FAILURE);
+	}
+
+	for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); ++it) 
+	{
+		(*it)->createSocket();
+		(*it)->setSocket();
+		struct epoll_event event;
+		event.events = EPOLLIN;
+		event.data.fd = (*it)->getSocket();
+		if (epoll_ctl(_epfd, EPOLL_CTL_ADD, (*it)->getSocket(), &event) == -1) 
+		{
+			std::cerr << "Error on epoll_ctl" << std::endl;
+			return (FAILURE);
+		}
+	}
+	return (SUCCESS);
+}
+
+int Handler::handleEvents()
+{
+	struct epoll_event	events[MAX_EVENTS];
+
+	while (!g_sig) 
+	{
+		initSignal();
+		int nfds = epoll_wait(_epfd, events, MAX_EVENTS, -1);
+		if (nfds == -1 && !g_sig) 
+		{
+			std::cout << "Error on epoll_wait" << std::endl;
+			return (FAILURE);
+		}
+		for (int i = 0; i < nfds; ++i) 
+		{
+			if (events[i].events & EPOLLIN) 
+			{
+				for (std::vector<Server *>::iterator it = _servers.begin();  it < _servers.end(); ++it) 
+				{
+					if (events[i].data.fd == (*it)->getSocket()) 
+					{
+						(*it)->receiveRequest();
+						(*it)->sendResponse();
+						break;
+					}
+				}
+			}
+		}
+	}
+	return (SUCCESS);
+}
+
+// Server *Handler::operator[](const int index)
+// {
+// 	if (index < 0 || index >= _nbServ || !_nbServ)
+// 		throw(std::out_of_range("Error : invalid access index on Servers"));
+// 	return (_servers[index]);
+// }
+
+Handler::~Handler()
+{
+	for (int i = 0; i < _nbServ; ++i)
+		delete _servers[i];
+}
