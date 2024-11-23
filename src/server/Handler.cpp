@@ -6,13 +6,14 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/22 02:56:35 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/23 23:06:47 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/server/Handler.hpp"
 #include "../../include/server/Signal.hpp"
 #include "../../include/config/Config.hpp"
+#include "../../include/parser/Parser.hpp"
 
 volatile int g_sig = 0;
 
@@ -26,12 +27,10 @@ void	Handler::loadServ()
 	for (std::vector<ConfigStruct>::iterator it = _servers_conf.begin(); it < _servers_conf.end(); it += 2)
 	{
 		std::string	name = it->get_server_value("server_name")[1];
-		std::cout << "name " << name << std::endl;
 		std::string	hostname = "localhost";
 		std::string	port = it->get_server_value("listen")[1];
-		std::cout << "port " << port << std::endl;
-		Server	server = Server( name, hostname, port);
-		_servers.push_back(new Server(name, hostname, port));
+		ConfigStruct *config = &(*it);
+		_servers.push_back(new Server(name, hostname, port, config));
 	}
 }
 
@@ -46,7 +45,7 @@ Handler &Handler::operator=(const Handler &rhs)
 	this->_nbServ = rhs._nbServ;
 	this->_epfd = rhs._epfd;
 	for (int i = 0; i < _nbServ; i++) 
-		_servers.push_back(new Server(rhs._servers[i]->getName(), rhs._servers[i]->getHost(), rhs._servers[i]->getPort()));
+		_servers.push_back(new Server(rhs._servers[i]->getName(), rhs._servers[i]->getHost(), rhs._servers[i]->getPort(), rhs._servers[i]->getConfig()));
 	return (*this);
 }
 
@@ -78,6 +77,7 @@ int Handler::launchServers()
 int Handler::handleEvents()
 {
 	struct epoll_event	events[MAX_EVENTS];
+	std::string			response;
 
 	while (!g_sig) 
 	{
@@ -97,7 +97,10 @@ int Handler::handleEvents()
 					if (events[i].data.fd == (*it)->getSocket()) 
 					{
 						(*it)->receiveRequest();
-						(*it)->sendResponse();
+						Parser	parser(&(**it));
+						response = parser.handle_request();
+						if (send((*it)->getClientSock(), response.c_str(), strlen(response.c_str()), 0) == -1) 
+							std::cerr << "Error on sending response" << std::endl;
 						break;
 					}
 				}

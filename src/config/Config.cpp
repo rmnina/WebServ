@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/22 02:55:34 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/23 20:24:43 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ bool    Config::_server_allowed( const std::string &keyword)
 
 bool    Config::_location_allowed( const std::string &keyword) 
 {
-	const std::string			array[7] = {"dir_listing", "error", "method", "upload", "root", "default_file", "cgi",};
-	std::vector<std::string>	allowed(array, array + 7);
+	const std::string			array[8] = {"dir_listing", "error", "method", "upload", "root", "default_file", "cgi", "redirect"};
+	std::vector<std::string>	allowed(array, array + 8);
 
 	for (std::vector<std::string>::iterator it = allowed.begin(); it < allowed.end(); it++)
 	{

@@ -6,31 +6,33 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/22 02:56:19 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/23 23:27:36 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/server/Server.hpp"
 
-Server::Server() : _server_socket(-1), _new_socket(0), _nb_bytes(0), _info() {}
+Server::Server() : _config(NULL), _server_socket(-1), _client_sock(0), _nb_bytes(0), _info() {}
 
-Server::Server(const std::string &servername, const std::string &hostname, const std::string &port) :
+Server::Server(const std::string &servername, const std::string &hostname, const std::string &port, ConfigStruct *config) :
+	_config(config),
 	_name(servername),
 	_hostname(hostname),
 	_port(port),
 	_server_socket(socket(AF_INET, SOCK_STREAM, 0)),
-	_new_socket(0),
+	_client_sock(0),
 	_nb_bytes(0),
 	_info()
 {
 }
 
 Server::Server(const Server &src) :
+	_config(src._config),
 	_name(src._name),
 	_hostname(src._hostname),
 	_port(src._port),
 	_server_socket(src._server_socket),
-	_new_socket(src._new_socket),
+	_client_sock(src._client_sock),
 	_nb_bytes(src._nb_bytes),
 	_request(src._request),
 	_info(src._info)
@@ -41,7 +43,7 @@ Server &Server::operator=(const Server &src)
 {
 	if (this != &src) 
 	{
-		_new_socket = src._new_socket;
+		_client_sock = src._client_sock;
 		_nb_bytes = src._nb_bytes;
 		_request = src._request;
 		_info = src._info;
@@ -70,7 +72,7 @@ int Server::createSocket()
 				  << ": " << strerror(errno) << std::endl;
 		return (FAILURE);
 	}
-	std::cout << "Server " << _name << " is launched !" << std::endl;
+	std::cout << BLUE << "Server " << BOLD << _name << RESET BLUE << " is launched !" << RESET << std::endl;
 	if (_server_socket == -1) 
 	{
 		std::cerr << "socket failed on " << _name << std::endl;
@@ -100,8 +102,8 @@ int Server::receiveRequest()
 {
 	char buff[MAX_REQ_SIZE];
 
-	_new_socket = accept(_server_socket, NULL, NULL);
-	if (_new_socket == -1) 
+	_client_sock = accept(_server_socket, NULL, NULL);
+	if (_client_sock == -1) 
 	{
 		std::cerr << "Error on awaiting connection (accept) on " << _name << std::endl;
 		return (FAILURE);
@@ -116,16 +118,16 @@ int Server::receiveRequest()
 		for (int i = 0; i < MAX_REQ_SIZE; ++i) 
 			buff[i] = 0;
 		_nb_bytes =
-			static_cast< int >(recv(_new_socket, buff, MAX_REQ_SIZE, 0));
+			static_cast< int >(recv(_client_sock, buff, MAX_REQ_SIZE, 0));
 		if (_nb_bytes == -1 && (errno != EAGAIN && errno != EWOULDBLOCK)) 
 		{
 			std::cerr << "Error on recv on " << _name << std::endl;
-			close(_new_socket);
+			close(_client_sock);
 		} 
 		else if (_nb_bytes == 0) 
 		{
 			std::cout << "client disconnected on " << _name << std::endl;
-			close(_new_socket);
+			close(_client_sock);
 		}
 		_request.append(buff, _nb_bytes);
 		if (_nb_bytes < MAX_REQ_SIZE)
@@ -134,7 +136,11 @@ int Server::receiveRequest()
 	return (SUCCESS);
 }
 
+ConfigStruct	*Server::getConfig() const { return (_config); }
+
 int Server::getSocket() const { return (_server_socket); }
+
+int	Server::getClientSock() const { return (_client_sock); }
 
 int Server::getNbBytes() const { return (_nb_bytes); }
 

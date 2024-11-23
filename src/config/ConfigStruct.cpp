@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 01:42:05 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/22 02:56:42 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/23 19:52:05 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@ const std::vector<std::string>	&ConfigStruct::get_server_value(const std::string
 	if (ContainerType != SERVER_VECTOR)
 		throw std::runtime_error("no serverData");
 	server_data::const_iterator it = serverData.find(key);
+	static const std::vector<std::string> empty;
 	if (it != serverData.end())
 		return (it->second);
-	throw std::out_of_range("key not found in server");
+	return (empty);
 }
 
-const std::map<std::string, std::vector<std::string> >	&ConfigStruct::get_location_data(size_t index) const
+const server_data	&ConfigStruct::get_location_data(size_t index) const
 {
 	if (ContainerType != LOCATION_MAP)
 		throw std::runtime_error("no locationData");
@@ -41,10 +42,11 @@ const std::map<std::string, std::vector<std::string> >	&ConfigStruct::get_locati
 
 const std::vector<std::string>	&ConfigStruct::get_location_value(size_t index, const std::string &key) const
 {
-	const std::map<std::string, std::vector<std::string> > locationMap = get_location_data(index);
+	const location_i_data locationMap = get_location_data(index);
 
-	std::map<std::string, std::vector<std::string> >::const_iterator it = locationMap.find(key);
+	location_i_data::const_iterator it = locationMap.find(key);
+	static const std::vector<std::string> empty;
 	if (it != locationMap.end())
 		return (it->second);
-	throw std::out_of_range("key not found in location");
+	return (empty);
 }

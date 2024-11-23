@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/22 02:57:17 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/23 23:05:34 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,34 +32,38 @@
 class Server
 {
 	private:		
+		ConfigStruct		*_config;
+		
 		const std::string	_name;
 		const std::string	_hostname;
 		const std::string	_port;
 		const int			_server_socket;
-		int					_new_socket;
+		int					_client_sock;
 		int					_nb_bytes;
 		std::string			_request;
 		struct addrinfo		*_info;
 
  	public:
-		Server();
-		Server(const std::string &servername, const std::string &hostname, const std::string &port);
+		Server( void);
+		Server(const std::string &servername, const std::string &hostname, const std::string &port, ConfigStruct *config);
 		Server(const Server &src);
 		Server &operator=(const Server &src);
 
-		int			getSocket() const;
-		int			getNbBytes() const;
-		std::string	getName() const;
-		std::string	getHost() const;
-		std::string	getPort() const;
-		std::string	getRequest() const;
+		ConfigStruct	*getConfig( void) const;
+		int				getSocket( void) const;
+		int				getClientSock( void) const;
+		int				getNbBytes( void) const;
+		std::string		getName( void) const;
+		std::string		getHost( void) const;
+		std::string		getPort( void) const;
+		std::string		getRequest( void) const;
 
-		int	createSocket();
-		int	setSocket();
-		int	receiveRequest();
-		int	sendResponse();
+		int	createSocket( void);
+		int	setSocket( void);
+		int	receiveRequest( void);
+		int	sendResponse( void);
 
-		~Server();
+		~Server( void);
 };
 
 #endif
