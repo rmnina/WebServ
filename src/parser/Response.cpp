@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 03:38:58 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 19:04:43 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void  Parser::init_mime_types( void)
 	mime_types[".js"] = "application/javascript";
 	mime_types[".json"] = "application/json";
 	mime_types[".py"] = "application/py";
-	mime_types[".jpg"] = "image/jpg";
+	mime_types[".jpg"] = "image/jpeg";
 	mime_types[".jpeg"] = "image/jpeg";
 	mime_types[".png"] = "image/png";
 	mime_types[".gif"] = "image/gif";
@@ -58,24 +58,57 @@ std::string	Parser::get_content_type( const std::string &filename)
 		_extension = filename.substr(dot);
 	else 
 		_extension = "";
+	get_content_category();
 	std::map<std::string, std::string>::const_iterator it = mime_types.find(_extension);
 	if (it != mime_types.end())
 		return (it->second);
 	return ("application/octet-stream");
 }
 
-std::streampos	Parser::get_content_length( const std::string &filename)
+void	Parser::get_content_category( void)
+{
+	std::string		raw_text_files[7] = {".html", ".css", ".js", ".txt", ".xml", ".json", ".csv"};
+	std::string		image_files[5] = {".jpg", ".jpeg", ".png", ".gif", ".ico"};
+	std::string		cgi[4] = {".py", ".sh", ".php", ".cgi"};
+
+	for (long unsigned int i = 0; i <= raw_text_files->size(); i++)
+	{
+		if (raw_text_files[i] == _extension)
+		{
+			_category = "TEXT";
+			return;
+		}
+	}
+	for (long unsigned int i = 0; i <= image_files->size(); i++)
+	{
+		if (image_files[i] == _extension)
+		{
+			_category = "IMAGE";
+			return;
+		}
+	}
+	for (long unsigned int i = 0; i <= cgi->size(); i++)
+	{
+		if (cgi[i] == _extension)
+		{
+			_category = "CGI";
+			return;
+		}
+	}
+}
+
+size_t	Parser::get_content_length( const std::string &filename)
 {
 	std::ifstream	content(filename.c_str(), std::ios::binary);
 
 	if (!content)
 		std::cerr << "File couldnt be opened : " << filename << std::endl;
 	content.seekg(0, std::ios::end);
-	std::streampos	size = content.tellg();
+	_resp_size = content.tellg();
 	content.seekg(0, std::ios::beg);
 
 	content.close();
-	return (size);
+	return (_resp_size);
 }
 
 void	Parser::build_response_header( void)
@@ -83,80 +116,58 @@ void	Parser::build_response_header( void)
 	std::ostringstream	header;
 	header << "HTTP/1.1 " <<_error_code;
 	if (_error_code == 200 || _error_code == 201 || _error_code == 204)
-		header <<" OK ";
-	header << "\ndate: " << get_time();
-	header << "\ncontent-type: " << get_content_type(_request["path"][0]);
-	header << "\ncontent-length: " << get_content_length(_request["path"][0]);
-	header << "\nServer: WebServ\r\n\r\n";
+		header <<" OK\r\n";
+	header << "Date: " << get_time() << "\r\n";
+	if (_category == "IMAGE")
+		header << "Accept-Ranges: bytes\r\n";
+	header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
+	header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
+	header << "Connection: keep-alive\r\n";
+	header << "Server: WebServ\r\n\r\n";
 	
 	_response += header.str();
 }
 
-void	Parser::build_raw_text( std::ifstream &resource)
+void	Parser::build_raw_text( std::string &filename)
 {
-	std::string	line;
-	std::string	content;
+	std::string		line;
+	std::string		content;
+	std::ifstream	file(filename.c_str());
 
-	while (std::getline(resource, line))
+	if (!file.is_open())
+		std::cerr << "Couldnt open file " << std::endl;
+	while (std::getline(file, line))
 		content += line + "\n";
-	build_response_header();
-	std::cout << YELLOW << _response << RESET << std::endl;
 	_response += content;
-	resource.close();
+	file.close();
 }
 
-void	Parser::build_image( std::ifstream &resource)
+void	Parser::build_image( std::string &filename)
 {
-	std::streampos		size = get_content_length(_request["path"][0]);
-	std::vector<char>	buffer(size);
+	std::ifstream				file(filename.c_str(), std::ios::binary);
 
-	resource.read(buffer.data(), size);
-	
-	build_response_header();
-	_response.append(buffer.data(), size);
-	resource.close();
+	_image_response.resize(_resp_size);
+	file.read(reinterpret_cast<char *>(_image_response.data()), _resp_size);
+	file.close();
 }
 
-void	Parser::exec_cgi( std::ifstream &resource)
+void	Parser::exec_cgi( std::string &filename)
 {
-	(void)resource;
+	(void)filename;
 }
 
 void	Parser::GETmethod( void)
 {	
 	std::string	path = _request["path"][0];
-	std::ifstream	resource(path.c_str());
-	std::string		raw_text_files[7] = {".html", ".css", ".js", ".txt", ".xml", ".json", ".csv"};
-	std::string		image_files[5] = {".jpg", ".jpeg", ".png", ".gif", ".ico"};
-	std::string		cgi[4] = {".py", ".sh", ".php", ".cgi"};
 
-	get_content_type(path);
-	if (!resource.is_open())
-		std::cerr << "Ressource " << path << "could not be opened" << std::endl;
-	for (long unsigned int i = 0; i < raw_text_files->size(); i++)
-	{
-		if (raw_text_files[i] == _extension)
-		{
-			build_raw_text(resource);
-			return;
-		}
-	}
-	for (long unsigned int i = 0; i < image_files->size(); i++)
-	{
-		if (image_files[i] == _extension)
-		{
-			build_image(resource);
-			return;
-		}
-	}
-	for (long unsigned int i = 0; i < cgi->size(); i++)
-	{
-		if (cgi[i] == _extension)
-		{
-			exec_cgi(resource);
-			return;
-		}
-	}
+	if (!_category.compare("TEXT"))
+		build_raw_text(path);
+	else if (!_category.compare("IMAGE"))
+		build_image(path);
+	else if (!_category.compare("CGI"))
+		exec_cgi(path);
+	else
+		std::cerr << BOLD RED << "Error getting category" << RESET << std::endl;
 }
 
 void	Parser::POSTmethod( void)
@@ -169,9 +180,10 @@ void	Parser::DELETEmethod( void)
 	
 }
 
-void	Parser::build_response( void)
-{	
+unsigned char	*Parser::build_img_response( void)
+{
 	std::string	method[3] = { "GET", "POST", "DELETE" };
+	_image_response.clear();
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
 	for (long unsigned int i = 0; i < method->size(); i++)
@@ -179,8 +191,26 @@ void	Parser::build_response( void)
 		if (_request.find("method")->second[0] == method[i])
 		{
 			(this->*func_method[i])();
-			return;
+			return (_image_response.data());
 		}
 	}
+	return (NULL);
+}
+
+std::string	Parser::build_response( void)
+{		
+	std::string	method[3] = { "GET", "POST", "DELETE" };
+	_response.erase();
+	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
+
+	for (long unsigned int i = 0; i < method->size(); i++)
+	{
+		if (_request.find("method")->second[0] == method[i])
+		{
+			(this->*func_method[i])();
+			return (_response);
+		}
+	}
+	return ("");
 }
 

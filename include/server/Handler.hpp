@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:40:57 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 00:44:55 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 19:37:30 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ class Handler
 	private:
 		std::vector<ConfigStruct>	_servers_conf;		
 		std::vector<Server *>		_servers;
-		int							_nbServ;
 		int							_epfd;
 
 	public:

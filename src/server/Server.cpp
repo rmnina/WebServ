@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 02:10:53 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 20:01:30 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ int	Server::receive_request( int client_index)
 	nb_bytes = recv(_client_sock[client_index], buffer, MAX_REQ_SIZE, 0);
 	_nb_bytes[client_index] += nb_bytes;
 	_request[client_index].append(buffer);
+	std::cout << GREEN << _request[client_index] << RESET << std::endl;
 	if (nb_bytes <= 0) 
 	{
 		std::cerr << "Error on recv on " << _name << std::endl;

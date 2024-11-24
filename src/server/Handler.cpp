@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 02:01:59 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 20:01:42 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 volatile int g_sig = 0;
 
-Handler::Handler() : _nbServ(0) {}
+Handler::Handler() {}
 
 Handler::Handler( const std::vector<ConfigStruct> servers_conf) : _servers_conf(servers_conf) {}
 
@@ -42,10 +42,9 @@ Handler::Handler(const Handler &src)
 Handler &Handler::operator=(const Handler &rhs)
 {
 	this->_epfd = epoll_create1(0);
-	this->_nbServ = rhs._nbServ;
 	this->_epfd = rhs._epfd;
-	for (int i = 0; i < _nbServ; i++) 
-		_servers.push_back(new Server(rhs._servers[i]->getName(), rhs._servers[i]->getHost(), rhs._servers[i]->getPort(), rhs._servers[i]->getConfig()));
+	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
+		_servers.push_back(new Server((*it)->getName(), (*it)->getHost(), (*it)->getPort(), (*it)->getConfig()));
 	return (*this);
 }
 
@@ -108,7 +107,6 @@ int	Handler::get_client_index( Server &server, int event_fd)
 int Handler::handleEvents()
 {
 	struct epoll_event	events[MAX_EVENTS];
-	std::string			response;
 
 	while (!g_sig) 
 	{
@@ -116,7 +114,7 @@ int Handler::handleEvents()
 		int nfds = epoll_wait(_epfd, events, MAX_EVENTS, -1);
 		if (nfds == -1 && !g_sig) 
 		{
-			std::cout << "Error on epoll_wait" << std::endl;
+			std::cerr << "Error on epoll_wait" << std::endl;
 			return (FAILURE);
 		}
 		for (int i = 0; i < nfds; ++i) 
@@ -126,7 +124,7 @@ int Handler::handleEvents()
 				std::vector<Server *>::iterator it = _servers.begin();
 				for (; it < _servers.end(); it++) 
 				{
-					if (events[i].data.fd == (*it)->getSocket()) 
+					if (events[i].data.fd == (*it)->getSocket())
 						(*it)->accept_connection(_epfd);
 				}
 				if (it == _servers.end())
@@ -139,11 +137,26 @@ int Handler::handleEvents()
 							if ((*it)->receive_request(client_index) == 1)
 							{
 								Parser	parser(&(**it));
-								response = parser.handle_request(client_index);
-								modify_event((*it)->getClientSock()[client_index], EPOLLOUT);
-								if (send((*it)->getClientSock()[client_index], response.c_str(), strlen(response.c_str()), 0) == -1) 
-									std::cerr << "Error on sending response" << std::endl;
-								break;
+								std::string response = parser.handle_request(client_index);
+								std::cout << BOLD BLUE << "header is " << response << RESET << std::endl;
+								if (!parser.getCategory().compare("IMAGE"))
+								{
+									if (send((*it)->getClientSock()[client_index], response.c_str(), strlen(response.c_str()), 0) == -1) 
+										std::cerr << "Error on sending header" << std::endl;
+									unsigned char *img_response = parser.build_img_response();
+									modify_event((*it)->getClientSock()[client_index], EPOLLOUT);
+									if (send((*it)->getClientSock()[client_index], img_response, parser.getRespSize(), 0) == -1) 
+										std::cerr << "Error on sending response" << std::endl;
+									break;
+								}
+								else
+								{
+									response += parser.build_response();
+									modify_event((*it)->getClientSock()[client_index], EPOLLOUT);
+									if (send((*it)->getClientSock()[client_index], response.c_str(), strlen(response.c_str()), 0) == -1) 
+										std::cerr << "Error on sending response" << std::endl;
+									break;
+								}
 							}
 						}
 					}
@@ -163,6 +176,6 @@ int Handler::handleEvents()
 
 Handler::~Handler()
 {
-	for (int i = 0; i < _nbServ; ++i)
-		delete _servers[i];
+	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
+		delete (*it);
 }
