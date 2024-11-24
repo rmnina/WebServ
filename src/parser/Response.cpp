@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/23 23:42:32 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 00:06:41 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ void	Parser::build_response_header( void)
 	if (_error_code == 200 || _error_code == 201 || _error_code == 204)
 		header <<" OK ";
 	header << "\ndate: " << get_time();
-	header << "\ncontent_type: " << get_content_type(_request["path"][1]);
-	header << "\ncontent-length: " << get_content_length(_request["path"][1]);
+	header << "\ncontent_type: " << get_content_type(_request["path"][0]);
+	header << "\ncontent-length: " << get_content_length(_request["path"][0]);
 	header << "\nserver: the best Webserv you will see\r\n\r\n";
 	
 	_response += header.str();
@@ -101,7 +101,7 @@ void	Parser::build_raw_text( std::ifstream &resource)
 
 void	Parser::build_image( std::ifstream &resource)
 {
-	std::streampos		size = get_content_length(_request["path"][1]);
+	std::streampos		size = get_content_length(_request["path"][0]);
 	std::vector<char>	buffer(size);
 
 	resource.read(&buffer[0], size);
@@ -117,12 +117,13 @@ void	Parser::exec_cgi( std::ifstream &resource)
 
 void	Parser::GETmethod( void)
 {	
-	std::string	path = _request["path"][1];
+	std::string	path = _request["path"][0];
 	std::ifstream	resource(path.c_str());
 	std::string		raw_text_files[7] = {".html", ".css", ".js", ".txt", ".xml", ".json", ".csv"};
 	std::string		image_files[5] = {".jpg", ".jpeg", ".png", ".gif", ".ico"};
 	std::string		cgi[4] = {".py", ".sh", ".php", ".cgi"};
 
+	get_content_type(path);
 	if (!resource.is_open())
 		std::cerr << "Ressource " << path << "could not be opened" << std::endl;
 	for (long unsigned int i = 0; i < raw_text_files->size(); i++)
@@ -168,7 +169,7 @@ void	Parser::build_response( void)
 
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
-		if (_request.find("method")->second[1] == method[i])
+		if (_request.find("method")->second[0] == method[i])
 		{
 			(this->*func_method[i])();
 			return;

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/23 23:05:34 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 01:22:49 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <netdb.h>
 # include <string>
 # include <unistd.h>
+# include <sys/epoll.h>
 # include "../config/Config.hpp"
 
 # define SUCCESS 0
@@ -34,14 +35,14 @@ class Server
 	private:		
 		ConfigStruct		*_config;
 		
-		const std::string	_name;
-		const std::string	_hostname;
-		const std::string	_port;
-		const int			_server_socket;
-		int					_client_sock;
-		int					_nb_bytes;
-		std::string			_request;
-		struct addrinfo		*_info;
+		const std::string			_name;
+		const std::string			_hostname;
+		const std::string			_port;
+		const int					_server_socket;
+		std::vector<int>			_client_sock;
+		std::vector<size_t>			_nb_bytes;
+		std::vector<std::string>	_request;
+		struct addrinfo				*_info;
 
  	public:
 		Server( void);
@@ -49,19 +50,24 @@ class Server
 		Server(const Server &src);
 		Server &operator=(const Server &src);
 
-		ConfigStruct	*getConfig( void) const;
-		int				getSocket( void) const;
-		int				getClientSock( void) const;
-		int				getNbBytes( void) const;
-		std::string		getName( void) const;
-		std::string		getHost( void) const;
-		std::string		getPort( void) const;
-		std::string		getRequest( void) const;
+		ConfigStruct				*getConfig( void) const;
+		int							getSocket( void) const;
+		std::vector<int>			getClientSock( void) const;
+		std::vector<size_t>			getNbBytes( void) const;
+		std::string					getName( void) const;
+		std::string					getHost( void) const;
+		std::string					getPort( void) const;
+		std::vector<std::string>	getRequest( void) const;
 
-		int	createSocket( void);
-		int	setSocket( void);
-		int	receiveRequest( void);
-		int	sendResponse( void);
+		void	add_event(int epfd, int socket, int flag);
+		void	modify_event(int epfd, int socket, int flag);
+		void	delete_event(int epfd, int socket);
+		
+		int	create_socket( void);
+		int	set_socket( void);
+		int	accept_connection( int epfd);
+		int	receive_request( int client_index);
+		int	send_response( void);
 
 		~Server( void);
 };

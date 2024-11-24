@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/23 23:27:36 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 01:34:49 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ Server::Server(const std::string &servername, const std::string &hostname, const
 	_hostname(hostname),
 	_port(port),
 	_server_socket(socket(AF_INET, SOCK_STREAM, 0)),
-	_client_sock(0),
 	_nb_bytes(0),
 	_info()
 {
@@ -51,7 +50,32 @@ Server &Server::operator=(const Server &src)
 	return (*this);
 }
 
-int Server::createSocket()
+void	Server::add_event(int epfd, int fd, int flag) 
+{
+	struct epoll_event event;
+	event.events = flag;
+	event.data.fd = fd;
+	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &event) == -1) 
+		throw (std::runtime_error("error on adding event to epoll"));
+}
+
+void	Server::modify_event(int epfd, int fd, int flag)
+{
+	struct epoll_event event;
+	event.events = flag;
+	event.data.fd = fd;
+	if (epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &event) == -1)
+		throw (std::runtime_error("error on modifying event to epoll"));
+}
+
+void	Server::delete_event(int epfd, int fd)
+{
+	if (epoll_ctl(epfd, EPOLL_CTL_DEL, fd, NULL) == -1)
+		throw (std::runtime_error("error on removing event to epoll"));
+}
+
+
+int Server::create_socket()
 {
 	if (fcntl(_server_socket, F_SETFL, O_NONBLOCK) == -1) 
 	{
@@ -86,7 +110,7 @@ int Server::createSocket()
 	return (SUCCESS);
 }
 
-int Server::setSocket()
+int Server::set_socket()
 {
 	if (bind(_server_socket, _info->ai_addr, _info->ai_addrlen) == -1) 
 	{
@@ -98,12 +122,13 @@ int Server::setSocket()
 	return (SUCCESS);
 }
 
-int Server::receiveRequest()
+int	Server::accept_connection( int epfd)
 {
-	char buff[MAX_REQ_SIZE];
+	int		client_sock;
 
-	_client_sock = accept(_server_socket, NULL, NULL);
-	if (_client_sock == -1) 
+	client_sock = accept(_server_socket, NULL, NULL);
+	
+	if (client_sock == -1) 
 	{
 		std::cerr << "Error on awaiting connection (accept) on " << _name << std::endl;
 		return (FAILURE);
@@ -112,37 +137,115 @@ int Server::receiveRequest()
 	{
 		std::cerr << "Error on set nonblocking on " << _name << std::endl;
 		return (FAILURE);
-	}
-	while (true) 
+	}	
+	int optval = 1;
+	if (setsockopt(client_sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(int)) == -1)
 	{
-		for (int i = 0; i < MAX_REQ_SIZE; ++i) 
-			buff[i] = 0;
-		_nb_bytes =
-			static_cast< int >(recv(_client_sock, buff, MAX_REQ_SIZE, 0));
-		if (_nb_bytes == -1 && (errno != EAGAIN && errno != EWOULDBLOCK)) 
-		{
-			std::cerr << "Error on recv on " << _name << std::endl;
-			close(_client_sock);
-		} 
-		else if (_nb_bytes == 0) 
-		{
-			std::cout << "client disconnected on " << _name << std::endl;
-			close(_client_sock);
-		}
-		_request.append(buff, _nb_bytes);
-		if (_nb_bytes < MAX_REQ_SIZE)
-			break;
+		std::cerr << "Error on set nonblocking on " << _name << std::endl;
+		return (FAILURE);
 	}
+	add_event(epfd, client_sock, EPOLLIN);
+	_client_sock.push_back(client_sock);
+	_request.push_back("");
+	_nb_bytes.push_back(0);
 	return (SUCCESS);
 }
+
+int	Server::receive_request( int client_index)
+{
+	char	buffer[MAX_REQ_SIZE];
+	size_t	nb_bytes;
+	size_t	pos;
+		
+	memset(buffer, 0, MAX_REQ_SIZE);
+	nb_bytes = recv(_client_sock[client_index], buffer, MAX_REQ_SIZE, 0);
+	_nb_bytes[client_index] += nb_bytes;
+	if (nb_bytes <= 0) 
+	{
+		std::cerr << "Error on recv on " << _name << std::endl;
+		close(_client_sock[client_index]);
+	} 
+	if (nb_bytes > 0)
+	{
+		pos = _request[client_index].find("Content-Length: ");
+		if (pos == std::string::npos)
+			pos = _request[client_index].find("content-length: ") == std::string::npos;
+		if (pos != std::string::npos)
+		{
+			size_t	content_length;
+			size_t	body_start;
+
+			content_length = atoi(_request[client_index].c_str() + pos + 16);
+			body_start = _request[client_index].find("\r\n\r\n");
+			if (body_start != std::string::npos)
+				body_start += 4;
+			else
+			{
+				body_start = _request[client_index].find("\n\n");
+				if (body_start != std::string::npos)
+					body_start += 2;
+			}
+			if (_nb_bytes[client_index] < content_length + body_start)
+				return (0);
+		}
+		else
+			return (1);	
+	}
+	return (1);
+}
+
+// int Server::receive_request( void)
+// {
+// 	char buff[MAX_REQ_SIZE];
+
+// 	_client_sock = accept(_server_socket, NULL, NULL);
+	
+// 	if (_client_sock == -1) 
+// 	{
+// 		std::cerr << "Error on awaiting connection (accept) on " << _name << std::endl;
+// 		return (FAILURE);
+// 	}
+// 	if (fcntl(_server_socket, F_SETFL, O_NONBLOCK) == -1) 
+// 	{
+// 		std::cerr << "Error on set nonblocking on " << _name << std::endl;
+// 		return (FAILURE);
+// 	}
+// 	int optval = 1;
+// 	if (setsockopt(_client_sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(int)) == -1)
+// 	{
+// 		std::cerr << "Error on set nonblocking on " << _name << std::endl;
+// 		return (FAILURE);
+// 	}
+// 	while (true) 
+// 	{
+// 		for (int i = 0; i < MAX_REQ_SIZE; ++i) 
+// 			buff[i] = 0;
+// 		_nb_bytes =
+// 			static_cast< int >(recv(_client_sock, buff, MAX_REQ_SIZE, 0));
+// 		if (_nb_bytes == -1 && (errno != EAGAIN && errno != EWOULDBLOCK)) 
+// 		{
+// 			std::cerr << "Error on recv on " << _name << std::endl;
+// 			close(_client_sock);
+// 		} 
+// 		else if (_nb_bytes == 0) 
+// 		{
+// 			std::cout << "client disconnected on " << _name << std::endl;
+// 			close(_client_sock);
+// 		}
+// 		_request.append(buff, _nb_bytes);
+// 		if (_nb_bytes < MAX_REQ_SIZE)
+// 			break;
+// 	}
+// 	return (SUCCESS);
+// }
 
 ConfigStruct	*Server::getConfig() const { return (_config); }
 
 int Server::getSocket() const { return (_server_socket); }
 
-int	Server::getClientSock() const { return (_client_sock); }
+std::vector<int>	Server::getClientSock() const { return (_client_sock); }
 
-int Server::getNbBytes() const { return (_nb_bytes); }
+std::vector<size_t> Server::getNbBytes() const { return (_nb_bytes); }
 
 std::string Server::getName() const { return (_name); }
 
@@ -150,7 +253,7 @@ std::string Server::getHost() const { return (_hostname); }
 
 std::string Server::getPort() const { return (_port); }
 
-std::string Server::getRequest() const { return (_request); }
+std::vector<std::string> Server::getRequest() const { return (_request); }
 
 Server::~Server()
 {

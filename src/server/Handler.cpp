@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/23 23:06:47 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 01:36:59 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,30 @@ Handler &Handler::operator=(const Handler &rhs)
 	return (*this);
 }
 
+void	Handler::add_event(int fd, int flag) 
+{
+	struct epoll_event event;
+	event.events = flag;
+	event.data.fd = fd;
+	if (epoll_ctl(_epfd, EPOLL_CTL_ADD, fd, &event) == -1) 
+		throw (std::runtime_error("error on adding event to epoll"));
+}
+
+void	Handler::modify_event(int fd, int flag)
+{
+	struct epoll_event event;
+	event.events = flag;
+	event.data.fd = fd;
+	if (epoll_ctl(_epfd, EPOLL_CTL_MOD, fd, &event) == -1)
+		throw (std::runtime_error("error on modifying event to epoll"));
+}
+
+void	Handler::delete_event(int fd)
+{
+	if (epoll_ctl(_epfd, EPOLL_CTL_DEL, fd, NULL) == -1)
+		throw (std::runtime_error("error on removing event to epoll"));
+}
+
 int Handler::launchServers()
 {
 	_epfd = epoll_create1(0);
@@ -60,18 +84,25 @@ int Handler::launchServers()
 
 	for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); ++it) 
 	{
-		(*it)->createSocket();
-		(*it)->setSocket();
-		struct epoll_event event;
-		event.events = EPOLLIN;
-		event.data.fd = (*it)->getSocket();
-		if (epoll_ctl(_epfd, EPOLL_CTL_ADD, (*it)->getSocket(), &event) == -1) 
-		{
-			std::cerr << "Error on epoll_ctl" << std::endl;
-			return (FAILURE);
-		}
+		(*it)->create_socket();
+		(*it)->set_socket();
+		add_event((*it)->getSocket(), EPOLLIN);
 	}
 	return (SUCCESS);
+}
+
+int	Handler::get_client_index( Server &server, int event_fd)
+{
+	long unsigned int i = 0;
+	
+	if (!server.getClientSock().size())
+		return (-1);
+	for (; i < server.getClientSock().size(); i++)
+	{
+		if (server.getClientSock()[i] == event_fd)
+			return (i);
+	}
+	return (-1);
 }
 
 int Handler::handleEvents()
@@ -92,16 +123,27 @@ int Handler::handleEvents()
 		{
 			if (events[i].events & EPOLLIN) 
 			{
-				for (std::vector<Server *>::iterator it = _servers.begin();  it < _servers.end(); ++it) 
+				std::vector<Server *>::iterator it = _servers.begin();
+				for (; it < _servers.end(); it++) 
 				{
 					if (events[i].data.fd == (*it)->getSocket()) 
+						(*it)->accept_connection(_epfd);
+				}
+				if (it == _servers.end())
+				{
+					std::cout << BOLD GREEN << "yo2" << RESET << std::endl;
+					int	client_index = get_client_index((**it), events[i].data.fd);
+					if (client_index != -1)
 					{
-						(*it)->receiveRequest();
-						Parser	parser(&(**it));
-						response = parser.handle_request();
-						if (send((*it)->getClientSock(), response.c_str(), strlen(response.c_str()), 0) == -1) 
-							std::cerr << "Error on sending response" << std::endl;
-						break;
+						if ((*it)->receive_request(client_index) == 1)
+						{
+							Parser	parser(&(**it));
+							response = parser.handle_request(client_index);
+							modify_event((*it)->getClientSock()[client_index], EPOLLOUT);
+							if (send((*it)->getClientSock()[client_index], response.c_str(), strlen(response.c_str()), 0) == -1) 
+								std::cerr << "Error on sending response" << std::endl;
+							break;
+						}
 					}
 				}
 			}

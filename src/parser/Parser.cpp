@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/23 23:43:30 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 01:18:44 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ bool	Parser::fill_method( const std::string &request)
 
 	for (long unsigned int i = 0; i < methods->size(); i++)
 	{
-		if (request.find(methods[i]))
+		if (!method.compare(methods[i]))
 		{
-			tmp.push_back(methods[i]);
+			tmp.push_back(method);
 			_request["method"] = tmp;
 		}
 	}
@@ -50,7 +50,7 @@ bool	Parser::fill_method( const std::string &request)
 		{
 			for (std::vector<std::string>::iterator it = allowed_method.begin(); it < allowed_method.end(); it++)
 			{
-				if (_request["method"][1] == *it)
+				if (_request["method"][0] == *it)
 					return (true); 
 			}
 			return (false);
@@ -66,9 +66,10 @@ bool	Parser::fill_path( const std::string &request)
 
 	if (!path.compare("/"))
 		path = "index.html";
+	path = "www/" + path;
 
 	std::vector<std::string>	tmp;
-	tmp.push_back("www/" + path);
+	tmp.push_back(path);
 	_request["path"] = tmp;
 	
 	std::ifstream	resource(path.c_str());
@@ -111,15 +112,15 @@ bool	Parser::check_req_size( const std::string &request)
 	return (true);
 }
 
-std::string Parser::handle_request( void)
+std::string Parser::handle_request( int client_index)
 {	
-	std::cout << ORANGE << _server->getRequest() << RESET << std::endl;
+	std::cout << ORANGE << _server->getRequest()[client_index] << RESET << std::endl;
 	
-	if (!fill_path(_server->getRequest()))
+	if (!fill_path(_server->getRequest()[client_index]))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
-	if (!fill_method(_server->getRequest()))
+	if (!fill_method(_server->getRequest()[client_index]))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
-	if (!check_version(_server->getRequest()) || !check_req_size(_server->getRequest()))
+	if (!check_version(_server->getRequest()[client_index]) || !check_req_size(_server->getRequest()[client_index]))
 		_error_code = 400; //ERROR BAD REQUEST
 	else
 		_error_code = 200;

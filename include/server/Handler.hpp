@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:40:57 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/22 02:57:06 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 00:44:55 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,22 @@ class Handler
 		int							_epfd;
 
 	public:
-		Handler();
+		Handler( void);
 		Handler( const std::vector<ConfigStruct> servers_conf);
 
 		Handler(const Handler &src);
 		Handler &operator=(const Handler &rhs);
 
-		void	loadServ();
-		int		launchServers();
-		int		handleEvents();
+		void	loadServ( void);
+		int		launchServers( void);
+		int		get_client_index( Server &server, int event_fd);
+		int		handleEvents( void);
 
-		~Handler();
+		void	add_event(int fd, int event);
+		void	modify_event(int fd, int event);
+		void	delete_event(int fd);
+
+		~Handler( void);
 };
 
 #endif
