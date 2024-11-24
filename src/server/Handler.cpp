@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 01:36:59 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 02:01:59 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,18 +131,20 @@ int Handler::handleEvents()
 				}
 				if (it == _servers.end())
 				{
-					std::cout << BOLD GREEN << "yo2" << RESET << std::endl;
-					int	client_index = get_client_index((**it), events[i].data.fd);
-					if (client_index != -1)
+					for (it = _servers.begin(); it < _servers.end(); it++) 
 					{
-						if ((*it)->receive_request(client_index) == 1)
+						int	client_index = get_client_index((**it), events[i].data.fd);
+						if (client_index != -1)
 						{
-							Parser	parser(&(**it));
-							response = parser.handle_request(client_index);
-							modify_event((*it)->getClientSock()[client_index], EPOLLOUT);
-							if (send((*it)->getClientSock()[client_index], response.c_str(), strlen(response.c_str()), 0) == -1) 
-								std::cerr << "Error on sending response" << std::endl;
-							break;
+							if ((*it)->receive_request(client_index) == 1)
+							{
+								Parser	parser(&(**it));
+								response = parser.handle_request(client_index);
+								modify_event((*it)->getClientSock()[client_index], EPOLLOUT);
+								if (send((*it)->getClientSock()[client_index], response.c_str(), strlen(response.c_str()), 0) == -1) 
+									std::cerr << "Error on sending response" << std::endl;
+								break;
+							}
 						}
 					}
 				}

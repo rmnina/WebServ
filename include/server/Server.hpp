@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 01:22:49 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 03:31:52 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define FAILURE 1
 
 # define MAXREQUEST 10
-# define MAX_REQ_SIZE 100
+# define MAX_REQ_SIZE 2000
 
 class Server
 {

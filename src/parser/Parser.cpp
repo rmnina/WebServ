@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 01:18:44 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 03:20:28 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ bool	Parser::check_req_size( const std::string &request)
 std::string Parser::handle_request( int client_index)
 {	
 	std::cout << ORANGE << _server->getRequest()[client_index] << RESET << std::endl;
-	
+	init_mime_types();
 	if (!fill_path(_server->getRequest()[client_index]))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
 	if (!fill_method(_server->getRequest()[client_index]))

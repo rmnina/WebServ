@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 01:18:31 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 03:05:41 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ class Parser
 		void		POSTmethod( void);
 		void		DELETEmethod( void);
 
-		std::string	get_content_type( const std::string &filename);
-		size_t		get_content_length( const std::string &filename);
-		void		build_response_header( void);
-		void		build_response( void);
+		std::string		get_content_type( const std::string &filename);
+		std::streampos	get_content_length( const std::string &filename);
+		void			build_response_header( void);
+		void			build_response( void);
 
 		std::string	handle_request( int client_index);
 		

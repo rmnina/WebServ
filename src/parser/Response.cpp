@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 00:06:41 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/24 03:38:58 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void  Parser::init_mime_types( void)
 	mime_types[".js"] = "application/javascript";
 	mime_types[".json"] = "application/json";
 	mime_types[".py"] = "application/py";
-	mime_types[".jpg"] = "image/jpeg";
+	mime_types[".jpg"] = "image/jpg";
 	mime_types[".jpeg"] = "image/jpeg";
 	mime_types[".png"] = "image/png";
 	mime_types[".gif"] = "image/gif";
@@ -52,24 +52,30 @@ std::string get_time(void)
 }
 
 std::string	Parser::get_content_type( const std::string &filename)
-{
+{	
 	std::size_t	dot = filename.rfind('.');
 	if (dot != std::string::npos)
 		_extension = filename.substr(dot);
 	else 
 		_extension = "";
-	std::map<std::string, std::string>::const_iterator	it = mime_types.find(_extension);
+	std::map<std::string, std::string>::const_iterator it = mime_types.find(_extension);
 	if (it != mime_types.end())
 		return (it->second);
 	return ("application/octet-stream");
 }
 
-size_t	Parser::get_content_length( const std::string &filename)
+std::streampos	Parser::get_content_length( const std::string &filename)
 {
-	std::ifstream	content(filename.c_str(), std::ios::binary | std::ios::ate);
+	std::ifstream	content(filename.c_str(), std::ios::binary);
+
 	if (!content)
 		std::cerr << "File couldnt be opened : " << filename << std::endl;
-	return (content.close(), content.tellg());
+	content.seekg(0, std::ios::end);
+	std::streampos	size = content.tellg();
+	content.seekg(0, std::ios::beg);
+
+	content.close();
+	return (size);
 }
 
 void	Parser::build_response_header( void)
@@ -79,9 +85,9 @@ void	Parser::build_response_header( void)
 	if (_error_code == 200 || _error_code == 201 || _error_code == 204)
 		header <<" OK ";
 	header << "\ndate: " << get_time();
-	header << "\ncontent_type: " << get_content_type(_request["path"][0]);
+	header << "\ncontent-type: " << get_content_type(_request["path"][0]);
 	header << "\ncontent-length: " << get_content_length(_request["path"][0]);
-	header << "\nserver: the best Webserv you will see\r\n\r\n";
+	header << "\nServer: WebServ\r\n\r\n";
 	
 	_response += header.str();
 }
@@ -90,11 +96,11 @@ void	Parser::build_raw_text( std::ifstream &resource)
 {
 	std::string	line;
 	std::string	content;
-	
+
 	while (std::getline(resource, line))
 		content += line + "\n";
-	
 	build_response_header();
+	std::cout << YELLOW << _response << RESET << std::endl;
 	_response += content;
 	resource.close();
 }
@@ -104,9 +110,10 @@ void	Parser::build_image( std::ifstream &resource)
 	std::streampos		size = get_content_length(_request["path"][0]);
 	std::vector<char>	buffer(size);
 
-	resource.read(&buffer[0], size);
+	resource.read(buffer.data(), size);
 	
-	std::string	content(buffer.begin(), buffer.end());
+	build_response_header();
+	_response.append(buffer.data(), size);
 	resource.close();
 }
 
