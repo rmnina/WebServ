@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 03:31:52 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/25 23:22:22 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@
 class Server
 {
 	private:		
-		ConfigStruct		*_config;
+		server_data					_config;
+		location_data				_location;
 		
 		const std::string			_name;
 		const std::string			_hostname;
@@ -46,11 +47,12 @@ class Server
 
  	public:
 		Server( void);
-		Server(const std::string &servername, const std::string &hostname, const std::string &port, ConfigStruct *config);
+		Server(const std::string &servername, const std::string &hostname, const std::string &port, server_data config, location_data location);
 		Server(const Server &src);
 		Server &operator=(const Server &src);
 
-		ConfigStruct				*getConfig( void) const;
+		server_data					getConfig( void) const;
+		location_data				getLocation( void) const;
 		int							getSocket( void) const;
 		std::vector<int>			getClientSock( void) const;
 		std::vector<size_t>			getNbBytes( void) const;

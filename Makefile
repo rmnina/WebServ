@@ -6,7 +6,7 @@
 #    By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 19:01:05 by jdufour           #+#    #+#              #
-#    Updated: 2024/11/24 03:38:50 by jdufour          ###   ########.fr        #
+#    Updated: 2024/11/25 21:47:57 by jdufour          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = WebServ
 
 SRC_DIR = src
 
-SRCS = $(addprefix $(SRC_DIR)/, config/Config.cpp config/ConfigStruct.cpp server/Handler.cpp server/Server.cpp server/Signal.cpp parser/Parser.cpp parser/Response.cpp main.cpp)
+SRCS = $(addprefix $(SRC_DIR)/, config/Config.cpp config/ConfigStruct.cpp server/Handler.cpp server/Server.cpp server/Signal.cpp parser/Parser.cpp parser/Response.cpp parser/Location.cpp main.cpp)
 
 OBJ_DIR = obj
 

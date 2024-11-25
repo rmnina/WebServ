@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 20:01:42 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/25 23:32:55 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,32 @@ Handler::Handler( const std::vector<ConfigStruct> servers_conf) : _servers_conf(
 void	Handler::loadServ()
 {
 	printConfig(_servers_conf);
-	for (std::vector<ConfigStruct>::iterator it = _servers_conf.begin(); it < _servers_conf.end(); it += 2)
+	for (std::vector<ConfigStruct>::iterator it = _servers_conf.begin(); it < _servers_conf.end();)
 	{
+		std::vector<ConfigStruct>::iterator loc = it + 1;
+		server_data				 			config;
+		location_data						locations;
+
+		if (it->get_container_type() != ConfigStruct::SERVER_VECTOR)
+		{
+			std::cerr << RED BOLD << "not normal to enter there. i failed my calculations didnt i" << RESET << std::endl;
+			exit(0);
+		}
 		std::string	name = it->get_server_value("server_name")[1];
 		std::string	hostname = "localhost";
 		std::string	port = it->get_server_value("listen")[1];
-		ConfigStruct *config = &(*it);
-		_servers.push_back(new Server(name, hostname, port, config));
+		config = (*it).serverData;
+		if (loc != _servers_conf.end())
+		{
+			for (; loc->get_container_type() == ConfigStruct::LOCATION_MAP; loc++);
+			if (loc != it + 1)
+			{
+				it++;
+				locations = (*it).locationData;
+			}
+		}
+		it++;
+		_servers.push_back(new Server(name, hostname, port, config, locations));
 	}
 }
 
@@ -44,7 +63,7 @@ Handler &Handler::operator=(const Handler &rhs)
 	this->_epfd = epoll_create1(0);
 	this->_epfd = rhs._epfd;
 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
-		_servers.push_back(new Server((*it)->getName(), (*it)->getHost(), (*it)->getPort(), (*it)->getConfig()));
+		_servers.push_back(new Server((*it)->getName(), (*it)->getHost(), (*it)->getPort(), (*it)->getConfig(), (*it)->getLocation()));
 	return (*this);
 }
 

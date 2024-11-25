@@ -6,16 +6,18 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 20:01:30 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/25 23:21:54 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/server/Server.hpp"
 
-Server::Server() : _config(NULL), _server_socket(-1), _client_sock(0), _nb_bytes(0), _info() {}
+Server::Server() : _server_socket(-1) {}
 
-Server::Server(const std::string &servername, const std::string &hostname, const std::string &port, ConfigStruct *config) :
+Server::Server(const std::string &servername, const std::string &hostname, const std::string &port, 
+				server_data config, location_data location) :
 	_config(config),
+	_location(location),
 	_name(servername),
 	_hostname(hostname),
 	_port(port),
@@ -27,6 +29,7 @@ Server::Server(const std::string &servername, const std::string &hostname, const
 
 Server::Server(const Server &src) :
 	_config(src._config),
+	_location(src._location),
 	_name(src._name),
 	_hostname(src._hostname),
 	_port(src._port),
@@ -243,7 +246,9 @@ int	Server::receive_request( int client_index)
 // 	return (SUCCESS);
 // }
 
-ConfigStruct	*Server::getConfig() const { return (_config); }
+server_data	Server::getConfig() const { return (_config); }
+
+location_data	Server::getLocation() const { return (_location); }
 
 int Server::getSocket() const { return (_server_socket); }
 
@@ -258,6 +263,7 @@ std::string Server::getHost() const { return (_hostname); }
 std::string Server::getPort() const { return (_port); }
 
 std::vector<std::string> Server::getRequest() const { return (_request); }
+
 
 Server::~Server()
 {

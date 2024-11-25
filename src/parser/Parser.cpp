@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 19:01:30 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/25 23:36:36 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,10 @@ bool	Parser::fill_method( const std::string &request)
 	}
 	else
 	{ 
-		std::vector<std::string> allowed_method = _server->getConfig()->get_server_value("method");
+		std::vector<std::string>	allowed_method;
+		server_data::iterator		pos = _server->getConfig().find("method");
+		if (pos != _server->getConfig().end())
+			allowed_method = pos->second;
 		if (allowed_method.empty())
 			return (true);
 		else
