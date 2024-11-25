@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/25 23:04:36 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/26 00:24:39 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class Parser
 		int													_error_code;
 
 		Server												*_server;
+		server_data											_server_conf;
+		location_data										_location;
 		
 	public:
 		std::map<std::string, std::string> 					mime_types;			
@@ -67,7 +69,8 @@ class Parser
 		std::string					get_content_type( const std::string &filename);
 		void						get_content_category( void);
 		size_t						get_content_length( const std::string &filename);
-		std::string					get_location( const std::string &filename);
+		location_i_data				find_location( const std::string &path);
+		void						get_location( const std::string &filename);
 		void						build_response_header( void);
 		unsigned char				*build_img_response( void);
 		std::string					build_response( void);

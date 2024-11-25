@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/24 19:04:43 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/26 00:33:38 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,6 +201,8 @@ std::string	Parser::build_response( void)
 {		
 	std::string	method[3] = { "GET", "POST", "DELETE" };
 	_response.erase();
+	
+	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
 	for (long unsigned int i = 0; i < method->size(); i++)

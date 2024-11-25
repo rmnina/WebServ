@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/25 23:36:36 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/26 00:41:14 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,17 @@ bool	Parser::fill_method( const std::string &request)
 	else
 	{ 
 		std::vector<std::string>	allowed_method;
-		server_data::iterator		pos = _server->getConfig().find("method");
-		if (pos != _server->getConfig().end())
-			allowed_method = pos->second;
-		if (allowed_method.empty())
+		server_data::iterator		pos = _server_conf.find("method");
+
+		if (pos == _server_conf.end())
 			return (true);
-		else
+		allowed_method = pos->second;
+		for (std::vector<std::string>::iterator it = allowed_method.begin(); it < allowed_method.end(); it++)
 		{
-			for (std::vector<std::string>::iterator it = allowed_method.begin(); it < allowed_method.end(); it++)
-			{
-				if (_request["method"][0] == *it)
-					return (true); 
-			}
-			return (false);
+			if (_request["method"][0] == *it)
+				return (true); 
 		}
+		return (false);
 	}
 }
 
@@ -68,8 +65,8 @@ bool	Parser::fill_path( const std::string &request)
 	std::string 				path = request.substr(path_begin, path_end - path_begin);
 
 	if (!path.compare("/"))
-		path = "index.html";
-	path = "www/" + path;
+		path = "/index.html";
+	path = "www" + path;
 
 	std::vector<std::string>	tmp;
 	tmp.push_back(path);
@@ -117,6 +114,9 @@ bool	Parser::check_req_size( const std::string &request)
 
 std::string Parser::handle_request( int client_index)
 {	
+	_server_conf = _server->getConfig();
+	_location = _server->getLocation();
+
 	init_mime_types();
 	if (!fill_path(_server->getRequest()[client_index]))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
