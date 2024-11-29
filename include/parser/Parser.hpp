@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/26 00:24:39 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/28 21:46:47 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ class Parser
 		
 		void		init_mime_types( void);
 
-		void		build_raw_text( std::string &filename);
-		void		build_image( std::string &filename);
+		void		build_response_content( std::string &filename);
 		void		exec_cgi( std::string &filename);
 
 		void		GETmethod( void);
@@ -71,11 +70,10 @@ class Parser
 		size_t						get_content_length( const std::string &filename);
 		location_i_data				find_location( const std::string &path);
 		void						get_location( const std::string &filename);
-		void						build_response_header( void);
-		unsigned char				*build_img_response( void);
+		std::string					build_response_header( void);
 		std::string					build_response( void);
 
-		std::string	handle_request( int client_index);
+		std::string	examine_request( int client_index);
 		
 		bool		fill_method( const std::string &request);
 		bool		fill_path( const std::string &request);

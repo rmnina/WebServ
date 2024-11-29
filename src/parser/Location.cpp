@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 21:48:10 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/26 00:44:15 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/28 21:50:32 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ location_i_data	Parser::find_location( const std::string &path)
 	}
 	return (empty);
 }
-
 
 void	Parser::get_location( const std::string &path)
 {

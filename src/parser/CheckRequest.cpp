@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/26 00:41:14 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/28 21:45:35 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,21 +112,24 @@ bool	Parser::check_req_size( const std::string &request)
 	return (true);
 }
 
-std::string Parser::handle_request( int client_index)
+std::string Parser::examine_request( int client_index)
 {	
 	_server_conf = _server->getConfig();
 	_location = _server->getLocation();
+	
+	std::string	request = _server->getRequest()[client_index];
+	if (request.empty())
+		return ("");
 
 	init_mime_types();
-	if (!fill_path(_server->getRequest()[client_index]))
+	if (!fill_path(request))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
-	if (!fill_method(_server->getRequest()[client_index]))
+	if (!fill_method(request))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
-	if (!check_version(_server->getRequest()[client_index]) || !check_req_size(_server->getRequest()[client_index]))
+	if (!check_version(request) || !check_req_size(request))
 		_error_code = 400; //ERROR BAD REQUEST
 	else
 		_error_code = 200;
-	build_response_header();
 	return (_response);
 }
 

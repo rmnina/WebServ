@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/23 20:24:43 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/28 22:38:36 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ std::vector<ConfigStruct>	Config::get_servers_conf( void) const
 
 bool    Config::_server_allowed( const std::string &keyword) 
 {
-	const std::string			array[10] = {"listen", "server_name", "dir_listing", "error", "method", "upload", "root", "body_size", "index", "location"};
+	const std::string			array[10] = {"listen", "server_name", "dir_listing", "error", "method",
+											"upload", "root", "body_size", "index", "location"};
 	std::vector<std::string>	allowed(array, array + 10);
 
 	for (std::vector<std::string>::iterator it = allowed.begin(); it < allowed.end(); it++)
@@ -38,7 +39,8 @@ bool    Config::_server_allowed( const std::string &keyword)
 
 bool    Config::_location_allowed( const std::string &keyword) 
 {
-	const std::string			array[8] = {"dir_listing", "error", "method", "upload", "root", "default_file", "cgi", "redirect"};
+	const std::string			array[8] = {"dir_listing", "error", "method", "upload", "root", 
+											"default_file", "cgi", "redirect"};
 	std::vector<std::string>	allowed(array, array + 8);
 
 	for (std::vector<std::string>::iterator it = allowed.begin(); it < allowed.end(); it++)

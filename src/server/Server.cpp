@@ -6,11 +6,12 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/25 23:21:54 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/28 22:35:02 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/server/Server.hpp"
+#include "../../include/parser/Parser.hpp"
 
 Server::Server() : _server_socket(-1) {}
 
@@ -21,10 +22,10 @@ Server::Server(const std::string &servername, const std::string &hostname, const
 	_name(servername),
 	_hostname(hostname),
 	_port(port),
-	_server_socket(socket(AF_INET, SOCK_STREAM, 0)),
 	_nb_bytes(0),
 	_info()
 {
+	memset(&_info, 0, sizeof(_info));
 }
 
 Server::Server(const Server &src) :
@@ -53,58 +54,49 @@ Server &Server::operator=(const Server &src)
 	return (*this);
 }
 
-void	Server::add_event(int epfd, int fd, int flag) 
+void	Server::add_event(int &epfd, int fd) 
 {
-	struct epoll_event event;
-	event.events = flag;
-	event.data.fd = fd;
-	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &event) == -1) 
-		throw (std::runtime_error("error on adding event to epoll"));
+	memset(&_event, 0, sizeof(epoll_event));
+	_event.data.fd = fd;
+	_event.events = EPOLLIN | EPOLLET;
+	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &_event) == -1) 
+		throw (std::runtime_error("error on adding event to epoll here??"));
 }
 
-void	Server::modify_event(int epfd, int fd, int flag)
+void	Server::modify_event(int &epfd, int fd, uint32_t flag)
 {
-	struct epoll_event event;
-	event.events = flag;
-	event.data.fd = fd;
-	if (epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &event) == -1)
+	memset(&_event, 0, sizeof(epoll_event));
+	_event.data.fd = fd;
+	_event.events = flag | EPOLLET;
+	if (epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &_event) == -1)
 		throw (std::runtime_error("error on modifying event to epoll"));
 }
 
-void	Server::delete_event(int epfd, int fd)
+void	Server::delete_event(int &epfd, int fd)
 {
 	if (epoll_ctl(epfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 		throw (std::runtime_error("error on removing event to epoll"));
 }
 
-
 int Server::create_socket()
 {
+	_server_socket = socket(AF_INET, SOCK_STREAM, 0);
+	if (_server_socket == -1)
+		std::cerr << "Error on init socket " << _name << std::endl;
 	if (fcntl(_server_socket, F_SETFL, O_NONBLOCK) == -1) 
 	{
 		std::cerr << "Error on set nonblocking on " << _name << std::endl;
 		return (FAILURE);
 	}
 	int val = 1;
-	if (setsockopt(_server_socket, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int)) == -1) 
+	if (setsockopt(_server_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &val, sizeof(int)) == -1) 
 	{
 		std::cerr << "error on setting the port on reusable on " << _name
 				  << ": " << strerror(errno) << ". socket value is "
 				  << _server_socket << std::endl;
 		return (FAILURE);
 	}
-	if (setsockopt(_server_socket, SOL_SOCKET, SO_REUSEPORT, &val, sizeof(int)) == -1) 
-	{
-		std::cerr << "error on setting the port on reusable on " << _name
-				  << ": " << strerror(errno) << std::endl;
-		return (FAILURE);
-	}
 	std::cout << BLUE << "Server " << BOLD << _name << RESET BLUE << " is launched !" << RESET << std::endl;
-	if (_server_socket == -1) 
-	{
-		std::cerr << "socket failed on " << _name << std::endl;
-		return (FAILURE);
-	}
 	if (getaddrinfo(_hostname.c_str(), _port.c_str(), NULL, &_info) != 0) 
 	{
 		std::cerr << "getaddrinfo failed on" << _name << std::endl;
@@ -125,12 +117,13 @@ int Server::set_socket()
 	return (SUCCESS);
 }
 
-int	Server::accept_connection( int epfd)
+int	Server::accept_connection( int &epfd)
 {
-	int		client_sock;
+	int			client_sock;
+	sockaddr_in	client_addr;
+	socklen_t	addr_len = sizeof(client_addr);
 
-	client_sock = accept(_server_socket, NULL, NULL);
-	
+	client_sock = accept(_server_socket, (sockaddr *)&client_addr, &addr_len);
 	if (client_sock == -1) 
 	{
 		std::cerr << "Error on awaiting connection (accept) on " << _name << std::endl;
@@ -147,104 +140,129 @@ int	Server::accept_connection( int epfd)
 		std::cerr << "Error on set nonblocking on " << _name << std::endl;
 		return (FAILURE);
 	}
-	add_event(epfd, client_sock, EPOLLIN);
+	add_event(epfd, client_sock);
 	_client_sock.push_back(client_sock);
 	_request.push_back("");
 	_nb_bytes.push_back(0);
 	return (SUCCESS);
 }
 
-int	Server::receive_request( int client_index)
+int	Server::receive_request( int client_index, int &epfd)
 {
 	char	buffer[MAX_REQ_SIZE];
-	size_t	nb_bytes;
+	ssize_t	nb_bytes;
 	size_t	pos;
 		
 	memset(buffer, 0, MAX_REQ_SIZE);
 	nb_bytes = recv(_client_sock[client_index], buffer, MAX_REQ_SIZE, 0);
 	_nb_bytes[client_index] += nb_bytes;
 	_request[client_index].append(buffer);
-	std::cout << GREEN << _request[client_index] << RESET << std::endl;
-	if (nb_bytes <= 0) 
+	if (nb_bytes < 0) 
 	{
 		std::cerr << "Error on recv on " << _name << std::endl;
+		delete_event(epfd, _client_sock[client_index]);
 		close(_client_sock[client_index]);
-	} 
-	if (nb_bytes > 0)
-	{
-		pos = _request[client_index].find("Content-Length: ");
-		if (pos == std::string::npos)
-			pos = _request[client_index].find("content-length: ") == std::string::npos;
-		if (pos != std::string::npos)
-		{
-			size_t	content_length;
-			size_t	body_start;
-
-			content_length = atoi(_request[client_index].c_str() + pos + 16);
-			body_start = _request[client_index].find("\r\n\r\n");
-			if (body_start != std::string::npos)
-				body_start += 4;
-			else
-			{
-				body_start = _request[client_index].find("\n\n");
-				if (body_start != std::string::npos)
-					body_start += 2;
-			}
-			if (_nb_bytes[client_index] < content_length + body_start)
-				return (0);
-			else
-				return (1);	
-		}
-		else
-			return (1);
+		_client_sock.erase(_client_sock.begin() + client_index);
+		_request.erase(_request.begin() + client_index);
+		_nb_bytes.erase(_nb_bytes.begin() + client_index);
+		return (FAILURE);
 	}
+	if (nb_bytes == 0)
+	{
+		delete_event(epfd, _client_sock[client_index]);
+		close(_client_sock[client_index]);
+		_client_sock.erase(_client_sock.begin() + client_index);
+		_request.erase(_request.begin() + client_index);
+		_nb_bytes.erase(_nb_bytes.begin() + client_index);
+		return (DISCONNECT);	
+	}
+	pos = _request[client_index].find("Content-Length: ");
+	if (pos == std::string::npos)
+		pos = _request[client_index].find("content-length: ");
+	if (pos != std::string::npos)
+	{
+		size_t	content_length;
+		size_t	body_start;
+		content_length = atoi(_request[client_index].c_str() + pos + strlen("Content-Length: "));
+		body_start = _request[client_index].find("\r\n\r\n");
+		if (body_start != std::string::npos)
+			body_start += 4;
+		if (_nb_bytes[client_index] < content_length + body_start)
+			return (CONTINUE);
+	}
+	return (SUCCESS);
+}
+
+int	Server::get_client_index( int event_fd)
+{
+	long unsigned int i = 0;
+	
+	if (!_client_sock.size())
+		return (-1);
+	for (; i < _client_sock.size(); i++)
+	{
+		if (_client_sock[i] == event_fd)
+			return (i);
+	}
+	return (-1);	
+}
+
+int	Server::send_response( std::string &response, int client_index, int &epfd)
+{
+	unsigned long	bytes_sent = 0;
+	size_t			packets_sent = 0;
+	size_t			resp_size = response.size();
+	
+	modify_event(epfd, _client_sock[client_index], EPOLLOUT);
+	while (bytes_sent < resp_size)
+	{
+		size_t	packet_size;
+		if (MTU < resp_size - bytes_sent)
+			packet_size = MTU;
+		else
+			packet_size = resp_size - bytes_sent;
+		
+		std::ostringstream chunk_header;
+		chunk_header << std::hex << packet_size << "\r\n";
+		std::string chunk = chunk_header.str();
+		chunk += response.substr(bytes_sent, packet_size);
+		chunk += "\r\n";
+
+		ssize_t	bytes = send(_client_sock[client_index], chunk.c_str(), chunk.size(), 0);
+		if (bytes <= 0)
+			return (close (_client_sock[client_index]), 1);
+		bytes_sent += packet_size;
+		packets_sent++;
+	}
+	std::string end_chunk = "0\r\n\r\n";
+	send(_client_sock[client_index], end_chunk.c_str(), end_chunk.size(), 0);
+	modify_event(epfd, _client_sock[client_index], EPOLLIN);
 	return (1);
 }
 
-// int Server::receive_request( void)
-// {
-// 	char buff[MAX_REQ_SIZE];
-
-// 	_client_sock = accept(_server_socket, NULL, NULL);
+int	Server::handle_existing_client( int event_fd, int &epfd)
+{
+	int	client_index = get_client_index(event_fd);
+	int	received;
 	
-// 	if (_client_sock == -1) 
-// 	{
-// 		std::cerr << "Error on awaiting connection (accept) on " << _name << std::endl;
-// 		return (FAILURE);
-// 	}
-// 	if (fcntl(_server_socket, F_SETFL, O_NONBLOCK) == -1) 
-// 	{
-// 		std::cerr << "Error on set nonblocking on " << _name << std::endl;
-// 		return (FAILURE);
-// 	}
-// 	int optval = 1;
-// 	if (setsockopt(_client_sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(int)) == -1)
-// 	{
-// 		std::cerr << "Error on set nonblocking on " << _name << std::endl;
-// 		return (FAILURE);
-// 	}
-// 	while (true) 
-// 	{
-// 		for (int i = 0; i < MAX_REQ_SIZE; ++i) 
-// 			buff[i] = 0;
-// 		_nb_bytes =
-// 			static_cast< int >(recv(_client_sock, buff, MAX_REQ_SIZE, 0));
-// 		if (_nb_bytes == -1 && (errno != EAGAIN && errno != EWOULDBLOCK)) 
-// 		{
-// 			std::cerr << "Error on recv on " << _name << std::endl;
-// 			close(_client_sock);
-// 		} 
-// 		else if (_nb_bytes == 0) 
-// 		{
-// 			std::cout << "client disconnected on " << _name << std::endl;
-// 			close(_client_sock);
-// 		}
-// 		_request.append(buff, _nb_bytes);
-// 		if (_nb_bytes < MAX_REQ_SIZE)
-// 			break;
-// 	}
-// 	return (SUCCESS);
-// }
+	if (client_index == -1)
+		return (-1);
+	received = receive_request(client_index, epfd);
+	if (received == SUCCESS)
+	{
+		Parser	parser(this);
+		parser.examine_request(client_index);
+		std::string response = parser.build_response_header();
+		send(_client_sock[client_index], response.c_str(), response.size(), 0); // Sending header in plain text
+		response = parser.build_response();
+		send_response(response, client_index, epfd); // Sending the rest of the response in packets
+		_request[client_index].clear();
+		return (SUCCESS);
+	}
+	if (received == CONTINUE || received == DISCONNECT)
+		return (CONTINUE);
+	return (FAILURE);
+}
 
 server_data	Server::getConfig() const { return (_config); }
 

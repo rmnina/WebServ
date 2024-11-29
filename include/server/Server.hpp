@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/25 23:22:22 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/28 21:33:33 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@
 
 # define SUCCESS 0
 # define FAILURE 1
+# define CONTINUE 2
+# define DISCONNECT 3
 
 # define MAXREQUEST 10
-# define MAX_REQ_SIZE 2000
+# define MAX_REQ_SIZE 20000
 
 class Server
 {
@@ -39,11 +41,12 @@ class Server
 		const std::string			_name;
 		const std::string			_hostname;
 		const std::string			_port;
-		const int					_server_socket;
+		int							_server_socket;
 		std::vector<int>			_client_sock;
 		std::vector<size_t>			_nb_bytes;
 		std::vector<std::string>	_request;
 		struct addrinfo				*_info;
+		struct epoll_event			_event;
 
  	public:
 		Server( void);
@@ -61,15 +64,19 @@ class Server
 		std::string					getPort( void) const;
 		std::vector<std::string>	getRequest( void) const;
 
-		void	add_event(int epfd, int socket, int flag);
-		void	modify_event(int epfd, int socket, int flag);
-		void	delete_event(int epfd, int socket);
+		void	add_event(int &epfd, int socket);
+		void	modify_event(int &epfd, int socket, uint32_t flag);
+		void	delete_event(int &epfd, int socket);
 		
 		int	create_socket( void);
 		int	set_socket( void);
-		int	accept_connection( int epfd);
-		int	receive_request( int client_index);
-		int	send_response( void);
+		int	accept_connection( int &epfd);
+		int	receive_request( int client_index, int &epfd);
+		int	get_client_index( int event_fd);
+		int	handle_existing_client( int event_fd, int &epfd);
+		int	send_image( unsigned char *response, size_t size, int client_index, int &epfd);
+		int	send_response( std::string &response, int client_index, int &epfd);
+		
 
 		~Server( void);
 };

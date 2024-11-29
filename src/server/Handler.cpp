@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/26 00:23:59 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/28 21:37:49 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,93 +93,132 @@ void	Handler::delete_event(int fd)
 
 int Handler::launchServers()
 {
+	for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); ++it) 
+	{
+		(*it)->create_socket();
+		(*it)->set_socket();
+	}
+	return (SUCCESS);
+}
+
+// int	Handler::get_client_index( Server &server, int event_fd)
+// {
+
+// }
+
+// int	Handler::send_response( Server &server, std::string &response, int client_index)
+// {
+// 	unsigned long	bytes_sent = 0;
+// 	size_t			packets_sent = 0;
+// 	size_t			resp_size = response.size();
+	
+// 	modify_event(server.getClientSock()[client_index], EPOLLOUT);
+// 	while (bytes_sent < resp_size)
+// 	{
+// 		size_t	packet_size;
+// 		if (MTU < resp_size - bytes_sent)
+// 			packet_size = MTU;
+// 		else
+// 			packet_size = resp_size - bytes_sent;
+// 		ssize_t	bytes = send(server.getClientSock()[client_index], response.c_str() + bytes_sent, packet_size, 0);
+// 		if (bytes <= 0)
+// 			return (close (server.getClientSock()[client_index]), 1);
+// 		bytes_sent += bytes;
+// 		packets_sent++;
+// 	}
+// 	modify_event(server.getClientSock()[client_index], EPOLLIN);
+// 	return (1);
+// }
+
+// int	Handler::send_image( Server &server, unsigned char *response, size_t size, int client_index)
+// {
+// 	unsigned long	bytes_sent = 0;
+// 	size_t			packets_sent = 0;
+	
+// 	modify_event(server.getClientSock()[client_index], EPOLLOUT);
+// 	while (bytes_sent < size)
+// 	{
+// 		size_t	packet_size;
+// 		if (MTU < size - bytes_sent)
+// 			packet_size = MTU;
+// 		else
+// 			packet_size = size - bytes_sent;
+// 		ssize_t	bytes = send(server.getClientSock()[client_index], response + bytes_sent, packet_size, 0);
+// 		if (bytes <= 0)
+// 			return (close (server.getClientSock()[client_index]), 1);
+// 		bytes_sent += bytes;
+// 		packets_sent++;
+// 	}
+// 	modify_event(server.getClientSock()[client_index], EPOLLIN);
+// 	return (1);
+// }
+
+// int	Handler::handle_existing_client( Server &server, int event_fd)
+// {
+// 	int	client_index = get_client_index(server, event_fd);
+// 	if (client_index != -1)
+// 	{
+// 		if (server.receive_request(client_index, _epfd) == 1)
+// 		{
+// 			Parser	parser(&server);
+// 			std::string response = parser.handle_request(client_index);
+// 			if (!parser.getCategory().compare("IMAGE"))
+// 			{
+// 				send_response(server, response, client_index);
+// 				unsigned char *img_response = parser.build_img_response();
+// 				send_image(server, img_response, parser.getRespSize(), client_index);
+// 				return (SUCCESS);
+// 			}
+// 			else
+// 			{
+// 				response += parser.build_response();
+// 				send_response(server, response, client_index);
+// 				return (SUCCESS);
+// 			}
+// 		}
+// 		return (FAILURE);
+// 	}
+// 	return (FAILURE);
+// }
+
+int Handler::handleEvents()
+{
+	std::vector<Server *>::iterator it;
+	
 	_epfd = epoll_create1(0);
+
 	if (_epfd == -1) 
 	{
 		std::cerr << "Error on epoll_create" << std::endl;
 		return (FAILURE);
 	}
-
-	for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); ++it) 
-	{
-		(*it)->create_socket();
-		(*it)->set_socket();
-		add_event((*it)->getSocket(), EPOLLIN);
-	}
-	return (SUCCESS);
-}
-
-int	Handler::get_client_index( Server &server, int event_fd)
-{
-	long unsigned int i = 0;
-	
-	if (!server.getClientSock().size())
-		return (-1);
-	for (; i < server.getClientSock().size(); i++)
-	{
-		if (server.getClientSock()[i] == event_fd)
-			return (i);
-	}
-	return (-1);
-}
-
-int Handler::handleEvents()
-{
-	struct epoll_event	events[MAX_EVENTS];
+	for (it = _servers.begin(); it < _servers.end(); ++it)
+		(*it)->add_event(_epfd, (*it)->getSocket());
 
 	while (!g_sig) 
 	{
 		initSignal();
-		int nfds = epoll_wait(_epfd, events, MAX_EVENTS, -1);
+		int nfds = epoll_wait(_epfd, _events, MAX_EVENTS, -1);
 		if (nfds == -1 && !g_sig) 
 		{
 			std::cerr << "Error on epoll_wait" << std::endl;
 			return (FAILURE);
 		}
-		for (int i = 0; i < nfds; ++i) 
+		for (int i = 0; i < nfds; i++) 
 		{
-			if (events[i].events & EPOLLIN) 
+			for (it = _servers.begin(); it < _servers.end(); it++) 
 			{
-				std::vector<Server *>::iterator it = _servers.begin();
-				for (; it < _servers.end(); it++) 
+				if (_events[i].data.fd == (*it)->getSocket())
+					(*it)->accept_connection(_epfd);
+			}
+			if (it == _servers.end())
+			{
+				for (it = _servers.begin(); it < _servers.end(); it++) 
 				{
-					if (events[i].data.fd == (*it)->getSocket())
-						(*it)->accept_connection(_epfd);
-				}
-				if (it == _servers.end())
-				{
-					for (it = _servers.begin(); it < _servers.end(); it++) 
-					{
-						int	client_index = get_client_index((**it), events[i].data.fd);
-						if (client_index != -1)
-						{
-							if ((*it)->receive_request(client_index) == 1)
-							{
-								Parser	parser(&(**it));
-								std::string response = parser.handle_request(client_index);
-								std::cout << BOLD BLUE << "header is " << response << RESET << std::endl;
-								if (!parser.getCategory().compare("IMAGE"))
-								{
-									if (send((*it)->getClientSock()[client_index], response.c_str(), strlen(response.c_str()), 0) == -1) 
-										std::cerr << "Error on sending header" << std::endl;
-									unsigned char *img_response = parser.build_img_response();
-									modify_event((*it)->getClientSock()[client_index], EPOLLOUT);
-									if (send((*it)->getClientSock()[client_index], img_response, parser.getRespSize(), 0) == -1) 
-										std::cerr << "Error on sending response" << std::endl;
-									break;
-								}
-								else
-								{
-									response += parser.build_response();
-									modify_event((*it)->getClientSock()[client_index], EPOLLOUT);
-									if (send((*it)->getClientSock()[client_index], response.c_str(), strlen(response.c_str()), 0) == -1) 
-										std::cerr << "Error on sending response" << std::endl;
-									break;
-								}
-							}
-						}
-					}
-				}
+					int handled = (*it)->handle_existing_client(_events[i].data.fd, _epfd);
+					if (handled == FAILURE)
+						return (FAILURE);
+				}	
 			}
 		}
 	}

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Response.cpp                                       :+:      :+:    :+:   */
+/*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/26 00:33:38 by jdufour          ###   ########.fr       */
+/*   Updated: 2024/11/28 23:28:28 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@ void  Parser::init_mime_types( void)
 	mime_types[".html"] = "text/html";
 	mime_types[".htm"] = "text/html";
 	mime_types[".css"] = "text/css";
+	mime_types[".scss"] = "text/x-scss";
+	mime_types[".woff"] = "font/woff";
+	mime_types[".woff2"] = "font/woff2";
+	mime_types[".ttf"] = "font/ttf";
 	mime_types[".js"] = "application/javascript";
 	mime_types[".json"] = "application/json";
 	mime_types[".py"] = "application/py";
@@ -67,11 +71,12 @@ std::string	Parser::get_content_type( const std::string &filename)
 
 void	Parser::get_content_category( void)
 {
-	std::string		raw_text_files[7] = {".html", ".css", ".js", ".txt", ".xml", ".json", ".csv"};
-	std::string		image_files[5] = {".jpg", ".jpeg", ".png", ".gif", ".ico"};
+	std::string		raw_text_files[11] = {".html", ".css", ".scss", ".js", ".txt", ".xml", ".json", ".csv",
+										".woff", ".woff2", ".ttf"};
+	std::string		image_files[6] = {".jpg", ".jpeg", ".png", ".gif", ".ico", ".svg"};
 	std::string		cgi[4] = {".py", ".sh", ".php", ".cgi"};
 
-	for (long unsigned int i = 0; i <= raw_text_files->size(); i++)
+	for (long unsigned int i = 0; i <= sizeof(raw_text_files) / sizeof(std::string); i++)
 	{
 		if (raw_text_files[i] == _extension)
 		{
@@ -79,7 +84,7 @@ void	Parser::get_content_category( void)
 			return;
 		}
 	}
-	for (long unsigned int i = 0; i <= image_files->size(); i++)
+	for (long unsigned int i = 0; i <= sizeof(image_files) / sizeof(std::string); i++)
 	{
 		if (image_files[i] == _extension)
 		{
@@ -87,7 +92,7 @@ void	Parser::get_content_category( void)
 			return;
 		}
 	}
-	for (long unsigned int i = 0; i <= cgi->size(); i++)
+	for (long unsigned int i = 0; i <= sizeof(cgi) / sizeof(std::string); i++)
 	{
 		if (cgi[i] == _extension)
 		{
@@ -111,7 +116,7 @@ size_t	Parser::get_content_length( const std::string &filename)
 	return (_resp_size);
 }
 
-void	Parser::build_response_header( void)
+std::string	Parser::build_response_header( void)
 {
 	std::ostringstream	header;
 	header << "HTTP/1.1 " <<_error_code;
@@ -121,14 +126,17 @@ void	Parser::build_response_header( void)
 	if (_category == "IMAGE")
 		header << "Accept-Ranges: bytes\r\n";
 	header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
-	header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
+	get_content_length(_request["path"][0]);
+	// header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
 	header << "Connection: keep-alive\r\n";
+	header << "Transfer-Encoding: chunked\r\n";
 	header << "Server: WebServ\r\n\r\n";
 	
 	_response += header.str();
+	return (_response);
 }
 
-void	Parser::build_raw_text( std::string &filename)
+void	Parser::build_response_content( std::string &filename)
 {
 	std::string		line;
 	std::string		content;
@@ -142,15 +150,6 @@ void	Parser::build_raw_text( std::string &filename)
 	file.close();
 }
 
-void	Parser::build_image( std::string &filename)
-{
-	std::ifstream				file(filename.c_str(), std::ios::binary);
-
-	_image_response.resize(_resp_size);
-	file.read(reinterpret_cast<char *>(_image_response.data()), _resp_size);
-	file.close();
-}
-
 void	Parser::exec_cgi( std::string &filename)
 {
 	(void)filename;
@@ -160,14 +159,12 @@ void	Parser::GETmethod( void)
 {	
 	std::string	path = _request["path"][0];
 
-	if (!_category.compare("TEXT"))
-		build_raw_text(path);
-	else if (!_category.compare("IMAGE"))
-		build_image(path);
+	if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
+		build_response_content(path);
 	else if (!_category.compare("CGI"))
 		exec_cgi(path);
 	else
-		std::cerr << BOLD RED << "Error getting category" << RESET << std::endl;
+		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;
 }
 
 void	Parser::POSTmethod( void)
@@ -178,23 +175,6 @@ void	Parser::POSTmethod( void)
 void	Parser::DELETEmethod( void)
 {
 	
-}
-
-unsigned char	*Parser::build_img_response( void)
-{
-	std::string	method[3] = { "GET", "POST", "DELETE" };
-	_image_response.clear();
-	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
-
-	for (long unsigned int i = 0; i < method->size(); i++)
-	{
-		if (_request.find("method")->second[0] == method[i])
-		{
-			(this->*func_method[i])();
-			return (_image_response.data());
-		}
-	}
-	return (NULL);
 }
 
 std::string	Parser::build_response( void)
