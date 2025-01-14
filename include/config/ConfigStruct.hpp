@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 01:42:14 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/22 02:57:53 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/13 17:32:02 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <exception>
 # include <iostream>
 
-typedef std::map<std::string, std::vector<std::string> >				server_data;
-typedef	server_data 													location_i_data;
+typedef std::map<std::string, std::vector<std::string> >		server_data;
+typedef	server_data							location_i_data;
 typedef std::vector<std::map<std::string, std::vector<std::string> > >	location_data;
 
 
