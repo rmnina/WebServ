@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Thambi+2&display=swap");
+body,
+html {
+  font-family: "Inknut Antiqua", cursive;
+  margin: 0;
+}
+
+
+/* Content Parallax Section*/
+.ParallaxMainContent {
+  background-color: #191818;
+  color: #e3e4e8;
+  position: relative;
+  height: 100%;
+}
+
+.ParallaxMainContent h3 {
+  color: #6C757D;
+  text-align: center;
+}
+
+/* Video Parallax Section*/
+.ParallaxVideo {
+  height: 300px;
+}
+
+.ParallaxVideo video {
+  object-fit: cover;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  filter: grayscale(100%);
+}
+
+/*
+.container-nav {
+  margin-left: 10px;
+  padding: 1px;
+  font-weight: 300;
+  padding: 1rem;
+}
+
+*/
+
+.topnav {
+  background-color: #333;
+  background-color: #191818;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: right;
+  color: #f2f2f2;
+  background-color: #191818;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #333;
+  color: white;
+}
+
+.topnav p {
+  margin-left: 15px;
+  font-size: 17px;
+  color: white;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #333;
+  color: white;
+}
+
+/* General Section*/
+.container {
+  padding: 3rem;
+}
+
+/*
+.headlines h2 {
+  color: #6C757D;
+  font-size: 30px;
+  text-shadow: 0 0 1px #ADB5BD;
+  font-weight: 100;
+  text-align: center;
+}
+*/
+
+.headlines p {
+  font-size: 16px;
+  text-align: center;
+}
+
+footer {
+  padding: 3rem;
+  text-align: center;
+  color: white;
+}
+
+footer a {
+  text-decoration: none;
+  color: gold;
+}
+
+footer a:hover {
+  text-decoration: none;
+  color: yellow;
+}
+
