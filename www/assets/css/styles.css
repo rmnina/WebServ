@@ -5,6 +5,19 @@ html {
   margin: 0;
 }
 
+/*
+body.is-preload *, body.is-preload *:before, body.is-preload *:after {
+			-moz-animation: none !important;
+			-webkit-animation: none !important;
+			-ms-animation: none !important;
+			animation: none !important;
+			-moz-transition: none !important;
+			-webkit-transition: none !important;
+			-ms-transition: none !important;
+			transition: none !important;
+		}
+
+*/
 
 /* Content Parallax Section*/
 .ParallaxMainContent {
@@ -32,37 +45,30 @@ html {
   top: 0;
   left: 0;
   z-index: -1;
+/*  filter: grayscale(100%);*/
   filter: grayscale(100%);
 }
 
-/*
-.container-nav {
-  margin-left: 10px;
-  padding: 1px;
-  font-weight: 300;
-  padding: 1rem;
-}
-
-*/
-
 .topnav {
-  background-color: #333;
   background-color: #191818;
   overflow: hidden;
 }
 
-/* Style the links inside the navigation bar */
 .topnav a {
   float: right;
   color: #f2f2f2;
   background-color: #191818;
   text-align: center;
-  padding: 14px 16px;
+  padding: 17px 16px;
   text-decoration: none;
   font-size: 17px;
 }
 
-/* Change the color of links on hover */
+.topnav a.active {
+  background-color: #333;
+  color: white;
+}
+
 .topnav a:hover {
   background-color: #333;
   color: white;
@@ -74,26 +80,11 @@ html {
   color: white;
 }
 
-/* Add a color to the active/current link */
-.topnav a.active {
-  background-color: #333;
-  color: white;
-}
 
 /* General Section*/
 .container {
   padding: 3rem;
 }
-
-/*
-.headlines h2 {
-  color: #6C757D;
-  font-size: 30px;
-  text-shadow: 0 0 1px #ADB5BD;
-  font-weight: 100;
-  text-align: center;
-}
-*/
 
 .headlines p {
   font-size: 16px;
