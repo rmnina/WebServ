@@ -1,271 +1,117 @@
-<!DOCTYPE HTML>
-<!--
-	Miniport by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
-		<title>Home</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link rel="stylesheet" href="assets/css/styles.css" />
 	</head>
-	<body class="is-preload">
+	<!--
+	<body class ="is-preload">
+	-->
+	<body>
+		<div class="topnav">
+			<a class="active" href="/">Home</a>
+			<a href="#request">Request</a>
+			<a href="#script">Script</a>
+			<a href="#review">Review</a>
+			<p>Welcome to our WebServ</p>
+		</div>
+		<div class="ParallaxVideo">
+			<video autoplay muted loop>
+				<source src="https://www.shutterstock.com/shutterstock/videos/1063899529/preview/stock-footage--d-render-animation-of-cyclone-large-scale-air-mass-that-rotates-around-a-strong-center.webm" type="video/mp4"/>
+			</video>
+		</div>
 
-		<!-- Nav -->
-			<nav id="nav">
-				<ul class="container">
-					<li><a href="#presentation">Presentation</a></li>
-					<li><a href="#requests">Requests</a></li>
-					<li><a href="#scripts">Scripts</a></li>
-					<li><a href="#reviews">Reviews</a></li>
-					<li><a href="#message">Leave a Message</a></li>
-				</ul>
-			</nav>
-
-		<!-- Home -->
-			<article id="presentation" class="wrapper style1">
-				<div class="container">
-					<div class="row">
-						<div class="col-4 col-5-large col-12-medium">
-							<span class="image fit"><img src="images/image1.jpg" alt="" /></span>
-						</div>
-						<div class="col-8 col-7-large col-12-medium">
-							<header>
-								<h1>Hi. Welcome to our <strong>WebServ</strong> !</h1>
-							</header>
-							<p>And this is our <strong>website</strong>, were you can find a demonstration of all the features we implemented.</p>
-							<a href="#requests" class="button large scrolly">Let's check this out !</a>
-						</div>
-					</div>
+		<div class="ParallaxMainContent">
+			<div class="container">
+				<!--
+				<div class="headlines">
+					<h3>Welcome to our WebServ</h3>
 				</div>
-			</article>
-
-		<!-- Requests -->
-			<article id="requests" class="wrapper style2">
-				<div class="container">
-					<header>
-						<h2>Here's some requests you can try.</h2>
-						<p>This will demonstrate POST and DELETE requests, as well as some python CGI.</p>
-					</header>
-					<div class="row aln-center">
-						<div class="col-4 col-6-medium col-12-small">
-							<section class="box style1">
-								<span class="icon regular featured fa-folder-open"></span>
-								<h3>Upload</h3>
-								<p>This will redirect to an upload page, where you can add a file to our server.</p>
-							</section>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<section class="box style1">
-								<span class="icon solid featured fa-toilet"></span>
-								<h3>Delete</h3>
-								<p>Here, you can delete the files you uploaded. Don't try to flush anything else, we'll be watchin...</p>
-							</section>
-						</div>
+				-->
+<div class="wrapper">
+  <div class="card">
+	  <!-- 
+		  Laisser les images en 40%, mettre un message explicatif sur ce qu'est webserv et ce que l'utilisateur peut faire et mettre les cartes en dessous. Faire en sorte qu'elles ne soient pas visibles avant le scroll
+	  -->
+	  <img src="images/the_world.jpeg" alt="" style="width:35%"> 
+	<div class="card-txt">
+   		 <h3>Upload</h3>
+   		 <p>This will redirect to an upload page, where you can add a file to our server.</p>
+ 	 </div>
+  </div>
+  <div class="card">
+	  <img src="images/the_world.jpeg" alt="" style="width:40%"> 
+    <h3>Delete</h3>
+    <p>This is the content of my news item. Very newsworthy.</p>
+  </div>
+</div>
+<!--
+				<div class="card">
+					<img src="images/the_world.jpeg" alt="" style="width:20%">
+					<div class="container">
+					  <h4><b>the World</b></h4>
+					  <p>Upload</p>
 					</div>
-					<footer>
-						<p>Wanna try some of our CGI scripts?</p>
-						<a href="#scripts" class="button large scrolly">Check those scripts!</a>
-					</footer>
-				</div>
-			</article>
-
-		<!-- Scripts -->
-			<article id="scripts" class="wrapper style3">
-				<div class="container">
-					<header>
-						<h2>Here are the fun scripts.</h2>
-						<p>You'll be able to try some Python, Pearl, Ruby and Bash scripts.</p>
-					</header>
-					<div class="row">
-						<div class="col-4 col-6-medium col-12-small">
-							<article class="box style2">
-								<a href="#" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
-								<h3><a href="#">Calculator</a></h3>
-								<p>A simple calculator in Python. A POST request will retrieve your inputs, and the script will calculate your result.</p>
-							</article>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<article class="box style2">
-								<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
-								<h3><a href="#">Random number generator</a></h3>
-								<p>This C program will give you a random number between 1 and 100. Be careful when you play, if you get 42, you will owe us a cup of coffee...</p>
-							</article>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<article class="box style2">
-								<a href="#" class="image featured"><img src="images/pic02.jpg" alt="" /></a>
-								<h3><a href="#">What time is it ?</a></h3>
-								<p>A Bash script will return what time is it. DISCLAIMER : we wont incorporate a video streaming service, it's not Bojack Horseman.</p>
-							</article>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<article class="box style2">
-								<a href="#" class="image featured"><img src="images/pic04.jpg" alt="" /></a>
-								<h3><a href="#">Palindrom</a></h3>
-								<p>This Pearl script will tell you if your word is a palindrom. Please don't try "yakak".</p>
-							</article>
-						</div>
-						<div class="col-4 col-6-medium col-12-small">
-							<article class="box style2">
-								<a href="#" class="image featured"><img src="images/pic05.jpg" alt="" /></a>
-								<h3><a href="#">Roast me</a></h3>
-								<p>This Ruby script will randomly roast you for no particular reason. Be prepared. We did not say those things. The script did.</p>
-							</article>
-						</div>
-					</div>
-					<footer>
-						<p>Wanna leave a nice note?</p>
-						<a href="#message" class="button large scrolly">Leave a comment !</a>
-					</footer>
-				</div>
-			</article>
-
-		<!-- Reviews -->
-			<article id="reviews" class="wrapper style4">
-				<div class="container">
-				  <header>
-					<h2>Some nice reviews we got, did you give yours?</h2>
-					<p>People seems glad about our work</p>
-				  </header>
-				  <div class="row">
-					<div class="col-4 col-6-medium col-12-small">
-					  <article class="box style3">
-						<h3>Excellent work!!!</h3>
-						<div class="stars">
-						  <span class="star">&#9733;</span> <!-- 5 stars for this one -->
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						</div>
-						<p>This Webserv was very well implemented. The code is so clean. Well played ! Outstanding !.</p>
-					  </article>
-					</div>
-					<div class="col-4 col-6-medium col-12-small">
-					  <article class="box style3">
-						<h3>cool website</h3>
-						<div class="stars">
-						  <span class="star">&#9733;</span> <!-- 4 stars for this one -->
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9734;</span>
-						</div>
-						<p>website cool. liked the number generator. got my favorite number. this is a great day</p>
-					  </article>
-					</div>
-					<div class="col-4 col-6-medium col-12-small">
-					  <article class="box style3">
-						<h3>The roasting sucked!!</h3>
-						<div class="stars">
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9734;</span>
-						  <span class="star">&#9734;</span>
-						  <span class="star">&#9734;</span>
-						  <span class="star">&#9734;</span>
-						</div>
-						<p>I really didnt like to be roasted like that. Who does that??? I will press charges !! You will be in touch with my lawyer.</p>
-					  </article>
-					</div>
-					<div class="col-4 col-6-medium col-12-small">
-					  <article class="box style3">
-						<h3>mom</h3>
-						<div class="stars">
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						  <span class="star">&#9733;</span>
-						</div>
-						<p>this   iss mommy!! :-D im so proud of your informatic thing sweety (or whatever tis is ur doing with yur computer ... ;..) !!!!.!! why wont u return my calls</p>
-					  </article>
-					</div>
-				</article>
-
-		<!-- Contact -->
-			<article id="message" class="wrapper style5">
-				<div class="container medium">
-					<header>
-						<h2>Leave us a nice note ! You can check it out later in our "Reviews" section.</h2>
-						<p>On a scale from outstanding to outstanding, how was our project?</p>
-					</header>
-					<div class="row">
-						<div class="col-12">
-							<form method="post" action="#">
-								<div class="row">
-									<div class="col-6 col-12-small">
-										<input type="text" name="name" id="name" placeholder="Name" />
-									</div>
-									<div class="col-6 col-12-small">
-										<input type="text" name="email" id="email" placeholder="Email" />
-									</div>
-									<div class="col-12">
-										<input type="text" name="subject" id="subject" placeholder="Subject" />
-									</div>
-									<div class="col-12">
-										<textarea name="message" id="message" placeholder="Message"></textarea>
-									</div>
-									<div class="col-12">
-										<ul class="actions">
-											<li><input type="submit" value="Send Message" /></li>
-											<li><input type="reset" value="Clear Form" class="alt" /></li>
-										</ul>
-									</div>
-								</div>
-							</form>
-						</div>
-						<div class="col-12">
-							<hr />
-							<h3>Check our github links!</h3>
-							<ul class="social">
-								<li>
-									<a href="https://www.github.com/rmnina" target="_blank">
-									  <img src="images/rmnina.jpeg" alt="GitHub Profile" class="github-profile-pic" />
-									</a>
-									<p class="note">jdufour</p>
-								  </li>
-								  <li>
-									<a class="icon brands fa-github" href="https://www.github.com/rmnina" target="_blank">
-									  <span class="label">GitHub</span>
-									</a>
-									<p class="note">mate1</p>
-								  </li>
-								  <li>
-									<a class="icon brands fa-github" href="https://www.github.com/rmnina" target="_blank">
-									  <span class="label">GitHub</span>
-									</a>
-									<p class="note">mate2</p>
-								  </li>
-							</ul>
-							<hr />
-						</div>
-					</div>
-					<footer>
-						<ul id="copyright">
-							<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-						</ul>
-					</footer>
-				</div>
-			</article>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-
+				  </div>
+-->
+				<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+				dictum tellus vel leo consequat consectetur. Aliquam facilisis ex ut
+				porta consectetur. Fusce ullamcorper sed lacus et egestas. Ut
+				tincidunt vehicula neque, at viverra metus ultrices a. Vivamus quis
+				augue ante. Suspendisse elementum, tellus id porta ullamcorper, eros
+				orci tempus felis, vel elementum lorem nulla in metus. Maecenas ac
+				cursus quam. Duis risus ipsum, pharetra at finibus eget, euismod vitae
+				ipsum. Aenean placerat maximus sapien. Aenean ut iaculis sapien. Cras
+				et ullamcorper risus. Morbi placerat auctor ex sed semper. Sed in leo
+				non dolor semper rutrum varius et orci. Etiam magna lectus, rutrum vel
+				est sit amet, auctor suscipit orci. Curabitur in turpis lacinia,
+				lobortis magna sit amet, porttitor dui. In lectus orci, lacinia in
+				hendrerit id, fringilla non eros. Duis porttitor massa quis elit
+				scelerisque, vel tempor mi tempus. Pellentesque lacinia massa in
+				libero placerat semper. Proin quis mi non eros aliquam volutpat eu sed
+				lacus. Maecenas at dolor ut magna dictum volutpat. In ac risus non
+				purus fringilla commodo. Morbi faucibus tristique eros. In aliquam
+				odio eros, finibus efficitur nisl ornare id. Curabitur erat dolor,
+				placerat et auctor ac, aliquet id tortor. Pellentesque odio turpis,
+				consequat nec laoreet at, sollicitudin vitae nibh. Sed imperdiet
+				ultricies lacus, sed feugiat dolor molestie at. Duis sem arcu, mollis
+				id ornare id, dignissim ac lectus. Vestibulum sed orci volutpat,
+				vulputate arcu id, lobortis urna. Mauris id nunc in est convallis
+				eleifend eu sed quam. Nullam lobortis ex elit, sit amet pellentesque
+				nulla malesuada eleifend. Fusce luctus dui ut magna egestas elementum.
+				Pellentesque at varius nunc. Suspendisse in pellentesque felis. Etiam
+				venenatis sem non cursus tristique. Quisque iaculis tellus sit amet
+				nisl ornare fermentum. Ut quis tellus vestibulum, gravida dolor
+				consectetur, rhoncus nunc. Aliquam erat volutpat. Ut ac turpis auctor,
+				porttitor metus sit amet, rutrum sem. Aliquam venenatis magna a magna
+				malesuada porttitor. Sed a ornare tellus. Duis accumsan eu risus sit
+				amet facilisis. Integer posuere felis eros, nec aliquam lacus
+				fermentum et. Morbi tempor lacus et lectus sollicitudin mattis.
+				Phasellus sit amet nunc eu quam semper pellentesque id et diam. Nulla
+				quis aliquam tortor. Aliquam pulvinar feugiat volutpat. Suspendisse
+				facilisis et ex eu imperdiet. Etiam a tortor a massa aliquam mattis et
+				eu dui. Fusce varius, neque sit amet mattis porta, ex ligula egestas
+				tellus, eget blandit sapien ipsum nec mauris. Pellentesque
+				sollicitudin egestas diam quis facilisis. Sed neque est, posuere in
+				dictum ac, egestas eget dui. Phasellus imperdiet orci sed nulla
+				consequat ornare. Etiam a molestie lorem, vel egestas elit.
+				Suspendisse hendrerit est odio, et convallis odio vehicula vitae.
+				Pellentesque et porta nisl. Orci varius natoque penatibus et magnis
+				dis parturient montes, nascetur ridiculus mus. Pellentesque habitant
+				morbi tristique senectus et netus et malesuada fames ac turpis
+				egestas. Phasellus imperdiet eros nibh, id ultricies eros pharetra
+				vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+				Vestibulum dictum tellus vel leo consequat consectetur.
+				</p>
+			</div>
+		</div>
+		<footer>
+			Background Video on
+			<a target="_blank" rel="noreferrer" href="https://coverr.co/">Coverr</a>
+		</footer>
 	</body>
 </html>
+
