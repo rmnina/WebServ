@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/28 22:38:36 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/17 17:34:24 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void	Config::fill_servers( std::ifstream &conf_file, std::string &line, server_d
 			{
 				if (!line.compare(0, 1, "}"))
 					_update_brackets_state(brackets);
-				break;
+				break ;
 			}
 			if (!keyword.compare("location"))
 				fill_locations(conf_file, line, locations, brackets);
