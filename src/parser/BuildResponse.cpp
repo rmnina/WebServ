@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/21 15:23:26 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/21 17:23:20 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,13 +229,13 @@ std::string	Parser::build_response( void)
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
-	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
-	{
-		std::cout << "on rentre dans le if de build response\n";
-		GETmethod();
-	}
-	else 
-	{
+	// if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
+	// {
+	// 	std::cout << "on rentre dans le if de build response\n";
+	// 	GETmethod();
+	// }
+	// else 
+	// {
 		for (long unsigned int i = 0; i < method->size(); i++)
 		{
 			if (_request.find("method")->second[0] == method[i])
@@ -244,7 +244,7 @@ std::string	Parser::build_response( void)
 				return (_response);
 			}
 		}
-	}
+	// }
 	return ("");
 }
 
