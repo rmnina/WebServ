@@ -22,6 +22,7 @@
 typedef std::map<std::string, std::vector<std::string> >		server_data;
 typedef	server_data							location_i_data;
 typedef std::vector<std::map<std::string, std::vector<std::string> > >	location_data;
+// typedef std::vector<location_i_data> location_data;
 
 
 struct ConfigStruct

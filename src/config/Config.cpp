@@ -84,7 +84,7 @@ void	Config::fill_locations( std::ifstream &conf_file, std::string &line, locati
 	/* 1er essai */
 		//loc_i[route] = tmp_vect;	-> ne fonctionne pas
 	/* 2eme essai */
-		//loc_i[*tmp_vect.begin()] = tmp_vect;
+	//loc_i[*tmp_vect.begin()] = tmp_vect;
 		// std::vector<std::string>::iterator it;
 		// for (it = loc_i[*tmp_vect.begin()].begin(); it != loc_i[*tmp_vect.begin()].end(); it++)
 		// 	std::cout << *it << " ";
