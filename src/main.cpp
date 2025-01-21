@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 01:12:29 by jdufour           #+#    #+#             */
 /*   Updated: 2025/01/20 11:52:44 by eltouma          ###   ########.fr       */
@@ -17,6 +17,7 @@ int	main(void)
 {
 	std::string	filename = "test.conf";
 	Config	config;
+
 
 	try {
 		config.fill_conf_vector(filename);
