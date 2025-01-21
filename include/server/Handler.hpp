@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:40:57 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/26 02:23:52 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/21 15:13:24 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Handler
 		Handler( const std::vector<ConfigStruct> servers_conf);
 
 		Handler(const Handler &src);
-		Handler &operator=(const Handler &rhs);
+//		Handler &operator=(const Handler &rhs);
 
 		void	loadServ( void);
 		int		launchServers( void);

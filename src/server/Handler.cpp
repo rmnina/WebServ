@@ -58,14 +58,14 @@ Handler::Handler(const Handler &src)
 	*this = src;
 }
 
-Handler &Handler::operator=(const Handler &rhs)
-{
-	this->_epfd = epoll_create1(0);
-	this->_epfd = rhs._epfd;
-	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
-		_servers.push_back(new Server((*it)->getName(), (*it)->getHost(), (*it)->getPort(), (*it)->getConfig(), (*it)->getLocation()));
-	return (*this);
-}
+// Handler &Handler::operator=(const Handler &rhs)
+// {
+// 	this->_epfd = epoll_create1(0);
+// 	this->_epfd = rhs._epfd;
+// 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
+// 		_servers.push_back(new Server((*it)->getName(), (*it)->getHost(), (*it)->getPort(), (*it)->getConfig(), (*it)->getLocation()));
+// 	return (*this);
+// }
 
 void	Handler::add_event(int fd, int flag) 
 {

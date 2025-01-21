@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 01:12:29 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/20 14:56:09 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/20 11:52:44 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ int	main(void)
 	std::string	filename = "test.conf";
 	Config	config;
 
-	try 
-	{
+
+	try {
 		config.fill_conf_vector(filename);
-		Handler	handler(config.get_servers_conf());
+		Handler	handler(config.get_servers_conf());	
 		try 
 		{
-			//printConfig(handler.get_servers_conf());
+			// printConfig(handler.get_servers_conf());
 			handler.loadServ();
 			handler.launchServers();
 			if (!handler.handleEvents())
