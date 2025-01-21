@@ -168,6 +168,11 @@ footer a:hover {
 	opacity: 0.8;
 	text-align: left;
 	padding-left: 8px;
+	/*
+	height: 30px;
+	display: flex;
+	align-items: center;
+	*/
 }
 
 /* Add some hover effects to buttons */
