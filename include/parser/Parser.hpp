@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/28 21:46:47 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/20 16:46:41 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include "../server/Server.hpp"
 # include "../server/Handler.hpp"
 # include "../config/Config.hpp"
+# include <dirent.h>
 
 # define MTU 1500
 
@@ -81,7 +82,7 @@ class Parser
 		bool		check_version( const std::string &request);
 		bool		check_req_size( const std::string &request);
 
-		
+		void		display_dirlist(std::string path);
 
 		~Parser( void);
 	

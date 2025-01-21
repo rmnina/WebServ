@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/28 22:35:02 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/21 15:17:22 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,7 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 	if (client_index == -1)
 		return (-1);
 	received = receive_request(client_index, epfd);
+	std::cout << BLUE << received << RESET << std::endl;
 	if (received == SUCCESS)
 	{
 		Parser	parser(this);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/28 23:28:28 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/21 15:23:26 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,11 +155,55 @@ void	Parser::exec_cgi( std::string &filename)
 	(void)filename;
 }
 
+void	Parser::display_dirlist(std::string path)
+{
+	DIR *dir;
+    struct dirent *entry;
+
+    if ((dir = opendir(path.c_str())) == NULL)
+    	{ throw std::runtime_error("Error opening directory for dir_list"); return ;}
+
+    std::ostringstream html;
+    html << "<html><head><title>Directory Listing</title></head><body>";
+    html << "<h1>Index of " << path << "</h1><ul>";
+	std::cout << "on est dans display dirlist\n";
+    while ((entry = readdir(dir)) != NULL)
+    {
+		std::cout << "boucle display dir\n";
+        std::string name(entry->d_name);
+        if (name != "." && name != "..")
+        {
+            html << "<li><a href=\"" << name << "\">" << name << "</a></li>";
+        }
+    }
+
+    html << "</ul></body></html>";
+    closedir(dir);
+
+    _response = build_response_header();
+	
+    _response += html.str();
+	std::cout << "response fin display_dir = " << _response << std::endl;
+}
+
 void	Parser::GETmethod( void)
 {	
+	// static int dir_on_off = 0;
 	std::string	path = _request["path"][0];
-
-	if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
+	std::cout << "path = " << path << std::endl;
+	// std::map<std::string, std::vector<std::string> >::iterator it;
+	// for (it = _request.begin(); it != _request.end(); it++)
+	// {
+	// 	std::cout << "_request key = " << it->first << std::endl;
+	// 	for (std::vector<std::string>::iterator vIt = it->second.begin(); vIt != it->second.end(); vIt++)
+	// 		std::cout << "string for " << it->first << " = " << *vIt << "\n";
+	// }
+	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
+	{
+		std::cout << "on a bien trouve le dir_listing" << std::endl;
+		display_dirlist("./www");
+	}
+	else if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
 		build_response_content(path);
 	else if (!_category.compare("CGI"))
 		exec_cgi(path);
@@ -185,12 +229,20 @@ std::string	Parser::build_response( void)
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
-	for (long unsigned int i = 0; i < method->size(); i++)
+	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
 	{
-		if (_request.find("method")->second[0] == method[i])
+		std::cout << "on rentre dans le if de build response\n";
+		GETmethod();
+	}
+	else 
+	{
+		for (long unsigned int i = 0; i < method->size(); i++)
 		{
-			(this->*func_method[i])();
-			return (_response);
+			if (_request.find("method")->second[0] == method[i])
+			{
+				(this->*func_method[i])();
+				return (_response);
+			}
 		}
 	}
 	return ("");
