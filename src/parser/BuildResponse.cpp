@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/21 17:23:20 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/22 16:05:21 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,6 +218,8 @@ void	Parser::POSTmethod( void)
 
 void	Parser::DELETEmethod( void)
 {
+	std::string	path = _request["path"][0];
+	std::cout << __func__ << "\tpath = " << path << std::endl;
 	
 }
 
@@ -241,6 +243,7 @@ std::string	Parser::build_response( void)
 			if (_request.find("method")->second[0] == method[i])
 			{
 				(this->*func_method[i])();
+				std::cout << "\t\t\tmethod[i] " << method[i] << "\n";
 				return (_response);
 			}
 		}
