@@ -116,7 +116,7 @@ footer a:hover {
 	justify-content: center; 
 }
 
-.upload-button, .delete-button {
+#delete-link, .upload-button, .delete-button {
 	background-color: transparent;
 	border: none;
 	position: unset;
@@ -125,15 +125,16 @@ footer a:hover {
 	text-align: left;
 	cursor: pointer;
 	font-size: 16px;
-
+	text-decoration: none;
 }
 
-.upload-button h3, .delete-button h3 {
+.upload-button h3, .delete-button h3, #delete-link h3 {
 	font-size: 20px;
 	text-align: left;
+	text-decoration: none;
 }
 
-#death { padding-top: 35px; }
+#death { padding-top: 36px; }
 
 .form-popup {
 	display: none; /* Caché par défaut */
@@ -193,4 +194,4 @@ footer a:hover {
 	color: grey;
 }
 
-.close:hover {background: #bbb;}
+.close:hover { background: #bbb;}

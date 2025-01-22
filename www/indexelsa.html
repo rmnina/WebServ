@@ -40,55 +40,37 @@
 								<h3 class="card-title">Upload</h3>
 								<p class="card-txt">Aks the magician to upload a file.</p>
 							</div>
+						</div>
 					</button>
-					<button class="delete-button" onclick="alert('Are you sure you want to delete?')">
-						<div class="card" style="width: 18rem;">
-							<img src="images/death.jpeg" id="death" alt="" style="width: 100%"> 
+					<!--<div class="card" style="width: 18rem;" id="delete-link">-->
+					<a href="http://127.0.0.1:8082/delete.html"  id="delete-link">
+						<div class="card" style="width: 18rem;" id="delete-link">
+							<img src="images/death.jpeg" id="death" alt="" style="width: 100%">
 							<div class="card-body">
 								<h3 class="card-title">Delete</h3>
 								<p class="card-txt">Here, you can delete the files you uploaded. Don't try to flush anything else, we'll be watchin...</p>
-							</div>
-					</button>
 
-					<!-- The form -->
+							</div>
+						</div>
+					</a>
 					<div class="form-popup" id="myForm">
 						<form action="/upload" method="post" enctype="multipart/form-data" class="popup-container" >
-
 							<button type="button" class="close" onclick="closeForm()">
-						       <i class="fa fa-times"></i>
-        </button>
-
-							<!--
-						<span class="close">x</span>
-							-->
+								<i class="fa fa-times"></i>
+							</button>
 							<h2>Upload a file</h2>
-
 							<div>
-							<input type="file" name="file" required>
-								</div>
-
-
+								<input type="file" name="file" required>
+							</div>
 							<button type="submit" class="btn submit">Submit</button>
 						</form>
 					</div>
 					<script>
-						function openForm() {
-													document.getElementById("myForm").style.display = "block";
-												}
 
-						function closeForm() {	document.getElementById("myForm").style.display = "none";
-												}
+						function openForm() { document.getElementById("myForm").style.display = "block"; }
+						function closeForm() {	document.getElementById("myForm").style.display = "none"; }
 					</script>
-						</div>
-						<!--
-							<div class="card">
-							<img src="images/the_world.jpeg" alt="" style="width:20%">
-							<div class="container">
-							<h4><b>the World</b></h4>
-							<p>Upload</p>
-							</div>
-							</div>
-						-->
+				</div>
 						<p>
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
 						dictum tellus vel leo consequat consectetur. Aliquam facilisis ex ut
@@ -139,12 +121,12 @@
 						vel. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 						Vestibulum dictum tellus vel leo consequat consectetur.
 						</p>
-						</div>
 				</div>
-				<footer>
-					Background Video on
-					<a target="_blank" rel="noreferrer" href="https://coverr.co/">Coverr</a>
-				</footer>
+			</div>
+			<footer>
+				Background Video on
+				<a target="_blank" rel="noreferrer" href="https://coverr.co/">Coverr</a>
+			</footer>
 	</body>
 </html>
 

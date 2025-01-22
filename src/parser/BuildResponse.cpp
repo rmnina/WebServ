@@ -244,6 +244,8 @@ void	Parser::POSTmethod( void)
 
 void	Parser::DELETEmethod( void)
 {
+	std::string	path = _request["path"][0];
+	std::cout << __func__ << "\tpath = " << path << std::endl;
 	
 }
 
@@ -267,6 +269,7 @@ std::string	Parser::build_response( void)
 			if (_request.find("method")->second[0] == method[i])
 			{
 				(this->*func_method[i])();
+				std::cout << "\t\t\tmethod[i] " << method[i] << "\n";
 				return (_response);
 			}
 		}
