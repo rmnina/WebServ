@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CheckRequest.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/21 17:09:59 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/22 20:07:09 by skiam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ bool	Parser::fill_path( const std::string &request)
 	if (!path.compare("/"))
 		path = "/index.html";
 	path = "www" + path;
-
+	
 	std::vector<std::string>	tmp;
 	tmp.push_back(path);
 	_request["path"] = tmp;
