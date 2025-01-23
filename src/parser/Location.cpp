@@ -6,7 +6,7 @@
 /*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 21:48:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/23 13:41:52 by skiam            ###   ########.fr       */
+/*   Updated: 2025/01/23 20:45:12 by skiam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ location_i_data	Parser::find_location( const std::string &path)
 			std::string location_path = (*it).find("route")->second[0];
 			location_path.erase(0, 1);
 			if (!location_path.compare("/"))
-				location_path = "/indexantoine.html";
+				location_path = "/index.html";
 			location_path = "www" + location_path;
 			if (location_path == path)
 				return (*it);

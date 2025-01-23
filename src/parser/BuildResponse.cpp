@@ -6,7 +6,7 @@
 /*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/22 20:07:58 by skiam            ###   ########.fr       */
+/*   Updated: 2025/01/23 20:45:02 by skiam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,7 +286,7 @@ void	Parser::GETmethod( void)
 	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
 	{
 		std::cout << "on a bien trouve le dir_listing" << std::endl;
-		if (path == "./www/indexantoine.html")
+		if (path == "./www/index.html")
 			display_dirlist("./www");
 		else if (path != "./www/favicon.ico")
 		{
