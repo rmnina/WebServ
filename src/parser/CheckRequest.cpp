@@ -6,7 +6,7 @@
 /*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/22 20:07:09 by skiam            ###   ########.fr       */
+/*   Updated: 2025/01/23 13:41:40 by skiam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ bool	Parser::fill_path( const std::string &request)
 	std::string 				path = request.substr(path_begin, path_end - path_begin);
 
 	if (!path.compare("/"))
-		path = "/index.html";
+		path = "/indexantoine.html";
 	path = "www" + path;
 	
 	std::vector<std::string>	tmp;

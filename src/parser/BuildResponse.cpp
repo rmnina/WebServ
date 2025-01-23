@@ -6,7 +6,7 @@
 /*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/22 20:07:58 by skiam            ###   ########.fr       */
+/*   Updated: 2025/01/23 18:59:58 by skiam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,9 +150,76 @@ void	Parser::build_response_content( std::string &filename)
 	file.close();
 }
 
-void	Parser::exec_cgi( std::string &filename)
+void	Parser::exec_cgi( std::string &filename, int method)
 {
-	(void)filename;
+	std::cout << "on rentre dans exec_cgi" << std::endl;
+    pid_t pid;
+    int pipefd[2];
+
+    if (pipe(pipefd) == -1)
+	{std::cerr << "Error creating a pipe\n"; return;}
+	
+    if ((pid = fork()) == -1) 
+	{std::cerr << "Error forking process\n"; return;}
+
+    if (pid == 0) 
+	{
+        close(pipefd[0]);
+
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+
+        std::map<std::string, std::string> env;
+        env["REQUEST_METHOD"] = (method == 0 ? "GET" : "POST");
+        env["SCRIPT_NAME"] = filename;
+        env["QUERY_STRING"] = _request["query"].empty() ? "" : _request["query"][0];
+		std::ostringstream oss;
+		if (_request["body"].empty())
+			oss << 0;
+		else
+			oss << _request["body"][0].size();
+		env["CONTENT_LENGTH"] = oss.str();
+
+        char *envp[env.size() + 1];
+        int i = 0;
+        for (std::map<std::string, std::string>::iterator it = env.begin(); it != env.end(); ++it) {
+            std::string env_var = it->first + "=" + it->second;
+            envp[i] = strdup(env_var.c_str());
+            i++;
+        }
+        envp[i] = NULL;
+        char *argv[] = {strdup(filename.c_str()), NULL};
+        execve(filename.c_str(), argv, envp);
+        std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
+        exit(1);
+    } 
+	
+	else 
+	{
+        close(pipefd[1]);
+        char buffer[1024];
+        std::ostringstream cgi_output;
+        int bytes_read;
+
+        while ((bytes_read = read(pipefd[0], buffer, sizeof(buffer) - 1)) > 0) 
+		{
+            buffer[bytes_read] = '\0';
+            cgi_output << buffer;
+        }
+        close(pipefd[0]);
+        int status;
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status)) 
+		{
+            int exit_code = WEXITSTATUS(status);
+            if (exit_code != 0)
+                std::cerr << "CGI script exited with error code: " << exit_code << "\n";
+        }
+
+		_response = build_response_header();
+        _response += cgi_output.str();
+		std::cout << "_response a la fin de exec_cgi = " << _response << std::endl;
+    }
 }
 
 bool is_directory(const std::string &path)
@@ -219,7 +286,7 @@ void	Parser::GETmethod( void)
 	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
 	{
 		std::cout << "on a bien trouve le dir_listing" << std::endl;
-		if (path == "./www/index.html")
+		if (path == "./www/indexantoine.html")
 			display_dirlist("./www");
 		else if (path != "./www/favicon.ico")
 		{
@@ -232,7 +299,7 @@ void	Parser::GETmethod( void)
 	else if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
 		build_response_content(path);
 	else if (!_category.compare("CGI"))
-		exec_cgi(path);
+		exec_cgi(path, GET);
 	else
 		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;
 }
@@ -254,23 +321,14 @@ std::string	Parser::build_response( void)
 	
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
-
-	// if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
-	// {
-	// 	std::cout << "on rentre dans le if de build response\n";
-	// 	GETmethod();
-	// }
-	// else 
-	// {
-		for (long unsigned int i = 0; i < method->size(); i++)
+	for (long unsigned int i = 0; i < method->size(); i++)
+	{
+		if (_request.find("method")->second[0] == method[i])
 		{
-			if (_request.find("method")->second[0] == method[i])
-			{
-				(this->*func_method[i])();
-				return (_response);
-			}
+			(this->*func_method[i])();
+			return (_response);
 		}
-	// }
+	}
 	return ("");
 }
 

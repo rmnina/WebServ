@@ -6,7 +6,7 @@
 /*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/22 18:51:55 by skiam            ###   ########.fr       */
+/*   Updated: 2025/01/23 18:27:19 by skiam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,11 @@
 # include "../config/Config.hpp"
 # include <dirent.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
 
 # define MTU 1500
+# define GET	0
+# define POST	1
 
 class Parser
 {
@@ -61,7 +64,7 @@ class Parser
 		void		init_mime_types( void);
 
 		void		build_response_content( std::string &filename);
-		void		exec_cgi( std::string &filename);
+		void		exec_cgi( std::string &filename, int method);
 
 		void		GETmethod( void);
 		void		POSTmethod( void);
