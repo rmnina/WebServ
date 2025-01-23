@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/22 16:05:21 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/22 20:07:58 by skiam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,14 +155,31 @@ void	Parser::exec_cgi( std::string &filename)
 	(void)filename;
 }
 
+bool is_directory(const std::string &path)
+{
+    struct stat path_stat;
+    if (stat(path.c_str(), &path_stat) != 0)
+        return false;
+    return S_ISDIR(path_stat.st_mode);
+}
+
+bool is_file(const std::string &path)
+{
+    struct stat path_stat;
+    if (stat(path.c_str(), &path_stat) != 0)
+        return false;
+    return S_ISREG(path_stat.st_mode);
+}
+
 void	Parser::display_dirlist(std::string path)
 {
 	DIR *dir;
     struct dirent *entry;
 
+	std::cout << "path dans le display dir = " << path << std::endl;
     if ((dir = opendir(path.c_str())) == NULL)
     	{ throw std::runtime_error("Error opening directory for dir_list"); return ;}
-
+	
     std::ostringstream html;
     html << "<html><head><title>Directory Listing</title></head><body>";
     html << "<h1>Index of " << path << "</h1><ul>";
@@ -173,8 +190,12 @@ void	Parser::display_dirlist(std::string path)
         std::string name(entry->d_name);
         if (name != "." && name != "..")
         {
-            html << "<li><a href=\"" << name << "\">" << name << "</a></li>";
-        }
+			std::string full_path = path + "/" + name;
+            if (is_directory(full_path))
+                html << "<li><a href=\"" << full_path.substr(2) << "/\">" << name << "/</a></li>";
+            else
+                html << "<li><a href=\"" << full_path.substr(2) << "\">" << name << "</a></li>";
+		}
     }
 
     html << "</ul></body></html>";
@@ -186,22 +207,27 @@ void	Parser::display_dirlist(std::string path)
 	std::cout << "response fin display_dir = " << _response << std::endl;
 }
 
+
 void	Parser::GETmethod( void)
 {	
-	// static int dir_on_off = 0;
 	std::string	path = _request["path"][0];
-	std::cout << "path = " << path << std::endl;
-	// std::map<std::string, std::vector<std::string> >::iterator it;
-	// for (it = _request.begin(); it != _request.end(); it++)
-	// {
-	// 	std::cout << "_request key = " << it->first << std::endl;
-	// 	for (std::vector<std::string>::iterator vIt = it->second.begin(); vIt != it->second.end(); vIt++)
-	// 		std::cout << "string for " << it->first << " = " << *vIt << "\n";
-	// }
+
+	std::cout << "path before = " << path << std::endl;
+    if (path.substr(0, 2) != "./")
+            path = "./" + path;
+	std::cout << "path after = " << path << std::endl;
 	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
 	{
 		std::cout << "on a bien trouve le dir_listing" << std::endl;
-		display_dirlist("./www");
+		if (path == "./www/index.html")
+			display_dirlist("./www");
+		else if (path != "./www/favicon.ico")
+		{
+			if (is_directory(path))
+				display_dirlist(path);
+			else if (is_file(path))
+				build_response_content(path);
+		}
 	}
 	else if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
 		build_response_content(path);
