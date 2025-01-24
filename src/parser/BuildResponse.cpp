@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 18:52:50 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/24 19:42:32 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,12 +126,20 @@ std::string	Parser::build_response_header( void)
 	header << "Date: " << get_time() << "\r\n";
 	if (_category == "IMAGE")
 		header << "Accept-Ranges: bytes\r\n";
-	header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
-	get_content_length(_request["path"][0]);
+	if (_category == "CGI") {
+		header << "Content-Type: text/html\r\n";
+		header << "Content-Length: " << _body_size << "\r\n";
+	}
+	else {
+		header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
+		//header << "Transfer-Encoding: chunked\r\n";
+	}
+	//get_content_length(_request["path"][0]);
 	// header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
 	header << "Connection: keep-alive\r\n";
 	header << "Transfer-Encoding: chunked\r\n";
 	header << "Server: WebServ\r\n\r\n";
+	// header << "Server: WebServ\r\n";
 	
 	_response += header.str();
 	return (_response);
@@ -217,7 +225,10 @@ void	Parser::exec_cgi( std::string &filename, int method)
                 std::cerr << "CGI script exited with error code: " << exit_code << "\n";
         }
 
+		_body_size = (cgi_output.str()).size();
 		_response = build_response_header();
+		// _response += "Content-Length: 100\n\r\n\r";
+
         _response += cgi_output.str();
 		std::cout << "_response a la fin de exec_cgi = " << _response << std::endl;
     }

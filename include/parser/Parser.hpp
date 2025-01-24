@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/23 18:27:19 by skiam            ###   ########.fr       */
+/*   Updated: 2025/01/24 19:20:44 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ class Parser
 		std::map<std::string, std::vector<std::string> >	_request;
 		std::string											_response;
 		std::vector<unsigned char>							_image_response;
+
+		size_t												_body_size;
 		
 		size_t												_resp_size;
 		std::string											_extension;
