@@ -1,14 +1,18 @@
 #include <iostream>
 #include <cstdlib> 
 #include <ctime>   
+#include <sstream>
 
 int main() 
 {
-    std::cout << "Content-Type: text/html\r\n\r\n";
-
+    
     std::srand(std::time(0));
     int randomNumber = (std::rand() % 100) + 1;
-    std::cout << randomNumber << std::endl;
 
-    return 0;
+    std::ostringstream html;
+    html << "<html><head><title>Random Number</title></head>"
+        << "<body><h1>Your random number is: " << randomNumber << "</h1></body></html>";
+
+    // std::cout << "Content-Type: html/text\r\n\r\n"; 
+    std::cout << html.str();
 }
