@@ -6,47 +6,46 @@
 #    By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 19:01:05 by jdufour           #+#    #+#              #
-#    Updated: 2024/11/28 23:22:05 by jdufour          ###   ########.fr        #
+#    Updated: 2025/01/24 13:03:01 by eltouma          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+NAME = webserv
 
-NAME = WebServ
+CC = c++ -Wall -Wextra -Werror -g3 -std=c++98
+MAKEFLAGS += --no-print-directory
 
-SRC_DIR = src
+GREEN := \e[32m
+RESET :=\e[0m
 
-SRCS = $(addprefix $(SRC_DIR)/, config/Config.cpp config/ConfigStruct.cpp server/Handler.cpp\
-								server/Server.cpp server/Signal.cpp parser/CheckRequest.cpp\
-								parser/BuildResponse.cpp parser/Location.cpp main.cpp)
+SRCS_PATH = $(shell find src -type d)
 
-OBJ_DIR = obj
+SRCS = Config.cpp ConfigStruct.cpp Handler.cpp \
+	Server.cpp Signal.cpp CheckRequest.cpp \
+	BuildResponse.cpp Location.cpp main.cpp
+	
+vpath %.cpp $(foreach dir, $(SRCS_PATH), $(dir):)
 
-OBJ_DIRS = $(addprefix $(OBJ_DIR)/, config server parser)
+OBJS_PATH = obj/
 
-OBJ = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+OBJS = $(addprefix $(OBJS_PATH), $(SRCS:%.cpp=%.o))
 
-CXX = c++
+all: $(NAME)
 
-CPPFLAGS = -g3 -Wall -Wextra -Werror -std=c++98
+$(OBJS_PATH)%.o: %.cpp
+	@mkdir -p $(OBJS_PATH)
+	$(CC) -c $< -o $@
 
-RM = rm -rfv
+$(NAME): $(OBJS)
+	@echo "\nCompilation webserv: $(GREEN)success$(RESET)\n"
+	$(CC) $(OBJS) -Inc -o $(NAME)
 
-$(OBJ_DIRS):
-	@mkdir -p $@
+clean:
+	/bin/rm -rf $(OBJS)
+	@echo "\nWebserv removed: $(GREEN)success$(RESET)\n"
 
-all : $(OBJ_DIRS) $(NAME)
+fclean:	clean
+	/bin/rm -rf ${NAME}
 
-$(NAME) : $(OBJ)
-	$(CXX) $(CPPFLAGS) $^ -o $@
+re: fclean all
 
-$(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp | $(OBJ_DIRS)
-	$(CXX) $(CPPFLAGS) -c $< -o $@
-
-clean :
-	$(RM) $(OBJ)
-
-fclean : clean
-	$(RM) $(NAME)
-
-re : fclean all
-
-.PHONY : all clean fclean re
+.PHONY: all clean fclean re
