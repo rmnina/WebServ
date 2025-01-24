@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/28 21:33:33 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/24 16:03:47 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,33 +49,33 @@ class Server
 		struct epoll_event			_event;
 
  	public:
-		Server( void);
+		Server(void);
 		Server(const std::string &servername, const std::string &hostname, const std::string &port, server_data config, location_data location);
 		Server(const Server &src);
 		Server &operator=(const Server &src);
 
-		server_data					getConfig( void) const;
-		location_data				getLocation( void) const;
-		int							getSocket( void) const;
-		std::vector<int>			getClientSock( void) const;
-		std::vector<size_t>			getNbBytes( void) const;
-		std::string					getName( void) const;
-		std::string					getHost( void) const;
-		std::string					getPort( void) const;
-		std::vector<std::string>	getRequest( void) const;
+		server_data					getConfig(void) const;
+		location_data				getLocation(void) const;
+		int							getSocket(void) const;
+		std::vector<int>			getClientSock(void) const;
+		std::vector<size_t>			getNbBytes(void) const;
+		std::string					getName(void) const;
+		std::string					getHost(void) const;
+		std::string					getPort(void) const;
+		std::vector<std::string>	getRequest(void) const;
 
 		void	add_event(int &epfd, int socket);
 		void	modify_event(int &epfd, int socket, uint32_t flag);
 		void	delete_event(int &epfd, int socket);
 		
-		int	create_socket( void);
-		int	set_socket( void);
-		int	accept_connection( int &epfd);
-		int	receive_request( int client_index, int &epfd);
-		int	get_client_index( int event_fd);
-		int	handle_existing_client( int event_fd, int &epfd);
-		int	send_image( unsigned char *response, size_t size, int client_index, int &epfd);
-		int	send_response( std::string &response, int client_index, int &epfd);
+		int	create_socket(void);
+		int	set_socket(void);
+		int	accept_connection(int &epfd);
+		int	receive_request(int client_index, int &epfd);
+		int	get_client_index(int event_fd);
+		int	handle_existing_client(int event_fd, int &epfd);
+		int	send_image(unsigned char *response, size_t size, int client_index, int &epfd);
+		int	send_response(std::string &response, int client_index, int &epfd);
 		
 
 		~Server( void);

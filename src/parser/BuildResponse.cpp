@@ -6,11 +6,12 @@
 /*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/23 20:45:02 by skiam            ###   ########.fr       */
+/*   Updated: 2025/01/24 18:52:50 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser/Parser.hpp"
+#include <cstdio>
 
 void  Parser::init_mime_types( void)
 {
@@ -306,14 +307,36 @@ void	Parser::GETmethod( void)
 
 void	Parser::POSTmethod( void)
 {
-	
+	std::string	path = _request["path"][0];
+	std::cout << __func__ << "\tpath = " << path << std::endl;
 }
 
 void	Parser::DELETEmethod( void)
 {
+	/*
 	std::string	path = _request["path"][0];
-	std::cout << __func__ << "\tpath = " << path << std::endl;
-	
+	int	status = remove(path.c_str());
+	if (!status)
+		std::cout << __func__ << "\tReponse du code : oui" << std::endl;
+	else
+		std::cout << __func__ << "\tReponse du code : non" << std::endl;
+		*/
+  // Récupération du chemin brut depuis la requête
+    std::string path = _request["path"][0];
+    std::cout << GREEN << "_request[\"path\"][0] " << _request["path"][0] << RESET << std::endl;
+
+    // Si le chemin commence par une URL, extraire la partie utile
+    size_t pos = path.find("/delete"); // Identifier le point de base
+    if (pos != std::string::npos) {
+        path = "www" + path.substr(pos + 7); // Ajouter le dossier racine
+    }
+
+    // Supprimer le fichier
+    int status = remove(path.c_str());
+    if (!status)
+        std::cout << __func__ << "\tReponse du code : " << GREEN << "oui" << RESET << std::endl;
+    else
+        std::cerr << __func__ << RED << "\tErreur lors de la suppression : " << strerror(errno) << RESET << std::endl;
 }
 
 std::string	Parser::build_response( void)

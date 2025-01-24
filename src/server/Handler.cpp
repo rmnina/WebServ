@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/28 21:37:49 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/24 16:00:35 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ volatile int g_sig = 0;
 
 Handler::Handler() {}
 
-Handler::Handler( const std::vector<ConfigStruct> servers_conf) : _servers_conf(servers_conf) {}
+Handler::Handler(const std::vector<ConfigStruct> servers_conf) : _servers_conf(servers_conf) {}
 
 void	Handler::loadServ()
 {

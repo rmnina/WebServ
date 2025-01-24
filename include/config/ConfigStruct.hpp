@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 01:42:14 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/17 17:42:52 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/24 15:32:23 by eltouma          ###   ########.fr       */
 
 /*                                                                            */
 /* ************************************************************************** */
@@ -22,8 +22,8 @@
 
 typedef std::map<std::string, std::vector<std::string> >		server_data;
 typedef	server_data							location_i_data;
-typedef std::vector<std::map<std::string, std::vector<std::string> > >	location_data;
-// typedef std::vector<location_i_data> location_data;
+// typedef std::vector<std::map<std::string, std::vector<std::string> > >	location_data;
+typedef std::vector<location_i_data> location_data;
 
 
 struct ConfigStruct
