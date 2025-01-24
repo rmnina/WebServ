@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 13:53:31 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/24 16:05:51 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int Server::set_socket()
 	return (SUCCESS);
 }
 
-int	Server::accept_connection( int &epfd)
+int	Server::accept_connection(int &epfd)
 {
 	int			client_sock;
 	sockaddr_in	client_addr;
@@ -147,7 +147,7 @@ int	Server::accept_connection( int &epfd)
 	return (SUCCESS);
 }
 
-int	Server::receive_request( int client_index, int &epfd)
+int	Server::receive_request(int client_index, int &epfd)
 {
 	char	buffer[MAX_REQ_SIZE];
 	ssize_t	nb_bytes;
@@ -193,7 +193,7 @@ int	Server::receive_request( int client_index, int &epfd)
 	return (SUCCESS);
 }
 
-int	Server::get_client_index( int event_fd)
+int	Server::get_client_index(int event_fd)
 {
 	long unsigned int i = 0;
 	
@@ -207,7 +207,7 @@ int	Server::get_client_index( int event_fd)
 	return (-1);	
 }
 
-int	Server::send_response( std::string &response, int client_index, int &epfd)
+int	Server::send_response(std::string &response, int client_index, int &epfd)
 {
 	unsigned long	bytes_sent = 0;
 	size_t			packets_sent = 0;

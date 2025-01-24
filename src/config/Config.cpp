@@ -6,24 +6,24 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/20 17:58:09 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/24 15:57:44 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/config/Config.hpp"
 
-Config::Config( void) {}
+Config::Config(void) {}
 
 // Config::Config( const Config &src) {}
 
 // Config  &Config::operator=( const Config &rhs){}
 
-std::vector<ConfigStruct>	Config::get_servers_conf( void) const
+std::vector<ConfigStruct>	Config::get_servers_conf(void) const
 {
 	return (_servers_conf);
 }
 
-bool    Config::_server_allowed( const std::string &keyword) 
+bool    Config::_server_allowed(const std::string &keyword) 
 {
 	const std::string			array[10] = {"listen", "server_name", "dir_listing", "error", "method",
 											"upload", "root", "body_size", "index", "location"};
@@ -37,7 +37,7 @@ bool    Config::_server_allowed( const std::string &keyword)
 	return (false);
 }
 
-bool    Config::_location_allowed( const std::string &keyword) 
+bool    Config::_location_allowed(const std::string &keyword) 
 {
 	const std::string			array[8] = {"dir_listing", "error", "method", "upload", "root", 
 											"default_file", "cgi", "redirect"};
@@ -51,12 +51,12 @@ bool    Config::_location_allowed( const std::string &keyword)
 	return (false);
 }
 
-bool	Config::_update_brackets_state( bool brackets) 
+bool	Config::_update_brackets_state(bool brackets) 
 { 
 	return (brackets ? false : true); 
 }
 
-void	Config::fill_locations( std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets)
+void	Config::fill_locations(std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets)
 {
 	location_i_data loc_i;
 	size_t		start, end;
@@ -138,7 +138,7 @@ void	Config::fill_locations( std::ifstream &conf_file, std::string &line, locati
 		brackets = _update_brackets_state(brackets);
 }
 
-void	Config::fill_servers( std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets)
+void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets)
 {
 	int i;
 	
@@ -220,7 +220,7 @@ void printConfig(const std::vector<ConfigStruct> &servers_conf)
 	}
 }
 
-void    Config::fill_conf_vector( const std::string &filename) 
+void    Config::fill_conf_vector(const std::string &filename) 
 {
 	std::ifstream	conf_file(filename.c_str());
 	server_data		server;
@@ -280,7 +280,7 @@ void    Config::fill_conf_vector( const std::string &filename)
 	}
 }
 
-Config::~Config( void) {}
+Config::~Config(void) {}
 
 
 std::vector<std::string>	string_to_vector(const std::string &string, const char delimiter, size_t space_pos)

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:15 by jdufour           #+#    #+#             */
-/*   Updated: 2024/11/23 23:26:17 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/24 15:56:08 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,24 +39,24 @@ class Config
 	private:
 		std::vector<ConfigStruct> _servers_conf;
 		
-		bool	_server_allowed( const std::string &keyword);
-		bool	_location_allowed( const std::string &keyword);
-		bool	_update_brackets_state( bool brackets);
+		bool	_server_allowed(const std::string &keyword);
+		bool	_location_allowed(const std::string &keyword);
+		bool	_update_brackets_state(bool brackets);
 		
 	public:
-		Config( void);
+		Config(void);
 		// Config( const Config &src);
 		// Config	&operator=( const Config &rhs);
 
-		std::vector<ConfigStruct>	get_servers_conf( void) const;
-		ConfigStruct				get_element( int n) const;
+		std::vector<ConfigStruct>	get_servers_conf(void) const;
+		ConfigStruct				get_element(int n) const;
 		
 
-		void		fill_servers( std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets);
-		void		fill_locations( std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets);
-		void		fill_conf_vector( const std::string &filename);
+		void		fill_servers(std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets);
+		void		fill_locations(std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets);
+		void		fill_conf_vector(const std::string &filename);
 
-		~Config( void);
+		~Config(void);
 };
 
 std::vector<std::string>	string_to_vector(const std::string &string, const char delimiter, size_t space_pos);
