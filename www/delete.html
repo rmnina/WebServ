@@ -16,175 +16,46 @@
 		<div class="topnav">
 			<a class="active" href="/">Home</a>
 		</div>
-		<ol>
-			<img src="uploaded/lovers.jpeg" alt="" style="width: 10%"></br>
-			<input type="checkbox" id="trash" name="trash" value="trash" onclick="alert=deleteElem()">
-			<i class="fas fa-trash"></i>
-			</br>
-			</br>
-			<img src="uploaded/lovers1.jpeg" alt="" style="width: 10%"></br>
-			<input type="checkbox" id="trash" name="trash" value="trash" onclick="alert=deleteElem1()">
-			<i class="fas fa-trash"></i>
-			</br>
-			</br>
-			<img src="uploaded/magician.jpeg" alt="" style="width: 10%"></br>
-			<input type="checkbox" id="trash" name="trash" value="trash" onclick="alert=deleteElem2()">
-			<i class="fas fa-trash"></i>
-			</br>
-			</br>
-			<img src="uploaded/death.jpeg" alt="" style="width: 10%"></br>
-			<input type="checkbox" id="trash" name="trash" value="trash" onclick="alert=deleteElem3()">
-			<i class="fas fa-trash"></i>
-			</br>
-			</br>
-			<img src="uploaded/the_world.jpeg" alt="" style="width: 10%"></br>
-			<input type="checkbox" id="trash" name="trash" value="trash" onclick="alert=deleteElem4()">
-			<i class="fas fa-trash"></i>
-			</br>
-			<script>
-				function deleteElem() {
-					alert('T\'es sur gros.se ?');
-					fetch('http:/127.0.0.1:8082/delete/uploaded/lovers.jpeg', {
-						method: 'DELETE',
-						headers: {
-							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-							'Content-Type': 'application/json'
-						}
-					}).then(response => {
-						if (response.ok) {
-							console.log('Ressource supprimée avec succès.');
-							const img = document.querySelector('img[src="uploaded/lovers.jpeg"]');
-							if (img) {
-								img.remove();
-							//	document.getElementById("trash1").disable = true;
-							}
-							} else {
-								console.error('Erreur lors de la suppression : ', response.status);
-							}
-						});
-					}
-				function deleteElem1() {
-					alert('T\'es sur gros.se ?');
-					fetch('http:/127.0.0.1:8082/delete/uploaded/lovers1.jpeg', {
-						method: 'DELETE',
-						headers: {
-							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-							'Content-Type': 'application/json'
-						}
-					}).then(response => {
-						if (response.ok) {
-							console.log('Ressource supprimée avec succès.');
-							const img = document.querySelector('img[src="uploaded/lovers1.jpeg"]');
-							if (img) {
-								img.remove();
-							}
-							} else {
-								console.error('Erreur lors de la suppression : ', response.status);
-							}
-						});
-					}
-				function deleteElem2() {
-					alert('T\'es sur gros.se ?');
-					fetch('http:/127.0.0.1:8082/delete/uploaded/magician.jpeg', {
-						method: 'DELETE',
-						headers: {
-							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-							'Content-Type': 'application/json'
-						}
-					}).then(response => {
-						if (response.ok) {
-							console.log('Ressource supprimée avec succès.');
-							const img = document.querySelector('img[src="uploaded/magician.jpeg"]');
-							if (img) {
-								img.remove();
-							}
-							} else {
-								console.error('Erreur lors de la suppression : ', response.status);
-							}
-						});
-					}
-				function deleteElem3() {
-					alert('T\'es sur gros.se ?');
-					fetch('http:/127.0.0.1:8082/delete/uploaded/death.jpeg', {
-						method: 'DELETE',
-						headers: {
-							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-							'Content-Type': 'application/json'
-						}
-					}).then(response => {
-						if (response.ok) {
-							console.log('Ressource supprimée avec succès.');
-							const img = document.querySelector('img[src="uploaded/death.jpeg"]');
-							if (img) {
-								img.remove();
-							}
-							} else {
-								console.error('Erreur lors de la suppression : ', response.status);
-							}
-						});
-					}
-				function deleteElem4() {
-					alert('T\'es sur gros.se ?');
-					fetch('http:/127.0.0.1:8082/delete/uploaded/the_world.jpeg', {
-						method: 'DELETE',
-						headers: {
-							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-							'Content-Type': 'application/json'
-						}
-					}).then(response => {
-						if (response.ok) {
-							console.log('Ressource supprimée avec succès.');
-							const img = document.querySelector('img[src="uploaded/the_world.jpeg"]');
-							if (img) {
-								img.remove();
-							}
-							} else {
-								console.error('Erreur lors de la suppression : ', response.status);
-							}
-						});
-					}
-			</script>
-		</ol>
-		<!--
-			<div class="wrapper">
-			<button class="upload-button" onclick="openForm()">
-			<div class="card" style="width: 18rem;">
-			<img src="images/magician.jpeg" alt="" style="width: 100%"> 
-			<div class="card-body">
-			<h3 class="card-title">Upload</h3>
-			<p class="card-txt">Aks the magician to upload a file.</p>
-			</div>
-			</div>
-			</button>
-			<a href="http://127.0.0.1:8082/delete.html"  id="delete-link">
-			<div class="card" style="width: 18rem;" id="delete-link">
-			<img src="images/death.jpeg" id="death" alt="" style="width: 100%">
-			<div class="card-body">
-			<h3 class="card-title">Delete</h3>
-			<p class="card-txt">Here, you can delete the files you uploaded. Don't try to flush anything else, we'll be watchin...</p>
+		<div id="file-list">
+		</div>
+		<script>
+			const files = ["lovers.jpeg", "lovers1.jpeg", "magician.jpeg", "death.jpeg", "the_world.jpeg"];
+			const fileList = document.getElementById("file-list");
 
-			</div>
-			</div>
-			</a>
-			<div class="form-popup" id="myForm">
-			<form action="/upload" method="post" enctype="multipart/form-data" class="popup-container" >
-			<button type="button" class="close" onclick="closeForm()">
-			<i class="fa fa-times"></i>
-			</button>
-			<h2>Upload a file</h2>
-			<div>
-			<input type="file" name="file" required>
-			</div>
-			<button type="submit" class="btn submit">Submit</button>
-			</form>
-			</div>
-			<script>
-
-				function openForm() { document.getElementById("myForm").style.display = "block"; }
-				function closeForm() {	document.getElementById("myForm").style.display = "none"; }
-			</script>
-			</div>
-			-->
+			files.forEach((fileName) => {
+				const fileWrapper = document.createElement("div");
+				fileWrapper.innerHTML = `
+					<img src="uploaded/${fileName}" alt="${fileName}" style="width: 10%"></br>
+					<input type="checkbox" onclick="deleteFile('${fileName}')">
+					<i class="fas fa-trash"></i>
+					</br></br>
+				`;
+				fileList.appendChild(fileWrapper);
+			});
+			function deleteFile(fileName) {
+				if (confirm(`Êtes-vous sûr(e) de vouloir supprimer ${fileName} ?`)) {
+					fetch(`http:/127.0.0.1:8082/delete/uploaded/${fileName}`, {
+						method: 'DELETE',
+						headers: {
+							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
+							'Content-Type': 'application/json'
+						},
+					}).then(response => {
+						if (response.ok) {
+							console.log(`${fileName} supprimé avec succès.`);
+							const file = document.querySelector(`img[src="uploaded/${fileName}"]`).parentElement;
+							if (file) {
+								file.remove();
+							}
+						} else {
+							console.error(`Erreur lors de la suppression de ${fileName}: ${response.status}`);
+						}
+					}).catch((error) => {
+						console.log(`Error: `, error);
+					});
+					}
+				}
+		</script>
 	</body>
 </html>
 
