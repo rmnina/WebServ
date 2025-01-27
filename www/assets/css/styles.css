@@ -53,6 +53,17 @@ transition: none !important;
 .topnav {
 	background-color: #191818;
 	overflow: hidden;
+	position: fixed;
+	/*
+list-style-type: none;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  */
+  width: 100%;
+  z-index: 1000;
 }
 
 .topnav a {
@@ -112,6 +123,8 @@ footer a:hover {
 	display: flex;
 	flex: 3 3 200px;
 	gap: 20em;
+	margin-top: 6em;
+	margin-top: 4em;
 	align-content: flex-start;
 	justify-content: center; 
 }
@@ -120,7 +133,7 @@ footer a:hover {
 	background-color: transparent;
 	border: none;
 	position: unset;
-	color: #e3e4e8;
+	color: #afb0b3;
 	font-family: "Inkut Antiqua", cursive;
 	text-align: left;
 	cursor: pointer;
@@ -173,7 +186,7 @@ footer a:hover {
 	height: 30px;
 	display: flex;
 	align-items: center;
-	*/
+	 */
 }
 
 /* Add some hover effects to buttons */
@@ -195,3 +208,34 @@ footer a:hover {
 }
 
 .close:hover { background: #bbb;}
+
+
+/*
+.wrapper {
+background-image: url("images/bg.png");
+box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.05), inset 0px 2px 3px 0px rgba(0, 0, 0, 0.1);
+padding: 5em 0 4em 0;
+text-align: center;
+}
+ */
+
+.presentation { /*, .welcome-header {*/ 
+	padding: 4em 0 4em 0;
+	padding: 1em 0 1em 0;
+	text-align: center;
+}
+
+.welcome-header {
+	letter-spacing: 8px;
+	color: #6C757D;
+	font-size: 40px;
+	font-size: 30px;
+}
+
+.welcome-p{
+	letter-spacing: 4px;
+	letter-spacing: 3px;
+	color: #afb0b3;
+	font-size: 20px;
+}
+
