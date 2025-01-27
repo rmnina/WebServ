@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 18:08:53 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/27 19:02:56 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,17 +131,21 @@ std::string	Parser::build_response_header( void)
 		header << "Content-Length: " << _body_size << "\r\n";
 	}
 	else {
-		header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
-		header << "Transfer-Encoding: chunked\r\n";
+		if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
+		{
+			std::cout << "ca verifie le type httpd-cgi" << std::endl;
+			header << "Content-Type: text/html\r\n";
+		}
+		else
+			header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
 	}
 
 	//get_content_length(_request["path"][0]);
 	// header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
 	
 	header << "Connection: keep-alive\r\n";
+	header << "Transfer-Encoding: chunked\r\n";
 	header << "Server: WebServ\r\n\r\n";
-	//header << "Transfer-Encoding: chunked\r\n";
-	// header << "Server: WebServ\r\n";
 
 	_response += header.str();
 	return (_response);
@@ -231,7 +235,7 @@ void	Parser::exec_cgi( std::string &filename, int method)
 		}
 
 		_body_size = (cgi_output.str()).size();
-		_response = build_response_header();
+		//_response = build_response_header();
 		// _response += "Content-Length: 100\n\r\n\r";
 
 		_response += cgi_output.str();
