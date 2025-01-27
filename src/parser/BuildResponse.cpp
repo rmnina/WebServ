@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 19:42:32 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/27 16:12:43 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,13 +132,15 @@ std::string	Parser::build_response_header( void)
 	}
 	else {
 		header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
-		//header << "Transfer-Encoding: chunked\r\n";
+		header << "Transfer-Encoding: chunked\r\n";
 	}
+
 	//get_content_length(_request["path"][0]);
 	// header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
+	
 	header << "Connection: keep-alive\r\n";
-	header << "Transfer-Encoding: chunked\r\n";
 	header << "Server: WebServ\r\n\r\n";
+	//header << "Transfer-Encoding: chunked\r\n";
 	// header << "Server: WebServ\r\n";
 	
 	_response += header.str();
@@ -168,7 +170,8 @@ void	Parser::exec_cgi( std::string &filename, int method)
     if (pipe(pipefd) == -1)
 	{std::cerr << "Error creating a pipe\n"; return;}
 	
-    if ((pid = fork()) == -1) 
+	pid = fork();
+    if (pid == -1) 
 	{std::cerr << "Error forking process\n"; return;}
 
     if (pid == 0) 
@@ -179,15 +182,18 @@ void	Parser::exec_cgi( std::string &filename, int method)
         close(pipefd[1]);
 
         std::map<std::string, std::string> env;
-        env["REQUEST_METHOD"] = (method == 0 ? "GET" : "POST");
-        env["SCRIPT_NAME"] = filename;
-        env["QUERY_STRING"] = _request["query"].empty() ? "" : _request["query"][0];
-		std::ostringstream oss;
-		if (_request["body"].empty())
-			oss << 0;
+		if (method == GET)
+        	env["REQUEST_METHOD"] = "GET";
 		else
-			oss << _request["body"][0].size();
-		env["CONTENT_LENGTH"] = oss.str();
+			env["REQUEST_METHOD"] = "POST";
+        env["SCRIPT_NAME"] = filename;
+        // env["QUERY_STRING"] = _request["query"].empty() ? "" : _request["query"][0];
+		// std::ostringstream oss;
+		// if (_request["body"].empty())
+		// 	oss << 0;
+		// else
+		// 	oss << _request["body"][0].size();
+		// env["CONTENT_LENGTH"] = oss.str();
 
         char *envp[env.size() + 1];
         int i = 0;
