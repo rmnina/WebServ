@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic CGI Result Display</title>
+</head>
+<body>
+    <h1>Welcome to the Random Number Generator</h1>
+    <p>Click the link below to generate a random number:</p>
+
+  
+    <!-- Link that triggers the CGI script -->
+    <a href="/cgi/random_number.cgi" id="generate-link">Generate Random Number</a>
+
+    <div id="result" style="margin-top: 20px;">
+        <!-- Placeholder for dynamically displayed CGI result -->
+    </div>
+    <script>
+            document.getElementById("generate-link").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default link behavior
+
+            // Perform an AJAX request to the CGI script
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/cgi/random_number.cgi", true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Update the result div with the CGI response
+                    document.getElementById("result").innerHTML = xhr.responseText;
+                }
+            };
+
+            xhr.send(); // Send the request
+        });
+    </script>
+    <!-- Form to reload the same page and process CGI script 
+    <form action="/cgi/random_number.cgi" method="get" style="margin-top: 20px;">
+        <button type="submit">Generate Random Number via Form</button>
+    </form>
+    -->
+
+</body>
+</html>

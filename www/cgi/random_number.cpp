@@ -6,7 +6,7 @@
 int main() 
 {
     
-    std::srand(std::time(0));
+    std::srand(std::time(NULL));
     int randomNumber = (std::rand() % 100) + 1;
 
     std::ostringstream html;
