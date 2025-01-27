@@ -44,7 +44,7 @@ std::string get_time(void)
 
 	const char*	days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	const char*	months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-							"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 	std::ostringstream	oss;
 	oss << days[gmt->tm_wday] << ", " << std::setw(2) << std::setfill('0') << gmt->tm_mday
@@ -73,7 +73,7 @@ std::string	Parser::get_content_type( const std::string &filename)
 void	Parser::get_content_category( void)
 {
 	std::string		raw_text_files[11] = {".html", ".css", ".scss", ".js", ".txt", ".xml", ".json", ".csv",
-										".woff", ".woff2", ".ttf"};
+		".woff", ".woff2", ".ttf"};
 	std::string		image_files[6] = {".jpg", ".jpeg", ".png", ".gif", ".ico", ".svg"};
 	std::string		cgi[4] = {".py", ".sh", ".php", ".cgi"};
 
@@ -146,7 +146,7 @@ std::string	Parser::build_response_header( void)
 	header << "Connection: keep-alive\r\n";
 	header << "Transfer-Encoding: chunked\r\n";
 	header << "Server: WebServ\r\n\r\n";
-	
+
 	_response += header.str();
 	return (_response);
 }
@@ -168,24 +168,23 @@ void	Parser::build_response_content( std::string &filename)
 void	Parser::exec_cgi( std::string &filename, int method)
 {
 	std::cout << "on rentre dans exec_cgi" << std::endl;
-    pid_t pid;
-    int pipefd[2];
+	pid_t pid;
+	int pipefd[2];
 
-    if (pipe(pipefd) == -1)
+	if (pipe(pipefd) == -1)
 	{std::cerr << "Error creating a pipe\n"; return;}
-	
 	pid = fork();
     if (pid == -1) 
+
 	{std::cerr << "Error forking process\n"; return;}
 
-    if (pid == 0) 
+	if (pid == 0) 
 	{
-        close(pipefd[0]);
+		close(pipefd[0]);
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
 
-        dup2(pipefd[1], STDOUT_FILENO);
-        close(pipefd[1]);
-
-        std::map<std::string, std::string> env;
+    std::map<std::string, std::string> env;
 		if (method == GET)
         	env["REQUEST_METHOD"] = "GET";
 		else
@@ -199,100 +198,100 @@ void	Parser::exec_cgi( std::string &filename, int method)
 		// 	oss << _request["body"][0].size();
 		// env["CONTENT_LENGTH"] = oss.str();
 
-        char *envp[env.size() + 1];
-        int i = 0;
-        for (std::map<std::string, std::string>::iterator it = env.begin(); it != env.end(); ++it) {
-            std::string env_var = it->first + "=" + it->second;
-            envp[i] = strdup(env_var.c_str());
-            i++;
-        }
-        envp[i] = NULL;
-        char *argv[] = {strdup(filename.c_str()), NULL};
-        execve(filename.c_str(), argv, envp);
-        std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
-        exit(1);
-    } 
-	
+		char *envp[env.size() + 1];
+		int i = 0;
+		for (std::map<std::string, std::string>::iterator it = env.begin(); it != env.end(); ++it) {
+			std::string env_var = it->first + "=" + it->second;
+			envp[i] = strdup(env_var.c_str());
+			i++;
+		}
+		envp[i] = NULL;
+		char *argv[] = {strdup(filename.c_str()), NULL};
+		execve(filename.c_str(), argv, envp);
+		std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
+		exit(1);
+	} 
+
 	else 
 	{
-        close(pipefd[1]);
-        char buffer[1024];
-        std::ostringstream cgi_output;
-        int bytes_read;
+		close(pipefd[1]);
+		char buffer[1024];
+		std::ostringstream cgi_output;
+		int bytes_read;
 
-        while ((bytes_read = read(pipefd[0], buffer, sizeof(buffer) - 1)) > 0) 
+		while ((bytes_read = read(pipefd[0], buffer, sizeof(buffer) - 1)) > 0) 
 		{
-            buffer[bytes_read] = '\0';
-            cgi_output << buffer;
-        }
-        close(pipefd[0]);
-        int status;
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status)) 
+			buffer[bytes_read] = '\0';
+			cgi_output << buffer;
+		}
+		close(pipefd[0]);
+		int status;
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status)) 
 		{
-            int exit_code = WEXITSTATUS(status);
-            if (exit_code != 0)
-                std::cerr << "CGI script exited with error code: " << exit_code << "\n";
-        }
+			int exit_code = WEXITSTATUS(status);
+			if (exit_code != 0)
+				std::cerr << "CGI script exited with error code: " << exit_code << "\n";
+		}
 
 		_body_size = (cgi_output.str()).size();
 		//_response = build_response_header();
 		// _response += "Content-Length: 100\n\r\n\r";
 
-        _response += cgi_output.str();
+		_response += cgi_output.str();
 		std::cout << "_response a la fin de exec_cgi = " << _response << std::endl;
-    }
+	}
 }
 
 bool is_directory(const std::string &path)
 {
-    struct stat path_stat;
-    if (stat(path.c_str(), &path_stat) != 0)
-        return false;
-    return S_ISDIR(path_stat.st_mode);
+	struct stat path_stat;
+	if (stat(path.c_str(), &path_stat) != 0)
+		return false;
+	return S_ISDIR(path_stat.st_mode);
 }
 
 bool is_file(const std::string &path)
 {
-    struct stat path_stat;
-    if (stat(path.c_str(), &path_stat) != 0)
-        return false;
-    return S_ISREG(path_stat.st_mode);
+	struct stat path_stat;
+	if (stat(path.c_str(), &path_stat) != 0)
+		return false;
+	return S_ISREG(path_stat.st_mode);
 }
 
 void	Parser::display_dirlist(std::string path)
 {
 	DIR *dir;
-    struct dirent *entry;
+	struct dirent *entry;
 
 	std::cout << "path dans le display dir = " << path << std::endl;
-    if ((dir = opendir(path.c_str())) == NULL)
-    	{ throw std::runtime_error("Error opening directory for dir_list"); return ;}
-	
-    std::ostringstream html;
-    html << "<html><head><title>Directory Listing</title></head><body>";
-    html << "<h1>Index of " << path << "</h1><ul>";
+	if ((dir = opendir(path.c_str())) == NULL)
+	{ throw std::runtime_error("Error opening directory for dir_list"); return ;}
+
+	std::ostringstream html;
+	html << "<html><head><title>Directory Listing</title></head><body>";
+	html << "<h1>Index of " << path << "</h1><ul>";
 	std::cout << "on est dans display dirlist\n";
-    while ((entry = readdir(dir)) != NULL)
-    {
+	while ((entry = readdir(dir)) != NULL)
+	{
 		std::cout << "boucle display dir\n";
-        std::string name(entry->d_name);
-        if (name != "." && name != "..")
-        {
+		std::string name(entry->d_name);
+		if (name != "." && name != "..")
+		{
 			std::string full_path = path + "/" + name;
-            if (is_directory(full_path))
-                html << "<li><a href=\"" << full_path.substr(2) << "/\">" << name << "/</a></li>";
-            else
-                html << "<li><a href=\"" << full_path.substr(2) << "\">" << name << "</a></li>";
+			if (is_directory(full_path))
+				html << "<li><a href=\"" << full_path.substr(2) << "/\">" << name << "/</a></li>";
+			else
+				html << "<li><a href=\"" << full_path.substr(2) << "\">" << name << "</a></li>";
 		}
-    }
+	}
 
-    html << "</ul></body></html>";
-    closedir(dir);
+	html << "</ul></body></html>";
+	closedir(dir);
 
-    _response = build_response_header();
-	
-    _response += html.str();
+	_response = build_response_header();
+
+	_response += html.str();
 	std::cout << "response fin display_dir = " << _response << std::endl;
 }
 
@@ -302,8 +301,8 @@ void	Parser::GETmethod( void)
 	std::string	path = _request["path"][0];
 
 	std::cout << "path before = " << path << std::endl;
-    if (path.substr(0, 2) != "./")
-            path = "./" + path;
+	if (path.substr(0, 2) != "./")
+		path = "./" + path;
 	std::cout << "path after = " << path << std::endl;
 	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
 	{
@@ -332,39 +331,30 @@ void	Parser::POSTmethod( void)
 	std::cout << __func__ << "\tpath = " << path << std::endl;
 }
 
-void	Parser::DELETEmethod( void)
+void	Parser::DELETEmethod(void)
 {
-	/*
-	std::string	path = _request["path"][0];
-	int	status = remove(path.c_str());
+	std::string path = _request["path"][0];
+	size_t pos = path.find("/delete");
+	if (pos != std::string::npos)
+		path = "www" + path.substr(pos + 7);
+	int isFound = path.find("uploaded") != std::string::npos;
+	if (!isFound)
+	{
+		std::cerr << path.c_str() + 4 << ": permission denied" << RESET << std::endl;
+		return ;
+	}
+	int status = remove(path.c_str());
 	if (!status)
-		std::cout << __func__ << "\tReponse du code : oui" << std::endl;
+		std::cout << path.substr(13) << ": successfully deleted" << std::endl;
 	else
-		std::cout << __func__ << "\tReponse du code : non" << std::endl;
-		*/
-  // Récupération du chemin brut depuis la requête
-    std::string path = _request["path"][0];
-    std::cout << GREEN << "_request[\"path\"][0] " << _request["path"][0] << RESET << std::endl;
-
-    // Si le chemin commence par une URL, extraire la partie utile
-    size_t pos = path.find("/delete"); // Identifier le point de base
-    if (pos != std::string::npos) {
-        path = "www" + path.substr(pos + 7); // Ajouter le dossier racine
-    }
-
-    // Supprimer le fichier
-    int status = remove(path.c_str());
-    if (!status)
-        std::cout << __func__ << "\tReponse du code : " << GREEN << "oui" << RESET << std::endl;
-    else
-        std::cerr << __func__ << RED << "\tErreur lors de la suppression : " << strerror(errno) << RESET << std::endl;
+		std::cerr << path.substr(13) << ": " << strerror(errno) << std::endl;
 }
 
 std::string	Parser::build_response( void)
 {		
 	std::string	method[3] = { "GET", "POST", "DELETE" };
 	_response.erase();
-	
+
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 	for (long unsigned int i = 0; i < method->size(); i++)

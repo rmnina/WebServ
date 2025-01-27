@@ -248,7 +248,7 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 	if (client_index == -1)
 		return (-1);
 	received = receive_request(client_index, epfd);
-	std::cout << BLUE << received << RESET << std::endl;
+	std::cout << BLUE << "ouiiiii " << received << RESET << std::endl;
 	if (received == SUCCESS)
 	{
 		Parser	parser(this);
