@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 16:00:35 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/27 23:06:12 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,11 @@ void	Handler::loadServ()
 		server_data				 			config;
 		location_data						locations;
 
-		if (it->get_container_type() != ConfigStruct::SERVER_VECTOR)
-		{
-			std::cerr << RED BOLD << "not normal to enter there. i failed my calculations didnt i" << RESET << std::endl;
-			exit(0);
-		}
-		std::string	name = it->get_server_value("server_name")[1];
+		// if (it->get_container_type() != ConfigStruct::SERVER_VECTOR)
+		// 	std::cerr << RED BOLD << "not normal to enter there. i failed my calculations didnt i" << RESET << std::endl;
+		std::string	name = it->get_server_value("server_name")[0];
 		std::string	hostname = "localhost";
-		std::string	port = it->get_server_value("listen")[1];
+		std::string	port = it->get_server_value("listen")[0];
 		config = (*it).serverData;
 		if (loc != _servers_conf.end())
 		{
@@ -215,9 +212,9 @@ int Handler::handleEvents()
 			{
 				for (it = _servers.begin(); it < _servers.end(); it++) 
 				{
-					int handled = (*it)->handle_existing_client(_events[i].data.fd, _epfd);
-					if (handled == FAILURE)
-						return (FAILURE);
+					(*it)->handle_existing_client(_events[i].data.fd, _epfd);
+					// if (handled == FAILURE)
+					// 	return (FAILURE);
 				}	
 			}
 		}

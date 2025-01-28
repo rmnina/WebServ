@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:40:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 15:59:20 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/27 23:04:46 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,9 @@ class Handler
 		Handler(const Handler &src);
 //		Handler &operator=(const Handler &rhs);
 
-		void	loadServ(void);
-		int		launchServers(void);
-		int		get_client_index(Server &server, int event_fd);
-		int		handle_existing_client(Server &server, int event_fd);
-		int		send_response(Server &server, std::string &response, int client_index);
-		int		send_image(Server &server, unsigned char *response, size_t size, int client_index);
-		int		handleEvents(void);
+		void	loadServ( void);
+		int		launchServers( void);
+		int		handleEvents( void);
 
 		void	add_event(int fd, int event);
 		void	modify_event(int fd, int event);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 21:48:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/23 20:45:12 by skiam            ###   ########.fr       */
+/*   Updated: 2025/01/27 23:05:56 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,20 @@ location_i_data	Parser::find_location( const std::string &path)
 void	Parser::get_location( const std::string &path)
 {
 	location_i_data	location = find_location(path);
+
 	if (location.empty())
 		return;
 
 	for (location_i_data::iterator it = location.begin(); it != location.end(); it++)
-		_server_conf[it->first] = it->second;
+	{
+		if (it->first == "redirect")
+		{
+			_request["path"] = it->second;
+			_error_code = "301";
+		}
+		if (it->first == "method")
+			_server_conf["method"] = it->second;
+		else
+			_server_conf[it->first] = it->second;
+	}
 }
