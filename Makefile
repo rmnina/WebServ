@@ -6,10 +6,11 @@
 #    By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 19:01:05 by jdufour           #+#    #+#              #
-#    Updated: 2025/01/27 23:07:19 by jdufour          ###   ########.fr        #
+#    Updated: 2025/01/28 17:07:04 by eltouma          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+NAME = webserv
 
 CC = c++ -Wall -Wextra -Werror -g3 -std=c++98
 MAKEFLAGS += --no-print-directory
@@ -21,7 +22,7 @@ SRCS_PATH = $(shell find src -type d)
 
 SRCS = Config.cpp ConfigStruct.cpp Handler.cpp \
 	Server.cpp Signal.cpp CheckRequest.cpp \
-	BuildResponse.cpp Location.cpp main.cpp
+	ErrorPage.cpp BuildResponse.cpp Location.cpp main.cpp
 	
 vpath %.cpp $(foreach dir, $(SRCS_PATH), $(dir):)
 

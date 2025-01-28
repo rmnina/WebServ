@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 23:03:58 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/28 17:05:19 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,7 +348,9 @@ void	Parser::POSTmethod( void)
 	else if (!_category.compare("CGI"))
 		exec_cgi(path, POST);
 	else
+	{
 		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;	std::string	path = _request["path"][0];
+	}
 	std::cout << __func__ << "\tpath = " << path << std::endl;
 }
 
