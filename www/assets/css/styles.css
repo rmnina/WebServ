@@ -55,15 +55,15 @@ transition: none !important;
 	overflow: hidden;
 	position: fixed;
 	/*
-list-style-type: none;
-  margin: 0;
-  padding: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  */
-  width: 100%;
-  z-index: 1000;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	 */
+width: 100%;
+z-index: 1000;
 }
 
 .topnav a {
@@ -182,11 +182,6 @@ footer a:hover {
 	opacity: 0.8;
 	text-align: left;
 	padding-left: 8px;
-	/*
-	height: 30px;
-	display: flex;
-	align-items: center;
-	 */
 }
 
 /* Add some hover effects to buttons */
@@ -239,3 +234,41 @@ text-align: center;
 	font-size: 20px;
 }
 
+.server-explanation, .server {
+	color: #afb0b3;
+	margin-top: 3em;
+	font-size: 14px;
+}
+
+.check-button {
+	color: #afb0b3;
+	background-color: #333;
+	color: #afb0b3;
+	cursor: pointer;
+	font-size: 14px;
+	border: black;
+	padding: 1em;
+	margin: 2em;
+	border-radius: 4px;
+}
+
+.server:hover, .check-button:hover, .card-title:hover { color: white; }
+
+.flex-container {
+  display: flex;
+	justify-content: center;
+}
+
+.flex-container > div {
+  width: 100px;
+  line-height: 2px;
+  font-size: 14px;
+}
+
+.jdufour > a, .ahayon > a, .eltouma > a {
+	color: #DEE2E6;	
+}
+
+.jdufour > a:hover, .ahayon > a:hover, .eltouma > a:hover {
+	color: #6C757D;	
+}

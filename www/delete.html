@@ -33,7 +33,7 @@
 				fileList.appendChild(fileWrapper);
 			});
 			function deleteFile(fileName) {
-				if (confirm(`Êtes-vous sûr(e) de vouloir supprimer ${fileName} ?`)) {
+				if (confirm(`Are you sure you want to delete ${fileName} ?`)) {
 					fetch(`http:/127.0.0.1:8082/delete/uploaded/${fileName}`, {
 						method: 'DELETE',
 						headers: {
@@ -42,13 +42,14 @@
 						},
 					}).then(response => {
 						if (response.ok) {
-							console.log(`${fileName} supprimé avec succès.`);
+							console.log(`${fileName} successfully deleted.`);
 							const file = document.querySelector(`img[src="uploaded/${fileName}"]`).parentElement;
 							if (file) {
 								file.remove();
 							}
 						} else {
-							console.error(`Erreur lors de la suppression de ${fileName}: ${response.status}`);
+							console.error(`Error: ${fileName}: ${response.status}`);
+							console.log(`Error: ${fileName}: ${response.status}`);
 						}
 					}).catch((error) => {
 						console.log(`Error: `, error);
