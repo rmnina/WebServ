@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 16:03:47 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/27 23:05:38 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,11 @@ class Server
 		std::vector<int>			_client_sock;
 		std::vector<size_t>			_nb_bytes;
 		std::vector<std::string>	_request;
+		std::vector<std::string>	_req_body;
 		struct addrinfo				*_info;
 		struct epoll_event			_event;
+
+		bool						_error_page;
 
  	public:
 		Server(void);
@@ -63,6 +66,8 @@ class Server
 		std::string					getHost(void) const;
 		std::string					getPort(void) const;
 		std::vector<std::string>	getRequest(void) const;
+		std::vector<std::string>	getReqBody( void) const;
+		bool						getErrorPage( void) const;
 
 		void	add_event(int &epfd, int socket);
 		void	modify_event(int &epfd, int socket, uint32_t flag);

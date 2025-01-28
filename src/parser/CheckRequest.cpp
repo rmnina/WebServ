@@ -3,16 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   CheckRequest.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 15:48:17 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/27 23:04:02 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser/Parser.hpp"
 
-Parser::Parser( void) {}
+Parser::Parser( void) 
+{
+	_error_code = "";
+}
 
 Parser::Parser( Server *server) : _server(server) {}
 
@@ -27,8 +30,8 @@ bool	Parser::fill_method( const std::string &request)
 	
 	std::string					methods[3] = {"GET", "POST", "DELETE"};
 	std::vector<std::string>	tmp;
-
-	for (long unsigned int i = 0; i < methods->size(); i++)
+	
+	for (long unsigned int i = 0; i < sizeof(methods) / sizeof(std::string); i++)
 	{
 		if (!method.compare(methods[i]))
 		{
@@ -114,30 +117,32 @@ bool	Parser::check_req_size( const std::string &request)
 	return (true);
 }
 
-std::string Parser::examine_request( int client_index)
+void	Parser::examine_request( int client_index)
 {	
 	_server_conf = _server->getConfig();
 	_location = _server->getLocation();
+	_request_body = _server->getReqBody()[client_index];
 	
 	std::string	request = _server->getRequest()[client_index];
 	if (request.empty())
-		return ("");
+		return ;
 
 	init_mime_types();
 	if (!fill_path(request))
-		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
+		_error_code = "404"; //ERROR PAGE RESOURCE NOT FOUND
 	if (!fill_method(request))
-		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
+		_error_code = "405"; //ERROR PAGE METHOD NOT ALLOWED
 	if (!check_version(request) || !check_req_size(request))
-		_error_code = 400; //ERROR BAD REQUEST
-	else
-		_error_code = 200;
-	return (_response);
+		_error_code = "400"; //ERROR BAD REQUEST
+	else if (_error_code.empty())
+		_error_code = "200";
+	throw_error_page();
 }
 
 std::vector<unsigned char>							Parser::getImageResponse( void) const { return (_image_response); }
 std::map<std::string, std::vector<std::string> >	Parser::getRequest( void) const { return (_request); }
 std::string											Parser::getCategory( void) const { return (_category); }
 size_t												Parser::getRespSize( void) const { return (_resp_size); }
+std::string											Parser::getErrorCode( void) const { return (_error_code); }
 
 Parser::~Parser( void) {}

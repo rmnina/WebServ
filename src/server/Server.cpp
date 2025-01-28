@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 18:48:23 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/27 23:06:22 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,8 @@ int	Server::receive_request(int client_index, int &epfd)
 			body_start += 4;
 		if (_nb_bytes[client_index] < content_length + body_start)
 			return (CONTINUE);
-	}
+		_req_body[client_index] = _request[client_index].substr(body_start, content_length);
+	}	
 	return (SUCCESS);
 }
 
@@ -253,7 +254,9 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 	{
 		Parser	parser(this);
 		parser.examine_request(client_index);
+		std::cout << BOLD RED << _request[client_index] << RESET << std::endl;
 		std::string response = parser.build_response_header();
+		std::cout << BOLD ORANGE << response << RESET << std::endl;
 		send(_client_sock[client_index], response.c_str(), response.size(), 0); // Sending header in plain text
 		response = parser.build_response();
 		send_response(response, client_index, epfd); // Sending the rest of the response in packets
@@ -265,23 +268,27 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 	return (FAILURE);
 }
 
-server_data	Server::getConfig() const { return (_config); }
+server_data	Server::getConfig( void) const { return (_config); }
 
-location_data	Server::getLocation() const { return (_location); }
+location_data	Server::getLocation( void) const { return (_location); }
 
-int Server::getSocket() const { return (_server_socket); }
+int Server::getSocket( void) const { return (_server_socket); }
 
-std::vector<int>	Server::getClientSock() const { return (_client_sock); }
+std::vector<int>	Server::getClientSock( void) const { return (_client_sock); }
 
-std::vector<size_t> Server::getNbBytes() const { return (_nb_bytes); }
+std::vector<size_t> Server::getNbBytes( void) const { return (_nb_bytes); }
 
-std::string Server::getName() const { return (_name); }
+std::string Server::getName( void) const { return (_name); }
 
-std::string Server::getHost() const { return (_hostname); }
+std::string Server::getHost( void) const { return (_hostname); }
 
-std::string Server::getPort() const { return (_port); }
+std::string Server::getPort( void) const { return (_port); }
 
-std::vector<std::string> Server::getRequest() const { return (_request); }
+std::vector<std::string>	Server::getRequest( void) const { return (_request); }
+
+std::vector<std::string>	Server::getReqBody( void) const { return (_req_body); }
+ 
+bool	Server::getErrorPage( void) const { return (_error_page); }
 
 
 Server::~Server()

@@ -1983,6 +1983,57 @@ input, select, textarea {
 			color: #555;
 		  }
 
+/* Upload */
+
+	.file-input {
+    	font-size: 1em;
+    	padding: 5px 0px; 
+    	background-color: #e8f3f5; 
+    	color: grey; 
+    	border: none; 
+    	border-radius: 10px; 
+    	cursor: pointer;
+    	transition: background-color 0.3s, transform 0.2s;
+	}
+
+	.file-input:hover {
+    	background-color: #d8eff3;
+    	transform: scale(1.05);
+	}
+
+	.file-input:focus {
+    	outline: none; 
+    	box-shadow: 0 0 5px rgba(0, 150, 255, 0.5); 
+	}
+
+	.file-input::-webkit-file-upload-button {
+    	visibility: hidden; 
+	}
+
+	.file-input::before {
+    	content: "Browse";
+    	display: inline-block;
+    	padding: 10px 20px;
+    	background-color: #4CAF50;
+    	color: white;
+    	border: none;
+    	border-radius: 5px;
+    	cursor: pointer;
+    	text-align: center;
+    	font-size: 1em;
+    	transition: background-color 0.3s, transform 0.2s;
+	}
+
+	.file-input::before:hover {
+    	background-color: #45a049;
+    	transform: scale(1.05); 
+	}
+
+	button[type="submit"] {
+    margin-top: 1em;
+	}
+
+
 /* Icons */
 
 	.icon {

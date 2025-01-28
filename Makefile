@@ -6,10 +6,10 @@
 #    By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 19:01:05 by jdufour           #+#    #+#              #
-#    Updated: 2025/01/24 13:03:01 by eltouma          ###   ########.fr        #
+#    Updated: 2025/01/27 23:07:19 by jdufour          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-NAME = webserv
+
 
 CC = c++ -Wall -Wextra -Werror -g3 -std=c++98
 MAKEFLAGS += --no-print-directory

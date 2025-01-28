@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 19:02:56 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/27 23:03:58 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ std::string	Parser::build_response_header( void)
 {
 	std::ostringstream	header;
 	header << "HTTP/1.1 " <<_error_code;
-	if (_error_code == 200 || _error_code == 201 || _error_code == 204)
+	if (_error_code == "200" || _error_code == "201" || _error_code == "204")
 		header <<" OK\r\n";
 	header << "Date: " << get_time() << "\r\n";
 	if (_category == "IMAGE")
@@ -152,6 +152,20 @@ std::string	Parser::build_response_header( void)
 }
 
 void	Parser::build_response_content( std::string &filename)
+{
+	std::string		line;
+	std::string		content;
+	std::ifstream	file(filename.c_str());
+
+	if (!file.is_open())
+		std::cerr << "Couldnt open file " << std::endl;
+	while (std::getline(file, line))
+		content += line + "\n";
+	_response += content;
+	file.close();
+}
+
+void	Parser::build_POST_response( std::string &filename)
 {
 	std::string		line;
 	std::string		content;
@@ -328,6 +342,13 @@ void	Parser::GETmethod( void)
 void	Parser::POSTmethod( void)
 {
 	std::string	path = _request["path"][0];
+
+	if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
+		build_response_content(path);
+	else if (!_category.compare("CGI"))
+		exec_cgi(path, POST);
+	else
+		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;	std::string	path = _request["path"][0];
 	std::cout << __func__ << "\tpath = " << path << std::endl;
 }
 
@@ -357,6 +378,14 @@ std::string	Parser::build_response( void)
 
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
+
+	if (_request["path"][0] == "www/error.html")
+	{
+		build_response_content(_request["path"][0]);
+		restore_error_page();
+		return (_response);
+	}
+	
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
 		if (_request.find("method")->second[0] == method[i])
