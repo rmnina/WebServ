@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 19:02:56 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/28 19:34:18 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,9 +165,10 @@ void	Parser::build_response_content( std::string &filename)
 	file.close();
 }
 
-void	Parser::exec_cgi( std::string &filename, int method)
+void	Parser::exec_cgi(std::string &filename, int method)
 {
 	std::cout << "on rentre dans exec_cgi" << std::endl;
+	std::cout << "filename est : " << filename << std::endl;
 	pid_t pid;
 	int pipefd[2];
 
@@ -240,6 +241,7 @@ void	Parser::exec_cgi( std::string &filename, int method)
 
 		_response += cgi_output.str();
 		std::cout << "_response a la fin de exec_cgi = " << _response << std::endl;
+		std::cout << "_response a la fin de exec_cgi = " << cgi_output.str() << std::endl;
 	}
 }
 

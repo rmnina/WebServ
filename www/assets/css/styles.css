@@ -252,7 +252,7 @@ text-align: center;
 	border-radius: 4px;
 }
 
-.server:hover, .check-button:hover, .card-title:hover { color: white; }
+.server:hover, .check-button:hover, .card:hover h3, .card:hover p, .card:hover { color: white; }
 
 .flex-container {
   display: flex;
@@ -271,4 +271,36 @@ text-align: center;
 
 .jdufour > a:hover, .ahayon > a:hover, .eltouma > a:hover {
 	color: #6C757D;	
+}
+
+#random-page {
+	    padding: 4em 0 4em 0;
+    padding: 1em 0 1em 0;
+    text-align: center;
+    display: flex
+;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
+    align-content: stretch;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#random-nb {
+	color: #afb0b3;	
+	font-family: "Inkut Antiqua", cursive;
+}
+
+#random-nb-result {
+	font-size: 20px;
+	color: gold;
+	color: #ffd700b5;
+}
+
+#hierophant {
+  font-size: 18px;
+}
+
+.real-sacred-nb {
+  font-size: 12px;
 }
