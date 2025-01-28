@@ -7,6 +7,7 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<link rel="stylesheet" href="assets/css/styles.css" />
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<!--<script src="/mon.js" defer></script>-->
 	</head>
 	<!--
@@ -37,9 +38,13 @@
 						<h1>Welcome to our WebServ!</h1>
 					</header>
 					<p class="welcome-p">And this is our <strong>website</strong>, were you can find a demonstration of all the features we implemented.</p>
-					<a href="#request" class="card-title nav-link">Let's check this out !</a>
+					<!--<a href="#request" class="card-title nav-link">Let's check this out !</a></br>-->
+					<!--<button class="check-button"><a href="#request" >Let's check this out!</a></button></br>-->
+					<a href="#request" ><button class="check-button">Let's check this out!</button></a></br>
+					<p class="server-explanation">If you don't know what a server is, you can check <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works#clients_and_servers" class="server" target="_blank">here</a></p>
+
 				</article>
-				<article id="request" class="wrapper style2">
+				<article id="request" class="wrapper">
 					<div class="wrapper">
 						<button class="upload-button" onclick="openForm()">
 							<div class="card" style="width: 18rem;">
@@ -88,12 +93,16 @@
 																});
 										});
 				</script>
-						</div>
-					</div>
+				</div>
+				</div>
 			</div>
 			<footer>
-				Background Video on
-				<a target="_blank" rel="noreferrer" href="https://coverr.co/">Coverr</a>
+				<p>Follow us on GitHub</p>
+				<div class="flex-container">
+					<div class="jdufour"><a href="https://github.com/rmnina" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>jdufour</p></a></div>
+					<div class="ahayon"><a href="https://github.com/Skiams" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>ahayon</p></a></div>
+					<div class="eltouma"><a href="https://github.com/eltouma" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>eltouma</p></a></div>
+				</div>
 			</footer>
 	</body>
 </html>

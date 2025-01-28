@@ -252,6 +252,8 @@ text-align: center;
 	border-radius: 4px;
 }
 
+.server:hover, .check-button:hover, .card-title:hover { color: white; }
+
 .flex-container {
   display: flex;
 	justify-content: center;
