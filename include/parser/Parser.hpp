@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 19:20:44 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/29 02:38:11 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class Parser
 {
 	private:
 		std::map<std::string, std::vector<std::string> >	_request;
+		std::string											_request_body;
 		std::string											_response;
 		std::vector<unsigned char>							_image_response;
 
@@ -45,6 +46,7 @@ class Parser
 		std::string											_extension;
 		std::string											_category;
 		int													_error_code;
+		std::string											_error_page;
 
 		Server												*_server;
 		server_data											_server_conf;
@@ -62,10 +64,12 @@ class Parser
 		std::map<std::string, std::vector <std::string> >	getRequest( void) const;
 		std::string											getCategory( void) const;
 		size_t												getRespSize( void) const;
+		int													getErrorCode( void) const;
 		
 		void		init_mime_types( void);
 
 		void		build_response_content( std::string &filename);
+		void		build_POST_response( std::string &filename);
 		void		exec_cgi( std::string &filename, int method);
 
 		void		GETmethod( void);
@@ -80,7 +84,7 @@ class Parser
 		std::string					build_response_header( void);
 		std::string					build_response( void);
 
-		std::string	examine_request( int client_index);
+		void						examine_request( int client_index);
 		
 		bool		fill_method( const std::string &request);
 		bool		fill_path( const std::string &request);
@@ -88,6 +92,9 @@ class Parser
 		bool		check_version( const std::string &request);
 		bool		check_req_size( const std::string &request);
 
+		int			build_error_page( void);
+		int			throw_error_page( void);
+		int			restore_error_page( void);
 		void		display_dirlist(std::string path);
 
 		~Parser( void);

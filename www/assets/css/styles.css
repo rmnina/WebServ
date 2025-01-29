@@ -53,6 +53,17 @@ transition: none !important;
 .topnav {
 	background-color: #191818;
 	overflow: hidden;
+	position: fixed;
+	/*
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	 */
+width: 100%;
+z-index: 1000;
 }
 
 .topnav a {
@@ -112,6 +123,8 @@ footer a:hover {
 	display: flex;
 	flex: 3 3 200px;
 	gap: 20em;
+	margin-top: 6em;
+	margin-top: 4em;
 	align-content: flex-start;
 	justify-content: center; 
 }
@@ -120,7 +133,7 @@ footer a:hover {
 	background-color: transparent;
 	border: none;
 	position: unset;
-	color: #e3e4e8;
+	color: #afb0b3;
 	font-family: "Inkut Antiqua", cursive;
 	text-align: left;
 	cursor: pointer;
@@ -169,11 +182,6 @@ footer a:hover {
 	opacity: 0.8;
 	text-align: left;
 	padding-left: 8px;
-	/*
-	height: 30px;
-	display: flex;
-	align-items: center;
-	*/
 }
 
 /* Add some hover effects to buttons */
@@ -195,3 +203,104 @@ footer a:hover {
 }
 
 .close:hover { background: #bbb;}
+
+
+/*
+.wrapper {
+background-image: url("images/bg.png");
+box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.05), inset 0px 2px 3px 0px rgba(0, 0, 0, 0.1);
+padding: 5em 0 4em 0;
+text-align: center;
+}
+ */
+
+.presentation { /*, .welcome-header {*/ 
+	padding: 4em 0 4em 0;
+	padding: 1em 0 1em 0;
+	text-align: center;
+}
+
+.welcome-header {
+	letter-spacing: 8px;
+	color: #6C757D;
+	font-size: 40px;
+	font-size: 30px;
+}
+
+.welcome-p{
+	letter-spacing: 4px;
+	letter-spacing: 3px;
+	color: #afb0b3;
+	font-size: 20px;
+}
+
+.server-explanation, .server {
+	color: #afb0b3;
+	margin-top: 3em;
+	font-size: 14px;
+}
+
+.check-button {
+	color: #afb0b3;
+	background-color: #333;
+	color: #afb0b3;
+	cursor: pointer;
+	font-size: 14px;
+	border: black;
+	padding: 1em;
+	margin: 2em;
+	border-radius: 4px;
+}
+
+.server:hover, .check-button:hover, .card:hover h3, .card:hover p, .card:hover { color: white; }
+
+.flex-container {
+  display: flex;
+	justify-content: center;
+}
+
+.flex-container > div {
+  width: 100px;
+  line-height: 2px;
+  font-size: 14px;
+}
+
+.jdufour > a, .ahayon > a, .eltouma > a {
+	color: #DEE2E6;	
+}
+
+.jdufour > a:hover, .ahayon > a:hover, .eltouma > a:hover {
+	color: #6C757D;	
+}
+
+#random-page {
+	    padding: 4em 0 4em 0;
+    padding: 1em 0 1em 0;
+    text-align: center;
+    display: flex
+;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
+    align-content: stretch;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#random-nb {
+	color: #afb0b3;	
+	font-family: "Inkut Antiqua", cursive;
+}
+
+#random-nb-result {
+	font-size: 20px;
+	color: gold;
+	color: #ffd700b5;
+}
+
+#hierophant {
+  font-size: 18px;
+}
+
+.real-sacred-nb {
+  font-size: 12px;
+}

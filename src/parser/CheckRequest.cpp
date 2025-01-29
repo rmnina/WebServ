@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CheckRequest.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 15:48:17 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/29 02:38:00 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ bool	Parser::fill_method( const std::string &request)
 	
 	std::string					methods[3] = {"GET", "POST", "DELETE"};
 	std::vector<std::string>	tmp;
-
-	for (long unsigned int i = 0; i < methods->size(); i++)
+	
+	for (long unsigned int i = 0; i < sizeof(methods) / sizeof(std::string); i++)
 	{
 		if (!method.compare(methods[i]))
 		{
@@ -114,14 +114,15 @@ bool	Parser::check_req_size( const std::string &request)
 	return (true);
 }
 
-std::string Parser::examine_request( int client_index)
+void	Parser::examine_request( int client_index)
 {	
 	_server_conf = _server->getConfig();
 	_location = _server->getLocation();
+	// _request_body = _server->getReqBody()[client_index];
 	
 	std::string	request = _server->getRequest()[client_index];
 	if (request.empty())
-		return ("");
+		return ;
 
 	init_mime_types();
 	if (!fill_path(request))
@@ -132,12 +133,13 @@ std::string Parser::examine_request( int client_index)
 		_error_code = 400; //ERROR BAD REQUEST
 	else
 		_error_code = 200;
-	return (_response);
+	throw_error_page();
 }
 
 std::vector<unsigned char>							Parser::getImageResponse( void) const { return (_image_response); }
 std::map<std::string, std::vector<std::string> >	Parser::getRequest( void) const { return (_request); }
 std::string											Parser::getCategory( void) const { return (_category); }
 size_t												Parser::getRespSize( void) const { return (_resp_size); }
+int													Parser::getErrorCode( void) const { return (_error_code); }
 
 Parser::~Parser( void) {}
