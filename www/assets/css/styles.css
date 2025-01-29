@@ -18,6 +18,10 @@ transition: none !important;
 }
 
  */
+.i2 {
+
+	filter: blur(5px);
+}
 
 /* Content Parallax Section*/
 .ParallaxMainContent {
@@ -34,8 +38,7 @@ transition: none !important;
 
 /* Video Parallax Section*/
 .ParallaxVideo {
-	height: 300px;
-	height: 500px;
+	height: 763px;
 }
 
 .ParallaxVideo video {
@@ -50,6 +53,15 @@ transition: none !important;
 	filter: grayscale(100%);
 }
 
+#container-random
+{
+	margin: 1rem;
+}
+
+#parallaxRandom {
+	height: 650px;
+}
+
 .topnav {
 	background-color: #191818;
 	overflow: hidden;
@@ -62,8 +74,8 @@ transition: none !important;
 	top: 0;
 	width: 100%;
 	 */
-width: 100%;
-z-index: 1000;
+	width: 100%;
+	z-index: 1000;
 }
 
 .topnav a {
@@ -104,7 +116,7 @@ z-index: 1000;
 }
 
 footer {
-	padding: 3rem;
+	padding: 1rem;
 	text-align: center;
 	color: white;
 }
@@ -119,17 +131,43 @@ footer a:hover {
 	color: yellow;
 }
 
-.wrapper {
+.wrapper-request {
 	display: flex;
 	flex: 3 3 200px;
 	gap: 20em;
-	margin-top: 6em;
-	margin-top: 4em;
 	align-content: flex-start;
 	justify-content: center; 
+	align-items: center; /* Centre horizontalement */
+	margin-top: 10em; /* Ajuste l'espace en haut */
 }
 
-#delete-link, .upload-button, .delete-button {
+.wrapper-request #script {
+	position: relative;
+	top: -8em; /* Remonte l’élément po
+}
+
+#request {
+    margin-top: 5em; /* Réduction de l’espace trop grand */
+    scroll-margin-top: 6em; /* Évite que l’ancre cache le contenu sous la navbar */
+}
+
+#script {
+    margin-top: 8em; /* Réduction de l’espace trop grand */
+    scroll-margin-top: 6em; /* Évite que l’ancre cache le contenu sous la navbar */
+}
+.wrapper-cgi {
+	display: flex;
+	justify-content: center; /* Centre verticalement */
+    	gap: 13em;
+    	align-items: center;
+    	justify-content: center;
+    /* margin-top: 10em; */
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-content: space-around;
+}
+
+#delete-link, .upload-button, .delete-button, #cgi-link {
 	background-color: transparent;
 	border: none;
 	position: unset;
@@ -139,6 +177,7 @@ footer a:hover {
 	cursor: pointer;
 	font-size: 16px;
 	text-decoration: none;
+	margin-top: 7em;
 }
 
 .upload-button h3, .delete-button h3, #delete-link h3 {
@@ -147,7 +186,11 @@ footer a:hover {
 	text-decoration: none;
 }
 
-#death { padding-top: 36px; }
+#cgi-link {
+	margin-top: -3em;
+}
+
+#death { padding-top: 36px; } 
 
 .form-popup {
 	display: none; /* Caché par défaut */
@@ -214,21 +257,23 @@ text-align: center;
 }
  */
 
-.presentation { /*, .welcome-header {*/ 
-	padding: 4em 0 4em 0;
-	padding: 1em 0 1em 0;
+.presentation { 
+	padding: 3em 0 1em 0;
 	text-align: center;
+}
+
+#pres-cgi {
+	padding: 6em 0 1em 0;
+	padding: 6em 0 6em 0;
 }
 
 .welcome-header {
 	letter-spacing: 8px;
 	color: #6C757D;
-	font-size: 40px;
 	font-size: 30px;
 }
 
 .welcome-p{
-	letter-spacing: 4px;
 	letter-spacing: 3px;
 	color: #afb0b3;
 	font-size: 20px;
@@ -241,11 +286,10 @@ text-align: center;
 }
 
 .check-button {
-	color: #afb0b3;
 	background-color: #333;
 	color: #afb0b3;
 	cursor: pointer;
-	font-size: 14px;
+	font-size: 16px;
 	border: black;
 	padding: 1em;
 	margin: 2em;
@@ -255,14 +299,14 @@ text-align: center;
 .server:hover, .check-button:hover, .card:hover h3, .card:hover p, .card:hover { color: white; }
 
 .flex-container {
-  display: flex;
+	display: flex;
 	justify-content: center;
 }
 
 .flex-container > div {
-  width: 100px;
-  line-height: 2px;
-  font-size: 14px;
+	width: 100px;
+	line-height: 2px;
+	font-size: 14px;
 }
 
 .jdufour > a, .ahayon > a, .eltouma > a {
@@ -274,20 +318,20 @@ text-align: center;
 }
 
 #random-page {
-	    padding: 4em 0 4em 0;
-    padding: 1em 0 1em 0;
-    text-align: center;
-    display: flex
-;
-    flex-direction: column;
+	padding: 4em 0 4em 0;
+	padding: 1em 0 1em 0;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
     /* flex-wrap: wrap; */
-    align-content: stretch;
-    justify-content: space-evenly;
-    align-items: center;
+	align-content: stretch;
+	justify-content: space-evenly;
+	align-items: center;
 }
 
 #random-nb {
 	color: #afb0b3;	
+	margin: 0em;
 	font-family: "Inkut Antiqua", cursive;
 }
 
@@ -298,9 +342,14 @@ text-align: center;
 }
 
 #hierophant {
-  font-size: 18px;
+	font-size: 18px;
 }
 
 .real-sacred-nb {
-  font-size: 12px;
+	font-size: 12px;
+}
+
+#random-nb-btn {
+	font-size: 13px;
+	margin: 1em;
 }
