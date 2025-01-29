@@ -31,9 +31,6 @@
 		</div>
 
 		<div class="ParallaxMainContent">
-		<div class="i2">
-		</div>
-
 			<div class="container">
 				<article class="presentation">
 					<header class="welcome-header">
@@ -61,6 +58,19 @@
 								<div class="card-body">
 									<h3 class="card-title">Delete</h3>
 									<p class="card-txt">Here, you can delete the files you uploaded. Don't try to flush anything else, we'll be watchin...</p>
+
+				<div class="form-popup" id="myForm">
+					<form action="/upload" method="post" enctype="multipart/form-data" class="popup-container" >
+						<button type="button" class="close" onclick="closeForm()">
+							<i class="fa fa-times"></i>
+						</button>
+						<h2>Upload a file</h2>
+						<div>
+							<input type="file" name="file" required>
+						</div>
+						<button type="submit" class="btn submit">Submit</button>
+					</form>
+				</div>
 				</article>
 				<article class="presentation" id="pres-cgi">
 					<p class="welcome-p">Can a mere mortal handle these CGI? Try it at your own risk.</p>
@@ -103,6 +113,7 @@
 								</div>
 							</div>
 						</a>
+
 				</article>
 				<script>
 

@@ -277,6 +277,7 @@ text-align: center;
 	letter-spacing: 3px;
 	color: #afb0b3;
 	font-size: 20px;
+	text-align: center;
 }
 
 .server-explanation, .server {
