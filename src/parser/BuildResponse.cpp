@@ -147,7 +147,7 @@ std::string	Parser::build_response_header( void)
 		header << "Content-Length: " << _body_size << "\r\n";
 	}
 	else {
-		if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on" && is_directory(_request["path"][0]))
+		if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
 			header << "Content-Type: text/html\r\n";
 		else if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
 		{
