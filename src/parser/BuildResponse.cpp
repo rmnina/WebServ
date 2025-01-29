@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 17:03:11 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/29 17:26:01 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ std::string	Parser::build_response_header( void)
 		header << "Content-Length: " << _body_size << "\r\n";
 	}
 	else {
-		if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
+		if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on" && is_directory(_request["path"][0]))
 			header << "Content-Type: text/html\r\n";
 		else if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
 		{
@@ -259,28 +259,7 @@ void	Parser::exec_cgi( std::string &filename, int method)
 	}
 }
 
-/*
-<<<<<<< Updated upstream
-bool is_directory(const std::string &path)
-{
-	struct stat path_stat;
-	if (stat(path.c_str(), &path_stat) != 0)
-		return false;
-	return S_ISDIR(path_stat.st_mode);
-}
 
-bool is_file(const std::string &path)
-{
-	struct stat path_stat;
-	if (stat(path.c_str(), &path_stat) != 0)
-		return false;
-	return S_ISREG(path_stat.st_mode);
-}
-=======
-
->>>>>>> Stashed changes
-
-*/
 void	Parser::display_dirlist(std::string path)
 {
 	DIR *dir;
@@ -297,19 +276,6 @@ void	Parser::display_dirlist(std::string path)
 	while ((entry = readdir(dir)) != NULL)
 	{
 		std::cout << "boucle display dir\n";
-<<<<<<< HEAD
-		/*
-<<<<<<< Updated upstream
-        std::string name(entry->d_name);
-        if (name != "." && name != "..")
-        {
-			std::string full_path = path + "/" + name;
-            if (is_directory(full_path))
-                html << "<li><a href=\"" << full_path.substr(2) << "/\">" << name << "/</a></li>";
-            else
-                html << "<li><a href=\"" << full_path.substr(2) << "\">" << name << "</a></li>";
-=======
-*/
 		std::string name(entry->d_name);
 		std::cout << "name = " << name << std::endl;
 		if (name != "." && name != "..")
@@ -320,19 +286,6 @@ void	Parser::display_dirlist(std::string path)
 				html << "<li><a href=\"" << name << "/\">" << name << "/</a></li>";
 			else
 				html << "<li><a href=\"" << name << "\">" << name << "</a></li>";
-			/*
->>>>>>> Stashed changes
-*/
-=======
-		std::string name(entry->d_name);
-		if (name != "." && name != "..")
-		{
-			std::string full_path = path + "/" + name;
-			if (is_directory(full_path))
-				html << "<li><a href=\"" << full_path.substr(2) << "/\">" << name << "/</a></li>";
-			else
-				html << "<li><a href=\"" << full_path.substr(2) << "\">" << name << "</a></li>";
->>>>>>> 37718c0831852bb806d13b1c6dab5f1474a9ee7e
 		}
 	}
 
@@ -350,22 +303,12 @@ void	Parser::GETmethod( void)
 {	
 	std::string	path = _request["path"][0];
 
-	/*
-<<<<<<< Updated upstream
+
 	std::cout << "path before = " << path << std::endl;
 	if (path.substr(0, 2) != "./")
 		path = "./" + path;
 	std::cout << "path after = " << path << std::endl;
 	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
-=======
-*/
-	if (path.substr(0, 2) != "./")
-		path = "./" + path;
-	std::cout << "path debut GETmethod = " << path << std::endl; 
-	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on")
-		/*
->>>>>>> Stashed changes
-*/
 	{
 		std::cout << "on a bien trouve le dir_listing" << std::endl;
 		if (path == "./www/index.html")
