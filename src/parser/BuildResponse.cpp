@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 16:40:27 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/29 18:59:35 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,22 @@ size_t	Parser::get_content_length( const std::string &filename)
 	return (_resp_size);
 }
 
+bool is_directory(const std::string &path)
+{
+	struct stat path_stat;
+	if (stat(path.c_str(), &path_stat) != 0)
+		return false;
+	return S_ISDIR(path_stat.st_mode);
+}
+
+bool is_file(const std::string &path)
+{
+	struct stat path_stat;
+	if (stat(path.c_str(), &path_stat) != 0)
+		return false;
+	return S_ISREG(path_stat.st_mode);
+}
+
 std::string	Parser::build_response_header( void)
 {
 	std::ostringstream	header;
@@ -131,7 +147,9 @@ std::string	Parser::build_response_header( void)
 		header << "Content-Length: " << _body_size << "\r\n";
 	}
 	else {
-		if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
+		if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
+			header << "Content-Type: text/html\r\n";
+		else if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
 		{
 			std::cout << "ca verifie le type httpd-cgi" << std::endl;
 			header << "Content-Type: text/html\r\n";
@@ -167,6 +185,19 @@ void	Parser::build_response_content( std::string &filename)
 
 void	Parser::exec_cgi(std::string &filename, int method)
 {
+// void	Parser::build_POST_response( std::string &filename)
+// {
+// 	std::string		line;
+// 	std::string		content;
+// 	std::ifstream	file(filename.c_str());
+
+// 	if (!file.is_open())
+// 		std::cerr << "Couldnt open file " << std::endl;
+// 	while (std::getline(file, line))
+// 		content += line + "\n";
+// 	_response += content;
+// 	file.close();
+// }
 	std::cout << "on rentre dans exec_cgi" << std::endl;
 	std::cout << "filename est : " << filename << std::endl;
 	pid_t pid;
@@ -239,21 +270,6 @@ void	Parser::exec_cgi(std::string &filename, int method)
 	}
 }
 
-bool is_directory(const std::string &path)
-{
-	struct stat path_stat;
-	if (stat(path.c_str(), &path_stat) != 0)
-		return false;
-	return S_ISDIR(path_stat.st_mode);
-}
-
-bool is_file(const std::string &path)
-{
-	struct stat path_stat;
-	if (stat(path.c_str(), &path_stat) != 0)
-		return false;
-	return S_ISREG(path_stat.st_mode);
-}
 
 void	Parser::display_dirlist(std::string path)
 {
@@ -272,13 +288,15 @@ void	Parser::display_dirlist(std::string path)
 	{
 		std::cout << "boucle display dir\n";
 		std::string name(entry->d_name);
+		std::cout << "name = " << name << std::endl;
 		if (name != "." && name != "..")
 		{
 			std::string full_path = path + "/" + name;
+			// std::cout << "full path = " << full_path << std::endl;
 			if (is_directory(full_path))
-				html << "<li><a href=\"" << full_path.substr(2) << "/\">" << name << "/</a></li>";
+				html << "<li><a href=\"" << name << "/\">" << name << "/</a></li>";
 			else
-				html << "<li><a href=\"" << full_path.substr(2) << "\">" << name << "</a></li>";
+				html << "<li><a href=\"" << name << "\">" << name << "</a></li>";
 		}
 	}
 
@@ -295,17 +313,16 @@ void	Parser::display_dirlist(std::string path)
 void	Parser::GETmethod( void)
 {	
 	std::string	path = _request["path"][0];
-
 	std::cout << "path before = " << path << std::endl;
 	if (path.substr(0, 2) != "./")
 		path = "./" + path;
-	std::cout << "path after = " << path << std::endl;
-	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
+	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on")
 	{
-		std::cout << "on a bien trouve le dir_listing" << std::endl;
+		std::cout << RED << "on a bien trouve le dir_listing" << RESET << std::endl;
 		if (path == "./www/index.html")
 			display_dirlist("./www");
-		else if (path != "./www/favicon.ico")
+		//else if (path != "./www/favicon.ico")
+		else
 		{
 			if (is_directory(path))
 				display_dirlist(path);
@@ -324,6 +341,15 @@ void	Parser::GETmethod( void)
 void	Parser::POSTmethod( void)
 {
 	std::string	path = _request["path"][0];
+
+	if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
+		build_response_content(path);
+	else if (!_category.compare("CGI"))
+		exec_cgi(path, POST);
+	else
+	{
+		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;	std::string	path = _request["path"][0];
+	}
 	std::cout << __func__ << "\tpath = " << path << std::endl;
 }
 
@@ -353,6 +379,13 @@ std::string	Parser::build_response( void)
 
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
+
+	if (_request["path"][0] == "www/error.html")
+	{
+		build_response_content(_request["path"][0]);
+		restore_error_page();
+		return (_response);
+	}
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
 		if (_request.find("method")->second[0] == method[i])

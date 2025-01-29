@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 15:57:44 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/27 23:05:06 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 	std::cout << "line avant le for: " << line << std::endl;
 	for (i = 0; line[i] == ' '; i++);
 	start = line.find(' ', i);
-	end = line.find_last_of(' ');
+	end = line.find_last_of(' ') + 1;
 	std::cout << "start: " << start << " end: " << end << "\n";
 	std::string route = line.substr(start, end - start);
 	std::cout << "route: " << route << "\n";
@@ -110,7 +110,7 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 		if (line[0] == '#')
 			std::getline(conf_file, line);
 			
-		size_t		space_pos = line.find(" ", 0);
+		size_t		space_pos = line.find(" ");
 		std::string keyword = line.substr(0, space_pos);
 		std::cout << "keyword: " << keyword << std::endl;
 		if (!_location_allowed(keyword))
@@ -155,7 +155,7 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 			std::getline(conf_file, line);
 		else
 		{
-			size_t		space_pos = line.find(" ", 0);
+			size_t		space_pos = line.find(" ");
 			std::string keyword = line.substr(0, space_pos);
 			if (!_server_allowed(keyword))
 			{
@@ -286,8 +286,16 @@ Config::~Config(void) {}
 std::vector<std::string>	string_to_vector(const std::string &string, const char delimiter, size_t space_pos)
 {
 	std::vector<std::string>	result;
-	size_t						start = space_pos;
-	size_t						end = string.find(delimiter, start);
+
+	if (space_pos >= string.size())
+		return (result);
+
+	size_t	start = space_pos;
+
+	if (string[start] == delimiter)
+		start++;
+
+	size_t	end = string.find(delimiter, start);
 
 	while (end != std::string::npos)
 	{

@@ -13,8 +13,11 @@ CGI_PATH = www/cgi
 
 # Fichiers sources principaux
 SRCS = Config.cpp ConfigStruct.cpp Handler.cpp \
-        Server.cpp Signal.cpp CheckRequest.cpp \
-        BuildResponse.cpp Location.cpp main.cpp
+	Server.cpp Signal.cpp CheckRequest.cpp \
+	ErrorPage.cpp BuildResponse.cpp Location.cpp main.cpp
+	
+#vpath %.cpp $(foreach dir, $(SRCS_PATH), $(dir):) pas sur
+
 
 # CGI files
 #CGI_SOURCES = www/cgi/random_number.cpp # www/cgi/kaamelott.rb
