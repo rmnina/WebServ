@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 17:26:01 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/29 18:59:35 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,25 +204,22 @@ void	Parser::exec_cgi(std::string &filename, int method)
 	int pipefd[2];
 
 	if (pipe(pipefd) == -1)
-	{std::cerr << "Error creating a pipe\n"; return;}
+		{std::cerr << "Error creating a pipe\n"; return;}
 	pid = fork();
-    if (pid == -1) 
-
-	{std::cerr << "Error forking process\n"; return;}
-
+	if (pid == -1) 
+		{std::cerr << "Error forking process\n"; return;}
 	if (pid == 0) 
 	{
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);
-
-    std::map<std::string, std::string> env;
+    		std::map<std::string, std::string> env;
 		if (method == GET)
-        	env["REQUEST_METHOD"] = "GET";
+        		env["REQUEST_METHOD"] = "GET";
 		else
 			env["REQUEST_METHOD"] = "POST";
-        env["SCRIPT_NAME"] = filename;
-        // env["QUERY_STRING"] = _request["query"].empty() ? "" : _request["query"][0];
+       		 env["SCRIPT_NAME"] = filename;
+		// env["QUERY_STRING"] = _request["query"].empty() ? "" : _request["query"][0];
 		// std::ostringstream oss;
 		// if (_request["body"].empty())
 		// 	oss << 0;
@@ -238,19 +235,17 @@ void	Parser::exec_cgi(std::string &filename, int method)
 			i++;
 		}
 		envp[i] = NULL;
-		char *argv[] = {strdup(filename.c_str()), NULL};
+		char *argv[] = { strdup(filename.c_str()), NULL };
 		execve(filename.c_str(), argv, envp);
 		std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
 		exit(1);
 	} 
-
 	else 
 	{
 		close(pipefd[1]);
 		char buffer[1024];
 		std::ostringstream cgi_output;
 		int bytes_read;
-
 		while ((bytes_read = read(pipefd[0], buffer, sizeof(buffer) - 1)) > 0) 
 		{
 			buffer[bytes_read] = '\0';
@@ -267,7 +262,8 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		}
 
 		_body_size = (cgi_output.str()).size();
-
+		//_response = build_response_header();
+		// _response += "Content-Length: 100\n\r\n\r";
 		_response += cgi_output.str();
 		std::cout << "_response a la fin de exec_cgi = " << _response << std::endl;
 		std::cout << "_response a la fin de exec_cgi = " << cgi_output.str() << std::endl;
