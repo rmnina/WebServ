@@ -165,6 +165,8 @@ void	Parser::build_response_content( std::string &filename)
 	file.close();
 }
 
+void	Parser::exec_cgi(std::string &filename, int method)
+{
 // void	Parser::build_POST_response( std::string &filename)
 // {
 // 	std::string		line;
@@ -178,10 +180,8 @@ void	Parser::build_response_content( std::string &filename)
 // 	_response += content;
 // 	file.close();
 // }
-
-void	Parser::exec_cgi( std::string &filename, int method)
-{
 	std::cout << "on rentre dans exec_cgi" << std::endl;
+	std::cout << "filename est : " << filename << std::endl;
 	pid_t pid;
 	int pipefd[2];
 
@@ -254,6 +254,7 @@ void	Parser::exec_cgi( std::string &filename, int method)
 
 		_response += cgi_output.str();
 		std::cout << "_response a la fin de exec_cgi = " << _response << std::endl;
+		std::cout << "_response a la fin de exec_cgi = " << cgi_output.str() << std::endl;
 	}
 }
 
