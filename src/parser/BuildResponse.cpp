@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 19:02:56 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/01/29 17:03:11 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,22 @@ size_t	Parser::get_content_length( const std::string &filename)
 	return (_resp_size);
 }
 
+bool is_directory(const std::string &path)
+{
+	struct stat path_stat;
+	if (stat(path.c_str(), &path_stat) != 0)
+		return false;
+	return S_ISDIR(path_stat.st_mode);
+}
+
+bool is_file(const std::string &path)
+{
+	struct stat path_stat;
+	if (stat(path.c_str(), &path_stat) != 0)
+		return false;
+	return S_ISREG(path_stat.st_mode);
+}
+
 std::string	Parser::build_response_header( void)
 {
 	std::ostringstream	header;
@@ -131,7 +147,9 @@ std::string	Parser::build_response_header( void)
 		header << "Content-Length: " << _body_size << "\r\n";
 	}
 	else {
-		if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
+		if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
+			header << "Content-Type: text/html\r\n";
+		else if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
 		{
 			std::cout << "ca verifie le type httpd-cgi" << std::endl;
 			header << "Content-Type: text/html\r\n";
@@ -236,14 +254,14 @@ void	Parser::exec_cgi( std::string &filename, int method)
         }
 
 		_body_size = (cgi_output.str()).size();
-		//_response = build_response_header();
-		// _response += "Content-Length: 100\n\r\n\r";
 
         _response += cgi_output.str();
 		std::cout << "_response a la fin de exec_cgi = " << _response << std::endl;
     }
 }
 
+/*
+<<<<<<< Updated upstream
 bool is_directory(const std::string &path)
 {
     struct stat path_stat;
@@ -259,7 +277,11 @@ bool is_file(const std::string &path)
         return false;
     return S_ISREG(path_stat.st_mode);
 }
+=======
 
+>>>>>>> Stashed changes
+
+*/
 void	Parser::display_dirlist(std::string path)
 {
 	DIR *dir;
@@ -276,6 +298,8 @@ void	Parser::display_dirlist(std::string path)
     while ((entry = readdir(dir)) != NULL)
     {
 		std::cout << "boucle display dir\n";
+		/*
+<<<<<<< Updated upstream
         std::string name(entry->d_name);
         if (name != "." && name != "..")
         {
@@ -284,6 +308,21 @@ void	Parser::display_dirlist(std::string path)
                 html << "<li><a href=\"" << full_path.substr(2) << "/\">" << name << "/</a></li>";
             else
                 html << "<li><a href=\"" << full_path.substr(2) << "\">" << name << "</a></li>";
+=======
+*/
+		std::string name(entry->d_name);
+		std::cout << "name = " << name << std::endl;
+		if (name != "." && name != "..")
+		{
+			std::string full_path = path + "/" + name;
+			// std::cout << "full path = " << full_path << std::endl;
+			if (is_directory(full_path))
+				html << "<li><a href=\"" << name << "/\">" << name << "/</a></li>";
+			else
+				html << "<li><a href=\"" << name << "\">" << name << "</a></li>";
+			/*
+>>>>>>> Stashed changes
+*/
 		}
     }
 
@@ -301,16 +340,28 @@ void	Parser::GETmethod( void)
 {	
 	std::string	path = _request["path"][0];
 
+	/*
+<<<<<<< Updated upstream
 	std::cout << "path before = " << path << std::endl;
     if (path.substr(0, 2) != "./")
             path = "./" + path;
 	std::cout << "path after = " << path << std::endl;
 	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
+=======
+*/
+	if (path.substr(0, 2) != "./")
+		path = "./" + path;
+	std::cout << "path debut GETmethod = " << path << std::endl; 
+	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on")
+		/*
+>>>>>>> Stashed changes
+*/
 	{
 		std::cout << "on a bien trouve le dir_listing" << std::endl;
 		if (path == "./www/index.html")
 			display_dirlist("./www");
-		else if (path != "./www/favicon.ico")
+		//else if (path != "./www/favicon.ico")
+		else
 		{
 			if (is_directory(path))
 				display_dirlist(path);
