@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 21:48:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 23:05:56 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/29 02:43:11 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	Parser::get_location( const std::string &path)
 		if (it->first == "redirect")
 		{
 			_request["path"] = it->second;
-			_error_code = "301";
+			_error_code = 301;
 		}
 		if (it->first == "method")
 			_server_conf["method"] = it->second;

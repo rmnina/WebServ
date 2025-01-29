@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2024/12/01 20:14:27 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/29 02:44:15 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,11 @@
 
 int Parser::build_error_page( void)
 {	
-	std::string	code[6] = {"400", "403", "404", "405", "406", "410"};
+	std::ostringstream os;
+	os << _error_code;
+	std::string	code_str = os.str();
+	
+	int	code[6] = {400, 403, 404, 405, 406, 410};
 	std::string	message[6] = {"Bad request syntax", "Forbidden", "Resource not found",
 							"Method not allowed", "Format not acceptable", "Resource gone"};
 	
@@ -30,16 +34,16 @@ int Parser::build_error_page( void)
 
 	size_t	pos = 0;
 	std::ofstream	output_file("www/error.html");
-	std::string		image("images/" + _error_code + ".jpg");
+	std::string		image("images/" + code_str + ".jpg");
 	if (!output_file.is_open())
 		std::cerr << "Error opening error file in writing mode" << std::endl;
 	if ((pos = content.find("{{ERROR_IMG}}")) != std::string::npos)
 		content.replace(pos, strlen("{{ERROR_IMG}}"), image);
 	if ((pos = content.find("{{ERROR_CODE}}")) != std::string::npos)
-		content.replace(pos, strlen("{{ERROR_CODE}}"), _error_code);
+		content.replace(pos, strlen("{{ERROR_CODE}}"), code_str);
 	if ((pos = content.find("{{ERROR_MESSAGE}}")) != std::string::npos)
 	{
-		for (long unsigned int i = 0; i < sizeof(code) / sizeof(std::string); i++)
+		for (long unsigned int i = 0; i < sizeof(code) / sizeof(int); i++)
 		{
 			if (_error_code == code[i])
 				content.replace(pos, strlen("{{ERROR_MESSAGE}}"), message[i]);
@@ -52,9 +56,9 @@ int Parser::build_error_page( void)
 
 int	Parser::throw_error_page( void)
 {
-	std::string	error_code[6] = {"400", "403", "404", "405", "406", "410"};
+	int	error_code[6] = {400, 403, 404, 405, 406, 410};
 
-	for (long unsigned int i = 0; i < sizeof(error_code) / sizeof(std::string); i++)
+	for (long unsigned int i = 0; i < sizeof(error_code) / sizeof(int); i++)
 	{
 		if (_error_code == error_code[i])
 		{

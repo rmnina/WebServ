@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/28 17:05:19 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/29 05:26:26 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ std::string	Parser::build_response_header( void)
 {
 	std::ostringstream	header;
 	header << "HTTP/1.1 " <<_error_code;
-	if (_error_code == "200" || _error_code == "201" || _error_code == "204")
+	if (_error_code == 200 || _error_code == 201 || _error_code == 204)
 		header <<" OK\r\n";
 	header << "Date: " << get_time() << "\r\n";
 	if (_category == "IMAGE")
@@ -165,19 +165,19 @@ void	Parser::build_response_content( std::string &filename)
 	file.close();
 }
 
-void	Parser::build_POST_response( std::string &filename)
-{
-	std::string		line;
-	std::string		content;
-	std::ifstream	file(filename.c_str());
+// void	Parser::build_POST_response( std::string &filename)
+// {
+// 	std::string		line;
+// 	std::string		content;
+// 	std::ifstream	file(filename.c_str());
 
-	if (!file.is_open())
-		std::cerr << "Couldnt open file " << std::endl;
-	while (std::getline(file, line))
-		content += line + "\n";
-	_response += content;
-	file.close();
-}
+// 	if (!file.is_open())
+// 		std::cerr << "Couldnt open file " << std::endl;
+// 	while (std::getline(file, line))
+// 		content += line + "\n";
+// 	_response += content;
+// 	file.close();
+// }
 
 void	Parser::exec_cgi( std::string &filename, int method)
 {
@@ -314,13 +314,11 @@ void	Parser::GETmethod( void)
 {	
 	std::string	path = _request["path"][0];
 
-	std::cout << "path before = " << path << std::endl;
 	if (path.substr(0, 2) != "./")
 		path = "./" + path;
-	std::cout << "path after = " << path << std::endl;
-	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][1] == "on")
+	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on")
 	{
-		std::cout << "on a bien trouve le dir_listing" << std::endl;
+		std::cout << RED << "on a bien trouve le dir_listing" << RESET << std::endl;
 		if (path == "./www/index.html")
 			display_dirlist("./www");
 		else if (path != "./www/favicon.ico")
@@ -387,7 +385,6 @@ std::string	Parser::build_response( void)
 		restore_error_page();
 		return (_response);
 	}
-	
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
 		if (_request.find("method")->second[0] == method[i])

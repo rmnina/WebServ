@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 23:03:35 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/29 02:38:11 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Parser
 		size_t												_resp_size;
 		std::string											_extension;
 		std::string											_category;
-		std::string											_error_code;
+		int													_error_code;
 		std::string											_error_page;
 
 		Server												*_server;
@@ -64,7 +64,7 @@ class Parser
 		std::map<std::string, std::vector <std::string> >	getRequest( void) const;
 		std::string											getCategory( void) const;
 		size_t												getRespSize( void) const;
-		std::string											getErrorCode( void) const;
+		int													getErrorCode( void) const;
 		
 		void		init_mime_types( void);
 

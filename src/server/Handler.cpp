@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 23:06:12 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/29 02:30:55 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,86 +98,6 @@ int Handler::launchServers()
 	return (SUCCESS);
 }
 
-// int	Handler::get_client_index( Server &server, int event_fd)
-// {
-
-// }
-
-// int	Handler::send_response( Server &server, std::string &response, int client_index)
-// {
-// 	unsigned long	bytes_sent = 0;
-// 	size_t			packets_sent = 0;
-// 	size_t			resp_size = response.size();
-	
-// 	modify_event(server.getClientSock()[client_index], EPOLLOUT);
-// 	while (bytes_sent < resp_size)
-// 	{
-// 		size_t	packet_size;
-// 		if (MTU < resp_size - bytes_sent)
-// 			packet_size = MTU;
-// 		else
-// 			packet_size = resp_size - bytes_sent;
-// 		ssize_t	bytes = send(server.getClientSock()[client_index], response.c_str() + bytes_sent, packet_size, 0);
-// 		if (bytes <= 0)
-// 			return (close (server.getClientSock()[client_index]), 1);
-// 		bytes_sent += bytes;
-// 		packets_sent++;
-// 	}
-// 	modify_event(server.getClientSock()[client_index], EPOLLIN);
-// 	return (1);
-// }
-
-// int	Handler::send_image( Server &server, unsigned char *response, size_t size, int client_index)
-// {
-// 	unsigned long	bytes_sent = 0;
-// 	size_t			packets_sent = 0;
-	
-// 	modify_event(server.getClientSock()[client_index], EPOLLOUT);
-// 	while (bytes_sent < size)
-// 	{
-// 		size_t	packet_size;
-// 		if (MTU < size - bytes_sent)
-// 			packet_size = MTU;
-// 		else
-// 			packet_size = size - bytes_sent;
-// 		ssize_t	bytes = send(server.getClientSock()[client_index], response + bytes_sent, packet_size, 0);
-// 		if (bytes <= 0)
-// 			return (close (server.getClientSock()[client_index]), 1);
-// 		bytes_sent += bytes;
-// 		packets_sent++;
-// 	}
-// 	modify_event(server.getClientSock()[client_index], EPOLLIN);
-// 	return (1);
-// }
-
-// int	Handler::handle_existing_client( Server &server, int event_fd)
-// {
-// 	int	client_index = get_client_index(server, event_fd);
-// 	if (client_index != -1)
-// 	{
-// 		if (server.receive_request(client_index, _epfd) == 1)
-// 		{
-// 			Parser	parser(&server);
-// 			std::string response = parser.handle_request(client_index);
-// 			if (!parser.getCategory().compare("IMAGE"))
-// 			{
-// 				send_response(server, response, client_index);
-// 				unsigned char *img_response = parser.build_img_response();
-// 				send_image(server, img_response, parser.getRespSize(), client_index);
-// 				return (SUCCESS);
-// 			}
-// 			else
-// 			{
-// 				response += parser.build_response();
-// 				send_response(server, response, client_index);
-// 				return (SUCCESS);
-// 			}
-// 		}
-// 		return (FAILURE);
-// 	}
-// 	return (FAILURE);
-// }
-
 int Handler::handleEvents()
 {
 	std::vector<Server *>::iterator it;
@@ -212,9 +132,9 @@ int Handler::handleEvents()
 			{
 				for (it = _servers.begin(); it < _servers.end(); it++) 
 				{
-					(*it)->handle_existing_client(_events[i].data.fd, _epfd);
-					// if (handled == FAILURE)
-					// 	return (FAILURE);
+					int handled = (*it)->handle_existing_client(_events[i].data.fd, _epfd);
+					if (handled == FAILURE)
+						return (FAILURE);
 				}	
 			}
 		}

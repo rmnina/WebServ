@@ -6,16 +6,13 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/28 17:06:32 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/29 02:38:00 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser/Parser.hpp"
 
-Parser::Parser( void) 
-{
-	_error_code = "";
-}
+Parser::Parser( void) {}
 
 Parser::Parser( Server *server) : _server(server) {}
 
@@ -121,7 +118,7 @@ void	Parser::examine_request( int client_index)
 {	
 	_server_conf = _server->getConfig();
 	_location = _server->getLocation();
-	_request_body = _server->getReqBody()[client_index];
+	// _request_body = _server->getReqBody()[client_index];
 	
 	std::string	request = _server->getRequest()[client_index];
 	if (request.empty())
@@ -129,13 +126,13 @@ void	Parser::examine_request( int client_index)
 
 	init_mime_types();
 	if (!fill_path(request))
-		_error_code = "404"; //ERROR PAGE RESOURCE NOT FOUND
+		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
 	if (!fill_method(request))
-		_error_code = "405"; //ERROR PAGE METHOD NOT ALLOWED
+		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
 	if (!check_version(request) || !check_req_size(request))
-		_error_code = "400"; //ERROR BAD REQUEST
-	else if (_error_code.empty())
-		_error_code = "200";
+		_error_code = 400; //ERROR BAD REQUEST
+	else
+		_error_code = 200;
 	throw_error_page();
 }
 
@@ -143,6 +140,6 @@ std::vector<unsigned char>							Parser::getImageResponse( void) const { return 
 std::map<std::string, std::vector<std::string> >	Parser::getRequest( void) const { return (_request); }
 std::string											Parser::getCategory( void) const { return (_category); }
 size_t												Parser::getRespSize( void) const { return (_resp_size); }
-std::string											Parser::getErrorCode( void) const { return (_error_code); }
+int													Parser::getErrorCode( void) const { return (_error_code); }
 
 Parser::~Parser( void) {}

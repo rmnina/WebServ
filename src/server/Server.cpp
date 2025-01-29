@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 23:06:22 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/01/29 05:23:50 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,14 +249,11 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 	if (client_index == -1)
 		return (-1);
 	received = receive_request(client_index, epfd);
-	std::cout << BLUE << "ouiiiii " << received << RESET << std::endl;
 	if (received == SUCCESS)
 	{
 		Parser	parser(this);
 		parser.examine_request(client_index);
-		std::cout << BOLD RED << _request[client_index] << RESET << std::endl;
 		std::string response = parser.build_response_header();
-		std::cout << BOLD ORANGE << response << RESET << std::endl;
 		send(_client_sock[client_index], response.c_str(), response.size(), 0); // Sending header in plain text
 		response = parser.build_response();
 		send_response(response, client_index, epfd); // Sending the rest of the response in packets
