@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 18:59:35 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/30 20:47:24 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,21 +183,27 @@ void	Parser::build_response_content( std::string &filename)
 	file.close();
 }
 
+static void	handle_cgi_error(int *status, pid_t pid)
+{
+	int	time = 0;
+	while (time < 2000000)
+	{
+		pid_t ret = waitpid(pid, status, WNOHANG);
+		if (ret == pid)
+			break ;
+		time += 1000;
+		usleep(1000);
+		if (time >= 2000000) 
+		{
+			kill(pid, SIGKILL);
+			break ;
+		}
+	}
+	return ;
+}
+
 void	Parser::exec_cgi(std::string &filename, int method)
 {
-// void	Parser::build_POST_response( std::string &filename)
-// {
-// 	std::string		line;
-// 	std::string		content;
-// 	std::ifstream	file(filename.c_str());
-
-// 	if (!file.is_open())
-// 		std::cerr << "Couldnt open file " << std::endl;
-// 	while (std::getline(file, line))
-// 		content += line + "\n";
-// 	_response += content;
-// 	file.close();
-// }
 	std::cout << "on rentre dans exec_cgi" << std::endl;
 	std::cout << "filename est : " << filename << std::endl;
 	pid_t pid;
@@ -218,15 +224,7 @@ void	Parser::exec_cgi(std::string &filename, int method)
         		env["REQUEST_METHOD"] = "GET";
 		else
 			env["REQUEST_METHOD"] = "POST";
-       		 env["SCRIPT_NAME"] = filename;
-		// env["QUERY_STRING"] = _request["query"].empty() ? "" : _request["query"][0];
-		// std::ostringstream oss;
-		// if (_request["body"].empty())
-		// 	oss << 0;
-		// else
-		// 	oss << _request["body"][0].size();
-		// env["CONTENT_LENGTH"] = oss.str();
-
+       		env["SCRIPT_NAME"] = filename;
 		char *envp[env.size() + 1];
 		int i = 0;
 		for (std::map<std::string, std::string>::iterator it = env.begin(); it != env.end(); ++it) {
@@ -242,6 +240,24 @@ void	Parser::exec_cgi(std::string &filename, int method)
 	} 
 	else 
 	{
+		int status;
+//		int	time = 0;
+		handle_cgi_error(&status, pid); 
+				/*
+		while (time < 2000000)
+		{
+			pid_t ret = waitpid(pid, &status, WNOHANG);
+			if (ret == pid)
+				break ;
+			time += 1000;
+			usleep(1000);
+			if (time >= 2000000) 
+			{
+				kill(pid, SIGKILL);
+				break ;
+			}
+		}
+		*/
 		close(pipefd[1]);
 		char buffer[1024];
 		std::ostringstream cgi_output;
@@ -252,7 +268,6 @@ void	Parser::exec_cgi(std::string &filename, int method)
 			cgi_output << buffer;
 		}
 		close(pipefd[0]);
-		int status;
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status)) 
 		{

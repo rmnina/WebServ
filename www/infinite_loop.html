@@ -12,6 +12,7 @@
 	</head>
 	<!--
 		<body class ="is-preload">
+	<body>
 	-->
 	<body class ="is-preload">
 		<div class="topnav">
@@ -28,26 +29,58 @@
 		<div class="ParallaxMainContent">
 			<div class="container-random">
 				<article class="presentation" id="random-page">
-					<p class="welcome-p" id="hierophant">Ask the hierophant the sacred number</p>
-					<a href="/cgi/random_number.cgi" id="generate-link"><button class="check-button" id="random-nb-btn">Generate the sacred number</button></a>
+					<p class="welcome-p" id="hierophant">Dive into nothingness</p>
+					<a href="/cgi/infinite_loop.cgi" id="generate-link"><button class="check-button" id="infinity-btn">Generate infinity</button></a>
 
-					<div id="random-nb">
+					<!--
+					<div id="infinite-loop">
+						<div class="loader" style="display: none"></div>
 					</div>
-					<div class="card" style="width: 13rem;">
-						<img src="images/hierophant.jpeg" alt="" style="width: 100%">
+					-->
+				<!--	
+					<div class="loader"></div>
+					<div id ="infinite-loop" class="loader" style="display:none;"></div>
+
+					<div id ="infinite-loop" style="display:none;">
+						<div class="loading-container">
+							<div class="sphere"></div>
+							<div class="orbiting-loader"></div>
+						</div>
 					</div>
-					<p>The real sacred number is 3</p>
+				-->
+<div id="loader-container" style="display: none;">
+    <div class="loading-wrapper">
+        <div class="sphere"></div>
+        <div class="loader"></div>
+    </div>
+</div>
+					<div id="cgi-response"></div>
+					<div class="card" style="width: 13rem;" id="moon-infinite">
+						<img src="images/moon.jpeg" alt="" style="width: 100%">
+					</div>
 				</article>
 				<script>
 					document.getElementById("generate-link").addEventListener("click", function (event) {
 						event.preventDefault(); // Prevent default link behavior
 						const xhr = new XMLHttpRequest();
-						xhr.open("GET", "/cgi/random_number.cgi", true);
-						xhr.onreadystatechange = function () {
-							if (xhr.readyState === 4 && xhr.status === 200) {
-								document.getElementById("random-nb").innerHTML = xhr.responseText;
-							}
-						};
+						const loader = document.getElementById("loader-container");
+						loader.style.display = "flex";
+						xhr.open("GET", "/cgi/infinite_loop.cgi", true);
+					  xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+			loader.style.display = "none";
+                    if (xhr.status === 200) {
+                        // On remplace le contenu par la réponse du CGI
+                        document.getElementById("cgi-response").innerHTML = xhr.responseText;
+                    } else {
+                        // Si l'appel échoue, on peut afficher une erreur
+                        document.getElementById("cgi-response").innerHTML = "Error loading data.";
+                    }
+                    // Cache le loader après la réponse
+//                    document.getElementById("infinite-loop").style.display = "none";
+                }
+            };
+
 						xhr.send(); // Send the request
 					});
 				</script>

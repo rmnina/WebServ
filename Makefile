@@ -1,6 +1,7 @@
 NAME = webserv
 
 CC = c++ -Wall -Wextra -Werror -g3 -std=c++98
+C = gcc -Wall -Wextra -Werror -g3
 MAKEFLAGS += --no-print-directory
 
 GREEN := \e[32m
@@ -8,21 +9,23 @@ RESET := \e[0m
 
 # Sources paths
 SRCS_PATH = $(shell find src -type d)
-#CGI_PATH = $(shell find www/cgi -type d)
 CGI_PATH = www/cgi
 
-# Fichiers sources principaux
+# Main files
 SRCS = Config.cpp ConfigStruct.cpp Handler.cpp \
 	Server.cpp Signal.cpp CheckRequest.cpp \
 	ErrorPage.cpp BuildResponse.cpp Location.cpp main.cpp
 	
-#vpath %.cpp $(foreach dir, $(SRCS_PATH), $(dir):) pas sur
-
-
 # CGI files
-#CGI_SOURCES = www/cgi/random_number.cpp # www/cgi/kaamelott.rb
-CGI_SOURCES = random_number.cpp # www/cgi/kaamelott.rb)
-CGI_BIN = $(addprefix $(CGI_PATH)/, $(CGI_SOURCES:%.cpp=%.cgi))
+CGI_SOURCES = random_number.cpp infinite_loop.c # www/cgi/kaamelott.rb)
+
+# Filter cgi by extension
+CGI_CPP = $(filter %.cpp, $(CGI_SOURCES))
+CGI_C = $(filter %.c, $(CGI_SOURCES))
+
+CGI_BIN_CPP = $(addprefix $(CGI_PATH)/, $(CGI_CPP:%.cpp=%.cgi))
+CGI_BIN_C = $(addprefix $(CGI_PATH)/, $(CGI_C:%.c=%.cgi))
+CGI_BIN = $(CGI_BIN_CPP) $(CGI_BIN_C)
 
 OBJS_PATH = obj/
 OBJS = $(addprefix $(OBJS_PATH), $(SRCS:%.cpp=%.o))
@@ -30,6 +33,7 @@ OBJS = $(addprefix $(OBJS_PATH), $(SRCS:%.cpp=%.o))
 # VPATH pour localiser les fichiers sources
 vpath %.cpp $(SRCS_PATH)
 vpath %.cpp $(CGI_PATH)
+vpath %.c $(CGI_PATH)
 
 # webserv and CGI compilation
 all: $(NAME) cgi
@@ -49,6 +53,10 @@ cgi: $(CGI_BIN)
 # Règle pour les fichiers CGI .cpp
 $(CGI_PATH)/%.cgi: $(CGI_PATH)/%.cpp
 	$(CC) $< -o $@
+	@echo "\nCompilation CGI $<: $(GREEN)success$(RESET)\n"
+
+$(CGI_PATH)/%.cgi: $(CGI_PATH)/%.c
+	$(C) $< -o $@
 	@echo "\nCompilation CGI $<: $(GREEN)success$(RESET)\n"
 
 # Nettoyage des objets et fichiers CGI
