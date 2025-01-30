@@ -75,6 +75,7 @@ class Parser
 		void		GETmethod( void);
 		void		POSTmethod( void);
 		void		DELETEmethod( void);
+		void		upload( void);
 
 		std::string					get_content_type( const std::string &filename);
 		void						get_content_category( void);
