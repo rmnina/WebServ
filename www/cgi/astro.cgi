@@ -1,3 +1,4 @@
+#!usr/bin/php-cgi
 <?php
     if (isset($_POST['sign']) == "Aries")
         echo $_POST['sign'] . "<br/><strong>: Bold moves bring rewards; trust instincts today.</strong> ";
