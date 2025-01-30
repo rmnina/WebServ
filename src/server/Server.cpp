@@ -143,6 +143,7 @@ int	Server::accept_connection(int &epfd)
 	add_event(epfd, client_sock);
 	_client_sock.push_back(client_sock);
 	_request.push_back("");
+	_req_body.push_back("");
 	_nb_bytes.push_back(0);
 	return (SUCCESS);
 }
@@ -181,15 +182,17 @@ int	Server::receive_request(int client_index, int &epfd)
 		pos = _request[client_index].find("content-length: ");
 	if (pos != std::string::npos)
 	{
-		size_t	content_length;
-		size_t	body_start;
+		size_t		content_length;
+		size_t		body_start;
+		std::string	req_body;
 		content_length = atoi(_request[client_index].c_str() + pos + strlen("Content-Length: "));
 		body_start = _request[client_index].find("\r\n\r\n");
 		if (body_start != std::string::npos)
 			body_start += 4;
 		if (_nb_bytes[client_index] < content_length + body_start)
 			return (CONTINUE);
-		_req_body[client_index] = _request[client_index].substr(body_start, content_length);
+		req_body = _request[client_index].substr(body_start, content_length);
+		_req_body[client_index].append(req_body);
 	}	
 	return (SUCCESS);
 }

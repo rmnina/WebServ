@@ -134,7 +134,10 @@ int Handler::handleEvents()
 				{
 					int handled = (*it)->handle_existing_client(_events[i].data.fd, _epfd);
 					if (handled == FAILURE)
+					{
+						std::cout << YELLOW BOLD ITALIC << "c'est dans le handled que ca sort????" << RESET << std::endl;
 						return (FAILURE);
+					}
 				}	
 			}
 		}

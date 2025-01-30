@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
 /*   Updated: 2025/01/30 20:47:24 by eltouma          ###   ########.fr       */
@@ -147,7 +147,7 @@ std::string	Parser::build_response_header( void)
 		header << "Content-Length: " << _body_size << "\r\n";
 	}
 	else {
-		if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
+		if (_server_conf.find("dir_listing") != _server_conf.end() && _server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
 			header << "Content-Type: text/html\r\n";
 		else if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
 		{
@@ -224,7 +224,8 @@ void	Parser::exec_cgi(std::string &filename, int method)
         		env["REQUEST_METHOD"] = "GET";
 		else
 			env["REQUEST_METHOD"] = "POST";
-       		env["SCRIPT_NAME"] = filename;
+    env["SCRIPT_NAME"] = filename;
+
 		char *envp[env.size() + 1];
 		int i = 0;
 		for (std::map<std::string, std::string>::iterator it = env.begin(); it != env.end(); ++it) {
@@ -307,7 +308,6 @@ void	Parser::display_dirlist(std::string path)
 		if (name != "." && name != "..")
 		{
 			std::string full_path = path + "/" + name;
-			// std::cout << "full path = " << full_path << std::endl;
 			if (is_directory(full_path))
 				html << "<li><a href=\"" << name << "/\">" << name << "/</a></li>";
 			else
@@ -336,7 +336,6 @@ void	Parser::GETmethod( void)
 		std::cout << RED << "on a bien trouve le dir_listing" << RESET << std::endl;
 		if (path == "./www/index.html")
 			display_dirlist("./www");
-		//else if (path != "./www/favicon.ico")
 		else
 		{
 			if (is_directory(path))
@@ -357,6 +356,8 @@ void	Parser::POSTmethod( void)
 {
 	std::string	path = _request["path"][0];
 
+	if (_request_body.find("filename=") != std::string::npos)
+		upload();
 	if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
 		build_response_content(path);
 	else if (!_category.compare("CGI"))
@@ -366,6 +367,34 @@ void	Parser::POSTmethod( void)
 		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;	std::string	path = _request["path"][0];
 	}
 	std::cout << __func__ << "\tpath = " << path << std::endl;
+}
+
+void	Parser::upload( void)
+{
+	std::cout << BOLD YELLOW << "ICI" << RESET << std::endl;
+	
+	size_t		pos = _request_body.find("filename=\"") + 10;
+	size_t		end = 0;
+	std::string	filename = "unknown";
+
+	std::string	folder;
+	if (_server_conf.find("upload") != _server_conf.end() && _server_conf["upload"][0] == "on")
+		folder = _server_conf["upload"][1];
+	//TODO: protect segfault if no dir name.
+	if (pos == std::string::npos)
+		std::cerr << "No filename for this image" << std::endl;
+	else
+	{
+		end = pos + _request_body.find("\"");
+		filename = _request_body.substr(pos, filename.length() - end);
+	}
+	std::string temp = folder + "/" + filename;
+	std::cout << BLUE BOLD << "Temp name is " << temp << RESET << std::endl;
+	std::ofstream	file(temp.c_str());
+	pos = _request_body.find("\r\n\r\n");
+	end = _request_body.find("\r\n\r\n", pos);
+	file << _request_body.substr(pos, end);
+	file.close();
 }
 
 void	Parser::DELETEmethod(void)
@@ -401,6 +430,7 @@ std::string	Parser::build_response( void)
 		restore_error_page();
 		return (_response);
 	}
+	std::cout << RED << "BODY :" << _request_body << RESET << std::endl;
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
 		if (_request.find("method")->second[0] == method[i])
