@@ -118,7 +118,7 @@ void	Parser::examine_request( int client_index)
 {	
 	_server_conf = _server->getConfig();
 	_location = _server->getLocation();
-	// _request_body = _server->getReqBody()[client_index];
+	_request_body = _server->getReqBody()[client_index];
 	
 	std::string	request = _server->getRequest()[client_index];
 	if (request.empty())

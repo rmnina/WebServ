@@ -147,7 +147,7 @@ std::string	Parser::build_response_header( void)
 		header << "Content-Length: " << _body_size << "\r\n";
 	}
 	else {
-		if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
+		if (_server_conf.find("dir_listing") != _server_conf.end() && _server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
 			header << "Content-Type: text/html\r\n";
 		else if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
 		{
@@ -185,19 +185,6 @@ void	Parser::build_response_content( std::string &filename)
 
 void	Parser::exec_cgi(std::string &filename, int method)
 {
-// void	Parser::build_POST_response( std::string &filename)
-// {
-// 	std::string		line;
-// 	std::string		content;
-// 	std::ifstream	file(filename.c_str());
-
-// 	if (!file.is_open())
-// 		std::cerr << "Couldnt open file " << std::endl;
-// 	while (std::getline(file, line))
-// 		content += line + "\n";
-// 	_response += content;
-// 	file.close();
-// }
 	std::cout << "on rentre dans exec_cgi" << std::endl;
 	std::cout << "filename est : " << filename << std::endl;
 	pid_t pid;
@@ -342,6 +329,8 @@ void	Parser::POSTmethod( void)
 {
 	std::string	path = _request["path"][0];
 
+	if (_request_body.find("filename=") != std::string::npos)
+		upload();
 	if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
 		build_response_content(path);
 	else if (!_category.compare("CGI"))
@@ -351,6 +340,34 @@ void	Parser::POSTmethod( void)
 		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;	std::string	path = _request["path"][0];
 	}
 	std::cout << __func__ << "\tpath = " << path << std::endl;
+}
+
+void	Parser::upload( void)
+{
+	std::cout << BOLD YELLOW << "ICI" << RESET << std::endl;
+	
+	size_t		pos = _request_body.find("filename=\"") + 10;
+	size_t		end = 0;
+	std::string	filename = "unknown";
+
+	std::string	folder;
+	if (_server_conf.find("upload") != _server_conf.end() && _server_conf["upload"][0] == "on")
+		folder = _server_conf["upload"][1];
+	//TODO: protect segfault if no dir name.
+	if (pos == std::string::npos)
+		std::cerr << "No filename for this image" << std::endl;
+	else
+	{
+		end = pos + _request_body.find("\"");
+		filename = _request_body.substr(pos, filename.length() - end);
+	}
+	std::string temp = folder + "/" + filename;
+	std::cout << BLUE BOLD << "Temp name is " << temp << RESET << std::endl;
+	std::ofstream	file(temp.c_str());
+	pos = _request_body.find("\r\n\r\n");
+	end = _request_body.find("\r\n\r\n", pos);
+	file << _request_body.substr(pos, end);
+	file.close();
 }
 
 void	Parser::DELETEmethod(void)
@@ -386,6 +403,7 @@ std::string	Parser::build_response( void)
 		restore_error_page();
 		return (_response);
 	}
+	std::cout << RED << "BODY :" << _request_body << RESET << std::endl;
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
 		if (_request.find("method")->second[0] == method[i])
