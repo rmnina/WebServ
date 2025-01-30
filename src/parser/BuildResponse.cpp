@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 18:59:35 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/01/30 16:51:02 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,14 +205,7 @@ void	Parser::exec_cgi(std::string &filename, int method)
         		env["REQUEST_METHOD"] = "GET";
 		else
 			env["REQUEST_METHOD"] = "POST";
-       		 env["SCRIPT_NAME"] = filename;
-		// env["QUERY_STRING"] = _request["query"].empty() ? "" : _request["query"][0];
-		// std::ostringstream oss;
-		// if (_request["body"].empty())
-		// 	oss << 0;
-		// else
-		// 	oss << _request["body"][0].size();
-		// env["CONTENT_LENGTH"] = oss.str();
+       	env["SCRIPT_NAME"] = filename;
 
 		char *envp[env.size() + 1];
 		int i = 0;
@@ -279,7 +272,6 @@ void	Parser::display_dirlist(std::string path)
 		if (name != "." && name != "..")
 		{
 			std::string full_path = path + "/" + name;
-			// std::cout << "full path = " << full_path << std::endl;
 			if (is_directory(full_path))
 				html << "<li><a href=\"" << name << "/\">" << name << "/</a></li>";
 			else
@@ -308,7 +300,6 @@ void	Parser::GETmethod( void)
 		std::cout << RED << "on a bien trouve le dir_listing" << RESET << std::endl;
 		if (path == "./www/index.html")
 			display_dirlist("./www");
-		//else if (path != "./www/favicon.ico")
 		else
 		{
 			if (is_directory(path))
