@@ -3,5 +3,5 @@
 int     main(void)
 {
         while (1)
-                write(2, "I'm an infinite loop\n", 21);
+                write(2, "Infinity generated\n", 19);
 }

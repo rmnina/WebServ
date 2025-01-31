@@ -22,7 +22,7 @@
 			<a href="/" class="nav-link">Home</a>
 			<a href="#request" class="nav-link">Requests</a>
 			<a href="#script" class="nav-link">CGI Scripts</a>
-			<a href="#review">Reviews</a>
+			<a href="#review" class="nav-link">Reviews</a>
 		</div>
 		<div class="ParallaxVideo">
 			<video autoplay muted loop>
@@ -39,50 +39,58 @@
 					<p class="welcome-p">And this is our <strong>website</strong>, were you can find a demonstration of all the features we implemented.</p>
 					<a href="#request" ><button class="check-button">Let's check this out!</button></a></br>
 					<p class="server-explanation">If you don't know what a server is, you can check <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works#clients_and_servers" class="server" target="_blank">here</a></p>
-		
 
-				<article class="wrapper-request">
-					<div class="wrapper-request" id="request">
-						<button class="upload-button" onclick="openForm()">
-							<div class="card" style="width: 18rem;">
-								<img src="images/magician.jpeg" alt="" style="width: 100%"> 
-								<div class="card-body">
-									<h3 class="card-title">Upload</h3>
-									<p class="card-txt">Ask the magician to upload a file bruh!</p>
+
+					<article class="wrapper-request">
+						<div class="wrapper-request" id="request">
+							<button class="upload-button" onclick="openForm()">
+								<div class="card" style="width: 18rem;">
+									<img src="images/magician.jpeg" alt="" style="width: 100%"> 
+									<div class="card-body">
+										<h3 class="card-title">Upload</h3>
+										<p class="card-txt">Ask the magician to upload a file bruh!</p>
+									</div>
 								</div>
+							</button>
+							<a href="http://127.0.0.1:8082/delete.html"  id="delete-link">
+								<div class="card" style="width: 18rem;">
+									<img src="images/death.jpeg" id="death" alt="" style="width: 100%">
+									<div class="card-body">
+										<h3 class="card-title">Delete</h3>
+										<p class="card-txt">Here, you can delete the files you uploaded. Don't try to flush anything else, we'll be watchin...</p>
+					</article></a>
+					<div class="form-popup" id="myForm">
+						<form action="/upload" method="post" enctype="multipart/form-data" class="popup-container" >
+							<button type="button" class="close" onclick="closeForm()">
+								<i class="fa fa-times"></i>
+							</button>
+							<h2>Upload a file</h2>
+							<div>
+								<input type="file" name="file" required>
 							</div>
-						</button>
-						<a href="http://127.0.0.1:8082/delete.html"  id="delete-link">
-							<div class="card" style="width: 18rem;">
-								<img src="images/death.jpeg" id="death" alt="" style="width: 100%">
-								<div class="card-body">
-									<h3 class="card-title">Delete</h3>
-									<p class="card-txt">Here, you can delete the files you uploaded. Don't try to flush anything else, we'll be watchin...</p>
-
-				</article>
-				<div class="form-popup" id="myForm">
-					<form action="/upload" method="post" enctype="multipart/form-data" class="popup-container" >
-						<button type="button" class="close" onclick="closeForm()">
-							<i class="fa fa-times"></i>
-						</button>
-						<h2>Upload a file</h2>
-						<div>
-							<input type="file" name="file" required>
-						</div>
-						<button type="submit" class="btn submit">Submit</button>
-					</form>
-				</div>
-				<article class="presentation" id="pres-cgi">
-					<p class="welcome-p">Can a mere mortal handle these CGI? Try it at your own risk.</p>
-					<a href="#script" ><button class="check-button">Enter our CG-Hell</button></a></br>
-				</article>
-				<article class="wrapper-request">
-					<div class="wrapper" id="script">
-						<p class="welcome">Choose your destiny. No Mer-CGI!</p>
+							<button type="submit" class="btn submit">Submit</button>
+						</form>
 					</div>
-				</article>
+					<article class="presentation" id="pres-cgi">
+						<p class="welcome-p">Can a mere mortal handle these CGI? Try it at your own risk.</p>
+						<a href="#script" ><button class="check-button">Enter our CG-Hell</button></a></br>
+					</article>
+					<article class="wrapper-request">
+						<div class="wrapper" id="script">
+							<p class="welcome-p">Choose your destiny. No Mer-CGI!</p>
+						</div>
+					</article>
+					<!--
+					<article class="presentation" id="pres-script">
+					<article class="wrapper-request">
 
-				<article class="wrapper-cgi">
+						<div class="wrapper" id="script">
+							<p class="welcome">Choose your destiny. No Mer-CGI!</p>
+						</div>
+					</article>
+					-->
+
+					<article class="wrapper-cgi">
 						<a href="http://127.0.0.1:8082/randomnb.html"  id="cgi-link">
 							<div class="card" style="width: 18rem;" id="delete-link">
 								<img src="images/hierophant.jpeg" id="death" alt="" style="width: 100%">
@@ -114,34 +122,91 @@
 							</div>
 						</a>
 
-				</article>
-				<script>
+					</article>
+					<script>
 
-					function openForm() { document.getElementById("myForm").style.display = "block"; }
-					function closeForm() {	console.log("TA MERE"); document.getElementById("myForm").style.display = "none"; }
+						function openForm() { document.getElementById("myForm").style.display = "block"; }
+						function closeForm() {	console.log("TA MERE"); document.getElementById("myForm").style.display = "none"; }
 
 
 
-					const navLinks = document.querySelectorAll('.nav-link');
+						const navLinks = document.querySelectorAll('.nav-link');
 
-					navLinks.forEach(link => {
-											link.addEventListener('click', function () {
-																	navLinks.forEach(link => link.classList.remove('active'));
-																	this.classList.add('active');
-																});
-										});
-				</script>
-				</div>
-			</div>
-		</div>
-						<footer>
-							<p>Follow us on GitHub</p>
-							<div class="flex-container">
-								<div class="jdufour"><a href="https://github.com/rmnina" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>jdufour</p></a></div>
-								<div class="ahayon"><a href="https://github.com/Skiams" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>ahayon</p></a></div>
-								<div class="eltouma"><a href="https://github.com/eltouma" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>eltouma</p></a></div>
+						navLinks.forEach(link => {
+													link.addEventListener('click', function () {
+																				navLinks.forEach(link => link.classList.remove('active'));
+																				this.classList.add('active');
+																			});
+												});
+					</script>
+
+					<article class="presentation" id="pres-cgi">
+						<p class="welcome-p">Wanna see some reviews? The card say that people seems glad about our work.</p>
+						<a href="#review" ><button class="check-button">Ask the cards</button></a></br>
+					</article>
+					<article class="presentation" id="pres-review">
+						<p class="welcome-p">That's what they said</p>
+					</article>
+					<article class="wrapper-review" id="review">
+						<div class="review">
+							<div class="stars">
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gold">★</span>
 							</div>
-						</footer>
+							<p class="review-text">"This Webserv was very well implemented. The code is so clean. Well played ! Outstanding !"</p>
+							<p class="review-author">- John</p>
+						</div>
+
+						<div class="review">
+							<div class="stars">
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gray">★</span>
+							</div>
+							<p class="review-text">"website cool. liked the number generator. got my favorite number. this is a great day"</p>
+							<p class="review-author">- Jackson</p>
+						</div>
+						<div class="review">
+							<div class="stars">
+								<span class="gold">★</span>
+								<span class="gray">★</span>
+								<span class="gray">★</span>
+								<span class="gray">★</span>
+								<span class="gray">★</span>
+							</div>
+							<p class="review-text">"I really didnt like to be roasted like that. Who does that??? I will press charges !! You will be in touch with my lawyer."</p>
+							<p class="review-author">- THE ROASTING SUCKED!!</p>
+						</div>
+						<div class="review">
+							<div class="stars">
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+								<span class="gold">★</span>
+							</div>
+							<p class="review-text">"👋👋👋this   iss mommy!! 💖💖💖 im so proud of your informatic thing 🖥️  sweety (or whatever tis is ur doing with yur computer ... 🤣🤣🤣🤣🤣. Are you OKAY? It''s DARK 😱😱😱) !!!!.!! why wont u return my calls 😠   "</p>
+							<p class="review-author">- Mom. lovE.</p>
+						</div>
+									</div>
+					</article>
+								</div>
+						</div>
+			</div>
+
+			<footer>
+				<p>Follow us on GitHub</p>
+				<div class="flex-container">
+					<div class="jdufour"><a href="https://github.com/rmnina" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>jdufour</p></a></div>
+					<div class="ahayon"><a href="https://github.com/Skiams" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>ahayon</p></a></div>
+					<div class="eltouma"><a href="https://github.com/eltouma" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>eltouma</p></a></div>
+				</div>
+			</footer>
 
 	</body>
 </html>
