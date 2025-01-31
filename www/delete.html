@@ -28,9 +28,12 @@
 			files.forEach((fileName) => {
 				const fileWrapper = document.createElement("div");
 				fileWrapper.innerHTML = `
+		       <div class="trash-div">
 					<img src="uploaded/${fileName}" alt="${fileName}" style="width: 10%"></br>
-					<input type="checkbox" onclick="deleteFile('${fileName}')">
-					<i class="fas fa-trash"></i>
+					<button id="trash-btn" onclick="deleteFile('${fileName}')">
+						<i class="fas fa-trash" id="trash"></i>
+		       			</button>
+		       </div>
 					</br></br>
 				`;
 				fileList.appendChild(fileWrapper);
