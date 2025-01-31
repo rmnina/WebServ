@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Baloo+Thambi+2&display=swap");
 body,
 html {
-	font-family: "Inknut Antiqua", cursive;
 	margin: 0;
 }
 
@@ -17,11 +16,12 @@ transition: none !important;
 }
 
 /* Content Parallax Section*/
-.ParallaxMainContent {
+.ParallaxMainContent, .ParallaxMainContent > .container {
 	background-color: #191818;
 	color: #e3e4e8;
 	position: relative;
 	height: 100%;
+	width: 100%;
 	box-shadow: 0px 0px 9px 18px #191819;
 }
 
@@ -37,8 +37,8 @@ transition: none !important;
 
 .ParallaxVideo video {
 	object-fit: cover;
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -126,7 +126,7 @@ footer a:hover {
 	color: yellow;
 }
 
-.wrapper-request {
+.wrapper-request, .wrapper-cgi {
 	display: flex;
 	flex: 3 3 200px;
 	gap: 20em;
@@ -134,6 +134,7 @@ footer a:hover {
 	justify-content: center; 
 	align-items: center; /* Centre horizontalement */
 	margin-top: 10em; /* Ajuste l'espace en haut */
+	position: relative;
 }
 
 .wrapper-request #script {
@@ -156,7 +157,7 @@ footer a:hover {
     	gap: 13em;
     	align-items: center;
     	justify-content: center;
-    /* margin-top: 10em; */
+    	margin-top: -10em;
 	flex-direction: row;
 	flex-wrap: nowrap;
 	align-content: space-around;
@@ -167,7 +168,9 @@ footer a:hover {
 	border: none;
 	position: unset;
 	color: #afb0b3;
+	/*
 	font-family: "Inkut Antiqua", cursive;
+	*/
 	text-align: left;
 	cursor: pointer;
 	font-size: 16px;
@@ -215,13 +218,14 @@ footer a:hover {
 	border: none;
 	cursor: pointer;
 	margin-top: 12px;
-	width: 88px;
+	width: 87px;
 	border-radius: 1px;
 	box-shadow: inherit;
 	color: white;
 	opacity: 0.8;
 	text-align: left;
 	padding-left: 8px;
+	display: flex;
 }
 
 /* Add some hover effects to buttons */
@@ -256,6 +260,7 @@ text-align: center;
 
 .presentation { 
 	padding: 3em 0 1em 0;
+	padding: 1em 1em 1em 1em;
 	text-align: center;
 }
 
@@ -330,7 +335,6 @@ text-align: center;
 #random-nb {
 	color: #afb0b3;	
 	margin: 0em;
-	font-family: "Inkut Antiqua", cursive;
 }
 
 #random-nb-result {
@@ -426,4 +430,67 @@ text-align: center;
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.wrapper-review {
+    display: flex;
+    flex-wrap: wrap; /* Permet le retour à la ligne si l'écran est trop petit */
+    gap: 2em; /* Espacement entre les reviews */
+    justify-content: center; /* Centre les reviews */
+    margin-top: 3em; /* Ajuste l'espace en haut */
+    margin-bottom: 20em; /* Ajuste l'espace en haut */
+}
+
+.review {
+    background: linear-gradient(135deg, #f3f3f3, #e0e0e0);
+     background: linear-gradient(338deg, #f3f3f3, #ffffff96);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px; /* Taille fixe pour les carrés */
+    min-height: 200px; /* Même hauteur pour tous */
+    display: flex; /* Pour centrer le texte verticalement */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.stars {
+    color: gold;
+    font-size: 1.5em;
+}
+
+.review-text {
+    font-size: 1em;
+    margin: 10px 0;
+    color: #333;
+    text-align: center;
+    text-align: left;
+    flex-grow: 1; /* Permet au texte de remplir l'espace */
+}
+
+.review-author {
+    font-weight: bold;
+    color: #666;
+}
+
+.gold {
+    color: gold;
+}
+
+.gray {
+    color: gray;
+}
+
+#pres-review {
+
+    margin-top: 2em; /* Ajuste l'espace en haut */
+    margin-bottom: 1em; /* Ajuste l'espace en haut */
+    margin-top: 10em; /* Ajuste l'espace en haut */
+    margin-bottom: 1em; /* Ajuste l'espace en haut */
+}
+
+#pres-script {
+    margin-top: 10em; /* Ajuste l'espace en haut */
 }
