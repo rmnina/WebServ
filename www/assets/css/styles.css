@@ -1,21 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Baloo+Thambi+2&display=swap");
-body,
-html {
+body, html {
+	font-family: "Arial", cursive;
+	font-weight: 100;
 	margin: 0;
 }
 
 body.is-preload *, body.is-preload *:before, body.is-preload *:after {
-	/*
--moz-animation: none !important;
--ms-animation: none !important;
-animation: none !important;
-*/
 -moz-transition: none !important;
 -ms-transition: none !important;
 transition: none !important;
 }
 
-/* Content Parallax Section*/
+.container { padding: 0rem; }
+
 .ParallaxMainContent, .ParallaxMainContent > .container {
 	background-color: #191818;
 	color: #e3e4e8;
@@ -30,10 +27,7 @@ transition: none !important;
 	text-align: center;
 }
 
-/* Video Parallax Section*/
-.ParallaxVideo {
-	height: 763px;
-}
+.ParallaxVideo { height: 763px; }
 
 .ParallaxVideo video {
 	object-fit: cover;
@@ -43,31 +37,17 @@ transition: none !important;
 	top: 0;
 	left: 0;
 	z-index: -1;
-	/*  filter: grayscale(100%);*/
 	filter: grayscale(100%);
 }
 
-#container-random
-{
-	margin: 1rem;
-}
+#container-random { margin: 1rem; }
 
-#parallaxRandom {
-	height: 650px;
-}
+#parallaxRandom { height: 650px; }
 
 .topnav {
 	background-color: #191818;
 	overflow: hidden;
 	position: fixed;
-	/*
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	position: fixed;
-	top: 0;
-	width: 100%;
-	 */
 	width: 100%;
 	z-index: 1000;
 	box-shadow: 0px -3px 9px 9px #191819;
@@ -83,12 +63,7 @@ transition: none !important;
 	font-size: 17px;
 }
 
-.topnav a.active {
-	background-color: #333;
-	color: white;
-}
-
-.topnav a:hover {
+.topnav a.active, .topnav a:hover {
 	background-color: #333;
 	color: white;
 }
@@ -100,10 +75,6 @@ transition: none !important;
 }
 
 
-/* General Section*/
-.container {
-	padding: 3rem;
-}
 
 .headlines p {
 	font-size: 16px;
@@ -116,14 +87,8 @@ footer {
 	color: white;
 }
 
-footer a {
+footer a, footer a:hover {
 	text-decoration: none;
-	color: gold;
-}
-
-footer a:hover {
-	text-decoration: none;
-	color: yellow;
 }
 
 .wrapper-request, .wrapper-cgi {
@@ -139,18 +104,16 @@ footer a:hover {
 
 .wrapper-request #script {
 	position: relative;
-	top: -8em; /* Remonte l’élément po
-}
-
-#request {
-    margin-top: 5em; /* Réduction de l’espace trop grand */
-    scroll-margin-top: 6em; /* Évite que l’ancre cache le contenu sous la navbar */
+	top: -8em;
 }
 
 #script {
-    margin-top: 8em; /* Réduction de l’espace trop grand */
-    scroll-margin-top: 6em; /* Évite que l’ancre cache le contenu sous la navbar */
+	margin-top: 8em; /* Réduction de l’espace trop grand */
+	scroll-margin-top: 6em; /* Évite que l’ancre cache le contenu sous la navbar */
 }
+
+#script > p { margin-top: 3em; } /* Réduction de l’espace trop grand */
+
 .wrapper-cgi {
 	display: flex;
 	justify-content: center; /* Centre verticalement */
@@ -168,9 +131,6 @@ footer a:hover {
 	border: none;
 	position: unset;
 	color: #afb0b3;
-	/*
-	font-family: "Inkut Antiqua", cursive;
-	*/
 	text-align: left;
 	cursor: pointer;
 	font-size: 16px;
@@ -184,11 +144,11 @@ footer a:hover {
 	text-decoration: none;
 }
 
-#cgi-link {
-	margin-top: -3em;
-}
+#cgi-link { margin-top: -3em; }
 
-#death { padding-top: 36px; } 
+#death, #temperance { padding-top: 36px; } 
+
+#temperance { filter: brightness(1.5); }
 
 #moon { padding-top: 15px; } 
 
@@ -229,9 +189,7 @@ footer a:hover {
 }
 
 /* Add some hover effects to buttons */
-.popup-container .btn-submit:hover,  .btn:hover, .open-button:hover {
-	opacity: 1;
-}
+.popup-container .btn-submit:hover,  .btn:hover, .open-button:hover { opacity: 1; }
 
 .close {
 	cursor: pointer;
@@ -248,26 +206,12 @@ footer a:hover {
 
 .close:hover { background: #bbb;}
 
-
-/*
-.wrapper {
-background-image: url("images/bg.png");
-box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.05), inset 0px 2px 3px 0px rgba(0, 0, 0, 0.1);
-padding: 5em 0 4em 0;
-text-align: center;
-}
- */
-
 .presentation { 
-	padding: 3em 0 1em 0;
 	padding: 1em 1em 1em 1em;
 	text-align: center;
 }
 
-#pres-cgi {
-	padding: 6em 0 1em 0;
-	padding: 6em 0 6em 0;
-}
+#pres-cgi { padding: 6em 0 7em 0; }
 
 .welcome-header {
 	letter-spacing: 8px;
@@ -275,7 +219,7 @@ text-align: center;
 	font-size: 30px;
 }
 
-.welcome-p{
+.welcome-p {
 	letter-spacing: 3px;
 	color: #afb0b3;
 	font-size: 20px;
@@ -312,21 +256,15 @@ text-align: center;
 	font-size: 14px;
 }
 
-.jdufour > a, .ahayon > a, .eltouma > a {
-	color: #DEE2E6;	
-}
+.jdufour > a, .ahayon > a, .eltouma > a { color: #DEE2E6; }
 
-.jdufour > a:hover, .ahayon > a:hover, .eltouma > a:hover {
-	color: #6C757D;	
-}
+.jdufour > a:hover, .ahayon > a:hover, .eltouma > a:hover { color: #6C757D; }
 
 #random-page {
-	padding: 4em 0 4em 0;
 	padding: 1em 0 1em 0;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
-    /* flex-wrap: wrap; */
 	align-content: stretch;
 	justify-content: space-evenly;
 	align-items: center;
@@ -339,17 +277,12 @@ text-align: center;
 
 #random-nb-result {
 	font-size: 20px;
-	color: gold;
 	color: #ffd700b5;
 }
 
-#hierophant {
-	font-size: 18px;
-}
+#hierophant { font-size: 18px; }
 
-.real-sacred-nb {
-	font-size: 12px;
-}
+.real-sacred-nb { font-size: 12px; }
 
 
 #random-nb-btn, #infinity-btn, #astro-btn {
@@ -357,140 +290,123 @@ text-align: center;
 	margin: 1em;
 }
 
-#infinity-btn {
-	margin: 2em;
-}
+#infinity-btn { margin: 2em; }
 
-#moon-infinite {
-	margin-top: 25px;
-}
-
-/*
-.loader {
-	border: 3px dotted #fcca467a;
-	border-radius: 50%;
-	border-top: 3px dotted gold;
-	border-top: 3px dotted #fdb840;
-	width: 75px;
-	height: 75px;
-	animation: spin 0.3s ease infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-*/
+#moon-infinite { margin-top: 25px; }
 
 .loading-wrapper {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	position: relative;
+	width:	100px;
+	height:	100px;
+	display:	flex;
+	align-items:	center;
+	justify-content:	center;
 }
 
 /* Sphère centrale */
 .sphere {
-    width: 70px;
-    height: 70px;
-    background: radial-gradient(circle, #3498db, #1e3c72); /* Dégradé bleu */
-      background: radial-gradient(circle, #FFD700, #B8860B);
-       background: radial-gradient(circle, #D3D3D3, #8d959d);
-    background: radial-gradient(circle, #3498db, #1e3c72); /* Dégradé bleu */
-    background: radial-gradient(circle, #b8860b96, #b8860b94);
-    border-radius: 50%;
-    position: absolute;
-    box-shadow: 0 0 15px rgba(0, 0, 255, 0.5);
-
-    background: radial-gradient(circle, #b8860b96, #69696914);
-    border-radius: 50%;
-    position: absolute;
-    box-shadow: 0 0 15px rgb(119 103 39 / 55%);
-    background: radial-gradient(circle, #a59e8d96, #69696914);
-    border-radius: 50%;
-    position: absolute;
-    box-shadow: 0 0 15px rgb(113 112 109 / 85%);
+	width: 70px;
+	height: 70px;
+	background: radial-gradient(circle, #a59e8d96, #69696914);
+	border-radius: 50%;
+	position: absolute;
+	box-shadow: 0 0 15px rgb(113 112 109 / 85%);
 }
 
 /* Loader qui tourne autour */
 .loader {
-    position: absolute;
-    width: 95px;
-    height: 95px;
-    border: 3px dotted #fcca467a; /* Bordure en pointillés */
-    border-radius: 50%;
-    border-top: 3px dotted #fdb840; /* Bordure supérieure dorée */
-    border-top: 3px dotted #ffd700;
-    animation: spin 0.8s linear infinite; /* Animation */
+	position: absolute;
+	width: 95px;
+	height: 95px;
+	border: 3px dotted #fcca467a; /* Bordure en pointillés */
+	border-radius: 50%;
+	border-top: 3px dotted #ffd700;
+	animation: spin 0.8s linear infinite; /* Animation */
 }
 
 /* Animation de rotation */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
 
 .wrapper-review {
-    display: flex;
-    flex-wrap: wrap; /* Permet le retour à la ligne si l'écran est trop petit */
-    gap: 2em; /* Espacement entre les reviews */
-    justify-content: center; /* Centre les reviews */
-    margin-top: 3em; /* Ajuste l'espace en haut */
-    margin-bottom: 20em; /* Ajuste l'espace en haut */
+	display: flex;
+	flex-wrap: wrap; /* Permet le retour à la ligne si l'écran est trop petit */
+	gap: 2em; /* Espacement entre les reviews */
+	justify-content: center; /* Centre les reviews */
+	margin-top: 3em; /* Ajuste l'espace en haut */
+	margin-bottom: 20em; /* Ajuste l'espace en haut */
 }
 
 .review {
-    background: linear-gradient(135deg, #f3f3f3, #e0e0e0);
-     background: linear-gradient(338deg, #f3f3f3, #ffffff96);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 200px; /* Taille fixe pour les carrés */
-    min-height: 200px; /* Même hauteur pour tous */
-    display: flex; /* Pour centrer le texte verticalement */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+	background: linear-gradient(338deg, #f3f3f3, #ffffff96);
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	width: 200px; /* Taille fixe pour les carrés */
+	min-height: 200px; /* Même hauteur pour tous */
+	display: flex; /* Pour centrer le texte verticalement */
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 .stars {
-    color: gold;
-    font-size: 1.5em;
+	color: gold;
+	font-size: 1.5em;
 }
 
 .review-text {
-    font-size: 1em;
-    margin: 10px 0;
-    color: #333;
-    text-align: center;
-    text-align: left;
-    flex-grow: 1; /* Permet au texte de remplir l'espace */
+	font-size: 1em;
+	margin: 10px 0;
+	color: #333;
+	text-align: left;
+	flex-grow: 1; /* Permet au texte de remplir l'espace */
 }
 
 .review-author {
-    font-weight: bold;
-    color: #666;
+	font-weight: bold;
+	color: #666;
 }
 
 .gold {
-    color: gold;
+	color: gold;
 }
 
 .gray {
-    color: gray;
+	color: gray;
 }
 
 #pres-review {
+	margin-top: 12em; /* Ajuste l'espace en haut */
+	margin-bottom: 3em; /* Ajuste l'espace en haut */
+}
 
-    margin-top: 2em; /* Ajuste l'espace en haut */
-    margin-bottom: 1em; /* Ajuste l'espace en haut */
-    margin-top: 10em; /* Ajuste l'espace en haut */
-    margin-bottom: 1em; /* Ajuste l'espace en haut */
+#pres-review > p {
+	margin-top: -7em; /* Ajuste l'espace en haut */
+	margin-bottom: 11em; /* Ajuste l'espace en haut */
 }
 
 #pres-script {
-    margin-top: 10em; /* Ajuste l'espace en haut */
+	margin-top: 10em; /* Ajuste l'espace en haut */
+}
+
+#trash-btn {
+	background: none;
+	border: none;
+	margin: 1em;
+}
+
+#trash { 
+	color: #b5abab;
+	margin-left: 1em;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.trash-div {
+	display: flex;
+
 }
