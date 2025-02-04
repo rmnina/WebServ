@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/30 20:47:24 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/04 13:43:27 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void  Parser::init_mime_types( void)
 	mime_types[".svg"] = "image/svg+xml";
 	mime_types[".txt"] = "text/plain";
 	mime_types[".cgi"] = "application/x-httpd-cgi";
+	mime_types[".php"] = "application/x-httpd-cgi";
 	mime_types[".xml"] = "application/xml";
 	mime_types[".pdf"] = "application/pdf";
 }
@@ -204,6 +205,7 @@ static void	handle_cgi_error(int *status, pid_t pid)
 
 void	Parser::exec_cgi(std::string &filename, int method)
 {
+	std::cout << "request body en rentrant dans exec cgi = " << _request_body << std::endl;
 	std::cout << "on rentre dans exec_cgi" << std::endl;
 	std::cout << "filename est : " << filename << std::endl;
 	pid_t pid;
@@ -224,7 +226,8 @@ void	Parser::exec_cgi(std::string &filename, int method)
         		env["REQUEST_METHOD"] = "GET";
 		else
 			env["REQUEST_METHOD"] = "POST";
-    env["SCRIPT_NAME"] = filename;
+		env["CONTENT_TYPE"] = "application/x-www-form-urlencoded";
+    	env["SCRIPT_NAME"] = filename;
 
 		char *envp[env.size() + 1];
 		int i = 0;
