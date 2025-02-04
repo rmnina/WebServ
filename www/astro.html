@@ -31,27 +31,32 @@
 					<p class="welcome-p" id="hierophant">Tell us your sign</p>
 					<div id="astro">
 					</div>
-					<form action="cgi/astro.cgi" method="POST">
+					<form action="cgi/astro.php" method="POST">
 						<label for="sign">Sign:</label>
-						<input type="text" id="sign" sign="sign" required><br><br>
+						<input type="text" id="sign" name="sign" required><br><br>
 				
 						<button type="submit" class="check-button" id="astro-btn"> Submit </button>
 					</form>
 					<div class="card" style="width: 13rem;">
-						<img src="images/hierophant.jpeg" alt="" style="width: 100%">
+						<img src="images/temperance.jpeg" alt="" style="width: 100%">
 					</div>
 				</article>
 				<script>
-					document.getElementById("generate-link").addEventListener("click", function (event) {
-						event.preventDefault(); // Prevent default link behavior
+					document.querySelector("form").addEventListener("submit", function (event) {
+						event.preventDefault();
+
+						const signValue = document.getElementById("sign").value; 
+						const formData = new FormData();
+						formData.append("sign", signValue);
+
 						const xhr = new XMLHttpRequest();
-						xhr.open("POST", "/cgi/astro.cgi", true);
+						xhr.open("POST", "cgi/astro.php", true);
 						xhr.onreadystatechange = function () {
 							if (xhr.readyState === 4 && xhr.status === 200) {
 								document.getElementById("astro").innerHTML = xhr.responseText;
 							}
 						};
-						xhr.send(); // Send the request
+						xhr.send(formData);
 					});
 				</script>
 			</div>
