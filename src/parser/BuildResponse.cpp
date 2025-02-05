@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/04 13:43:27 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/05 01:09:03 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,11 @@ std::string	Parser::build_response_header( void)
 	//get_content_length(_request["path"][0]);
 	// header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
 	
-	header << "Connection: keep-alive\r\n";
+	if (_keep_alive)
+    	header << "Connection: keep-alive\r\n";
+	else
+    	header << "Connection: close\r\n";
+
 	header << "Transfer-Encoding: chunked\r\n";
 	header << "Server: WebServ\r\n\r\n";
 

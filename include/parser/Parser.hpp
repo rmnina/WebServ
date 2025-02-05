@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 02:38:11 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/05 00:52:00 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Parser
 		std::vector<unsigned char>							_image_response;
 
 		size_t												_body_size;
+		bool												_keep_alive;
 		
 		size_t												_resp_size;
 		std::string											_extension;

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 23:05:38 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/05 00:49:26 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class Server
 		std::vector<size_t>			_nb_bytes;
 		std::vector<std::string>	_request;
 		std::vector<std::string>	_req_body;
+		std::vector<bool>			_keep_alive;;
 		struct addrinfo				*_info;
 		struct epoll_event			_event;
 
@@ -67,6 +68,7 @@ class Server
 		std::string					getPort(void) const;
 		std::vector<std::string>	getRequest(void) const;
 		std::vector<std::string>	getReqBody( void) const;
+		std::vector<bool>			getConnectionStatus( void) const;
 		bool						getErrorPage( void) const;
 
 		void	add_event(int &epfd, int socket);

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 05:23:50 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/05 01:07:17 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ int	Server::accept_connection(int &epfd)
 	_request.push_back("");
 	_req_body.push_back("");
 	_nb_bytes.push_back(0);
+	_keep_alive.push_back(false);
 	return (SUCCESS);
 }
 
@@ -158,9 +159,15 @@ int	Server::receive_request(int client_index, int &epfd)
 	nb_bytes = recv(_client_sock[client_index], buffer, MAX_REQ_SIZE, 0);
 	_nb_bytes[client_index] += nb_bytes;
 	_request[client_index].append(buffer);
+
+	size_t conn_pos = _request[client_index].find("Connection: keep-alive");
+	if (conn_pos != std::string::npos) 
+		_keep_alive[client_index] = true;
+	std::cout << ORANGE BOLD << "REQ IS " << std::endl << buffer << RESET << std::endl;
+
 	if (nb_bytes < 0) 
 	{
-		std::cerr << "Error on recv on " << _name << std::endl;
+		std::cerr << "Error on recv on " << _name << " Errno is " << errno << std::endl;
 		delete_event(epfd, _client_sock[client_index]);
 		close(_client_sock[client_index]);
 		_client_sock.erase(_client_sock.begin() + client_index);
@@ -192,6 +199,7 @@ int	Server::receive_request(int client_index, int &epfd)
 		if (_nb_bytes[client_index] < content_length + body_start)
 			return (CONTINUE);
 		req_body = _request[client_index].substr(body_start, content_length);
+		std::cout << YELLOW BOLD << "BODY IS " << std::endl << req_body << RESET << std::endl;
 		_req_body[client_index].append(req_body);
 	}	
 	return (SUCCESS);
@@ -214,7 +222,6 @@ int	Server::get_client_index(int event_fd)
 int	Server::send_response(std::string &response, int client_index, int &epfd)
 {
 	unsigned long	bytes_sent = 0;
-	size_t			packets_sent = 0;
 	size_t			resp_size = response.size();
 	
 	modify_event(epfd, _client_sock[client_index], EPOLLOUT);
@@ -234,33 +241,40 @@ int	Server::send_response(std::string &response, int client_index, int &epfd)
 
 		ssize_t	bytes = send(_client_sock[client_index], chunk.c_str(), chunk.size(), 0);
 		if (bytes <= 0)
+		{
+			std::cout << RED BOLD << "Error chunk" << RESET << std::endl;
 			return (close (_client_sock[client_index]), 1);
+		}
 		bytes_sent += packet_size;
-		packets_sent++;
 	}
 	std::string end_chunk = "0\r\n\r\n";
 	send(_client_sock[client_index], end_chunk.c_str(), end_chunk.size(), 0);
-	modify_event(epfd, _client_sock[client_index], EPOLLIN);
+	if (_keep_alive[client_index])
+		modify_event(epfd, _client_sock[client_index], EPOLLIN);
+	else
+		close(_client_sock[client_index]);
 	return (1);
 }
 
 int	Server::handle_existing_client( int event_fd, int &epfd)
 {
 	int	client_index = get_client_index(event_fd);
-	int	received;
 	
 	if (client_index == -1)
 		return (-1);
-	received = receive_request(client_index, epfd);
+	int received = receive_request(client_index, epfd);
 	if (received == SUCCESS)
 	{
 		Parser	parser(this);
 		parser.examine_request(client_index);
 		std::string response = parser.build_response_header();
-		send(_client_sock[client_index], response.c_str(), response.size(), 0); // Sending header in plain text
+		send(_client_sock[client_index], response.c_str(), response.size(), 0); 
 		response = parser.build_response();
-		send_response(response, client_index, epfd); // Sending the rest of the response in packets
+		send_response(response, client_index, epfd);
 		_request[client_index].clear();
+		_nb_bytes[client_index] = 0;
+		_req_body[client_index].clear();
+		_keep_alive[client_index] = false;
 		return (SUCCESS);
 	}
 	if (received == CONTINUE || received == DISCONNECT)
@@ -287,6 +301,8 @@ std::string Server::getPort( void) const { return (_port); }
 std::vector<std::string>	Server::getRequest( void) const { return (_request); }
 
 std::vector<std::string>	Server::getReqBody( void) const { return (_req_body); }
+
+std::vector<bool>			Server::getConnectionStatus( void) const { return (_keep_alive); }
  
 bool	Server::getErrorPage( void) const { return (_error_page); }
 
