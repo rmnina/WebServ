@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/05 00:51:33 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/05 02:44:23 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,101 @@ bool	Parser::fill_content_type( const std::string &request)
 	std::string	tmp = request.substr(accept_begin, accept_end - accept_begin);
 	std::vector<std::string> accept = string_to_vector(tmp, ',', 0);
 	_request["accept"] = accept;
+	return (true);
+}
+
+bool	Parser::fill_content_type_multipart(const std::string &request)
+{
+	size_t	first_line_end = request.find("\r\n");
+	if (first_line_end == std::string::npos)
+		return (false);
+
+	std::string	boundary = request.substr(0, first_line_end);
+	
+	std::vector<std::string>	tmp;
+	tmp.push_back("multipart/form-data; boundary=" + boundary);
+	_request["Content-Type"] = tmp;
+
+	std::vector<std::string>	boundary_vec;
+	boundary_vec.push_back(boundary);
+	_request["boundary"] = boundary_vec;
+
+	return (true);
+}
+
+bool	Parser::fill_content_length(const std::string &request)
+{
+	size_t	length_begin = request.find("Content-Length:");
+	if (length_begin == std::string::npos)
+		length_begin = request.find("content-length:");
+
+	if (length_begin == std::string::npos)
+	{
+		std::cerr << "Error: no Content-Length header found" << std::endl;
+		return (false);
+	}
+	
+	size_t	length_end = request.find("\r\n", length_begin);
+	if (length_end == std::string::npos)
+	{
+		std::cerr << "Error: malformed Content-Length header" << std::endl;
+		return (false);
+	}
+	std::string	length_str = request.substr(length_begin + 15, 
+		length_end - (length_begin + 15));
+	while (length_str[0] == ' ')
+		length_str = length_str.substr(1);
+	std::vector<std::string> tmp;
+	tmp.push_back(length_str);
+	_request["Content-Length"] = tmp;
+	return (true);
+}
+
+bool	Parser::get_file_name(const std::string &body, std::string &filename)
+{
+	size_t	filename_pos = body.find("filename=\"");
+	if (filename_pos == std::string::npos)
+	{
+		std::cerr << "Error: no filename in request" << std::endl;
+		return (false);
+	}
+
+	size_t	filename_end = body.find("\"", filename_pos + 10);
+	if (filename_end == std::string::npos)
+	{
+		std::cerr << "Error: malformed filename" << std::endl;
+		return (false);
+	}
+
+	filename = body.substr(filename_pos + 10, filename_end - (filename_pos + 10));
+	
+	if (filename.find('/') != std::string::npos || 
+		filename.find("..") != std::string::npos)
+	{
+		std::cerr << "Error: invalid filename" << std::endl;
+		return (false);
+	}
+	return (true);
+}
+
+bool	Parser::get_file_content(const std::string &body, std::string &content)
+{
+	if (_request.find("boundary") == _request.end())
+		return (false);
+
+	std::string	boundary = _request["boundary"][0];
+
+	size_t	content_begin = body.find("\r\n\r\n");
+	if (content_begin == std::string::npos)
+		return (false);
+	content_begin += 4;
+
+	size_t	content_end = body.find(boundary, content_begin);
+	if (content_end == std::string::npos)
+		return (false);
+	content_end -= 2;
+
+	content = body.substr(content_begin, content_end - content_begin);
 	return (true);
 }
 

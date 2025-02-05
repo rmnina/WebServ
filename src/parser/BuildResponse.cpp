@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/05 01:09:03 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/05 02:35:32 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,9 +163,9 @@ std::string	Parser::build_response_header( void)
 	// header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
 	
 	if (_keep_alive)
-    	header << "Connection: keep-alive\r\n";
+		header << "Connection: keep-alive\r\n";
 	else
-    	header << "Connection: close\r\n";
+		header << "Connection: close\r\n";
 
 	header << "Transfer-Encoding: chunked\r\n";
 	header << "Server: WebServ\r\n\r\n";
@@ -225,13 +225,13 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);
-    		std::map<std::string, std::string> env;
+			std::map<std::string, std::string> env;
 		if (method == GET)
-        		env["REQUEST_METHOD"] = "GET";
+				env["REQUEST_METHOD"] = "GET";
 		else
 			env["REQUEST_METHOD"] = "POST";
 		env["CONTENT_TYPE"] = "application/x-www-form-urlencoded";
-    	env["SCRIPT_NAME"] = filename;
+		env["SCRIPT_NAME"] = filename;
 
 		char *envp[env.size() + 1];
 		int i = 0;
@@ -370,37 +370,42 @@ void	Parser::POSTmethod( void)
 	else if (!_category.compare("CGI"))
 		exec_cgi(path, POST);
 	else
-	{
-		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;	std::string	path = _request["path"][0];
-	}
+		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;	
 	std::cout << __func__ << "\tpath = " << path << std::endl;
 }
 
-void	Parser::upload( void)
+void	Parser::upload(void)
 {
-	std::cout << BOLD YELLOW << "ICI" << RESET << std::endl;
-	
-	size_t		pos = _request_body.find("filename=\"") + 10;
-	size_t		end = 0;
-	std::string	filename = "unknown";
+	if (!fill_content_type_multipart(_request_body))
+		std::cerr << "Invalid upload request headers" << std::endl;
 
-	std::string	folder;
-	if (_server_conf.find("upload") != _server_conf.end() && _server_conf["upload"][0] == "on")
-		folder = _server_conf["upload"][1];
-	//TODO: protect segfault if no dir name.
-	if (pos == std::string::npos)
-		std::cerr << "No filename for this image" << std::endl;
+	std::string	filename;
+	std::string	content;
+	
+	if (!get_file_name(_request_body, filename) ||
+		!get_file_content(_request_body, content))
+		std::cerr << "Could not extract file from request" << std::endl;
+
+	std::string	upload_dir;
+	if (_server_conf.find("upload") != _server_conf.end() && 
+		_server_conf["upload"][0] == "on")
+		upload_dir = _server_conf["upload"][1];
 	else
+		std::cerr << "Upload not configured" << std::endl;
+
+	struct stat info;
+	if (stat(upload_dir.c_str(), &info) != 0)
 	{
-		end = pos + _request_body.find("\"");
-		filename = _request_body.substr(pos, filename.length() - end);
+		if (mkdir(upload_dir.c_str(), 0755) != 0)
+			std::cerr << "Error creating directory" << std::endl;
 	}
-	std::string temp = folder + "/" + filename;
-	std::cout << BLUE BOLD << "Temp name is " << temp << RESET << std::endl;
-	std::ofstream	file(temp.c_str());
-	pos = _request_body.find("\r\n\r\n");
-	end = _request_body.find("\r\n\r\n", pos);
-	file << _request_body.substr(pos, end);
+	std::string	filepath = upload_dir + "/" + filename;
+	std::cout << BOLD YELLOW << "filepath is " << filepath << RESET << std::endl;
+	std::ofstream	file(filepath.c_str(), std::ios::binary);
+	if (!file.is_open())
+		std::cerr << "Cannot create file" << std::endl;
+
+	file.write(content.c_str(), content.length());
 	file.close();
 }
 

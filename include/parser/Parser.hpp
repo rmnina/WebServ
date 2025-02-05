@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/05 00:52:00 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/05 01:53:14 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 class Parser
 {
 	private:
+		std::string											_req_str;
 		std::map<std::string, std::vector<std::string> >	_request;
 		std::string											_request_body;
 		std::string											_response;
@@ -93,6 +94,11 @@ class Parser
 		bool		fill_content_type( const std::string &request);
 		bool		check_version( const std::string &request);
 		bool		check_req_size( const std::string &request);
+
+		bool		fill_content_type_multipart( const std::string &request);
+		bool		fill_content_length( const std::string &request);
+		bool		get_file_name( const std::string &body, std::string &filename);
+		bool		get_file_content( const std::string &body, std::string &content);
 
 		int			build_error_page( void);
 		int			throw_error_page( void);
