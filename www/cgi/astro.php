@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+    file_put_contents("debug.txt", "RAW INPUT: " . file_get_contents("php://input") . "\n", FILE_APPEND);
+    file_put_contents("debug.txt", "POST DATA: " . print_r($_POST, true) . "\n", FILE_APPEND);
     if (isset($_POST['sign']) && isset($_POST['sign']) == "Aries")
         echo $_POST['sign'] . "<br/><strong>: Bold moves bring rewards; trust instincts today.</strong> ";
     else if (isset($_POST['sign']) && isset($_POST['sign']) == "Taurus")
@@ -27,6 +29,5 @@
 
     else
         echo "Please enter a real sign. Astrology is serious business";
-    file_put_contents("debug.txt", file_get_contents("php://input"));
     //file_put_contents("debug_headers.txt", print_r(getallheaders(), true));
 ?>
