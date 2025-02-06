@@ -98,7 +98,7 @@ class Parser
 		bool		fill_content_type_multipart( const std::string &request);
 		bool		fill_content_length( const std::string &request);
 		bool		get_file_name( const std::string &body, std::string &filename);
-		bool		get_file_content( const std::string &body, std::string &content);
+		bool		get_file_content( const std::string &body, std::vector<char> &content);
 
 		int			build_error_page( void);
 		int			throw_error_page( void);

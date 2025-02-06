@@ -78,7 +78,7 @@ void	Parser::get_content_category( void)
 	std::string		image_files[6] = {".jpg", ".jpeg", ".png", ".gif", ".ico", ".svg"};
 	std::string		cgi[4] = {".py", ".sh", ".php", ".cgi"};
 
-	for (long unsigned int i = 0; i <= sizeof(raw_text_files) / sizeof(std::string); i++)
+	for (long unsigned int i = 0; i < sizeof(raw_text_files) / sizeof(std::string); i++)
 	{
 		if (raw_text_files[i] == _extension)
 		{
@@ -86,7 +86,7 @@ void	Parser::get_content_category( void)
 			return;
 		}
 	}
-	for (long unsigned int i = 0; i <= sizeof(image_files) / sizeof(std::string); i++)
+	for (long unsigned int i = 0; i < sizeof(image_files) / sizeof(std::string); i++)
 	{
 		if (image_files[i] == _extension)
 		{
@@ -94,7 +94,7 @@ void	Parser::get_content_category( void)
 			return;
 		}
 	}
-	for (long unsigned int i = 0; i <= sizeof(cgi) / sizeof(std::string); i++)
+	for (long unsigned int i = 0; i < sizeof(cgi) / sizeof(std::string); i++)
 	{
 		if (cgi[i] == _extension)
 		{
@@ -462,16 +462,14 @@ void	Parser::POSTmethod( void)
 
 	if (_request_body.find("filename=") != std::string::npos)
 		upload();
-	if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
-		build_response_content(path);
 	else if (!_category.compare("CGI"))
 	{
 		std::cout << "on est bien dans le cgi post\n";
 		exec_cgi(path, POST);
 	}
 	else
-		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;	
-	std::cout << __func__ << "\tpath = " << path << std::endl;
+		build_response_content(path);
+	std::cout << __func__ << "\tpathHAHA = " << path << std::endl;
 }
 
 void	Parser::upload(void)
@@ -479,17 +477,20 @@ void	Parser::upload(void)
 	if (!fill_content_type_multipart(_request_body))
 		std::cerr << "Invalid upload request headers" << std::endl;
 
-	std::string	filename;
-	std::string	content;
+	std::string			filename;
+	std::vector<char>	content;
 	
 	if (!get_file_name(_request_body, filename) ||
 		!get_file_content(_request_body, content))
+	{
 		std::cerr << "Could not extract file from request" << std::endl;
+		return;
+	}
 
 	std::string	upload_dir;
 	if (_server_conf.find("upload") != _server_conf.end() && 
 		_server_conf["upload"][0] == "on")
-		upload_dir = _server_conf["upload"][1];
+		upload_dir = "www/" + _server_conf["upload"][1];
 	else
 		std::cerr << "Upload not configured" << std::endl;
 
@@ -503,10 +504,18 @@ void	Parser::upload(void)
 	std::cout << BOLD YELLOW << "filepath is " << filepath << RESET << std::endl;
 	std::ofstream	file(filepath.c_str(), std::ios::binary);
 	if (!file.is_open())
+	{
 		std::cerr << "Cannot create file" << std::endl;
-
-	file.write(content.c_str(), content.length());
+		_error_code = 500;
+	}
+	file.write(content.data(), content.size());
 	file.close();
+	_error_code = 201;
+	// std::ostringstream response_body;
+	// response_body << "{ \"status\": \"success\", \"message\": \"File uploaded successfully\", \"filename\": \"" 
+	// 			 << filename << "\" }";
+	// _body_size = response_body.str().size();
+    // _response += response_body.str();
 }
 
 void	Parser::DELETEmethod(void)

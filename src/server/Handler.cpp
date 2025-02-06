@@ -156,4 +156,5 @@ Handler::~Handler()
 {
 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
 		delete (*it);
+	close(_epfd);
 }

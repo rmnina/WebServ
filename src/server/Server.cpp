@@ -310,5 +310,7 @@ bool	Server::getErrorPage( void) const { return (_error_page); }
 Server::~Server()
 {
 	close(_server_socket);
+	for (std::vector<int>::iterator it = _client_sock.begin(); it < _client_sock.end(); ++it)
+		close(*it);
 	freeaddrinfo(_info);
 }

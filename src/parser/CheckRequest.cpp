@@ -171,24 +171,47 @@ bool	Parser::get_file_name(const std::string &body, std::string &filename)
 	return (true);
 }
 
-bool	Parser::get_file_content(const std::string &body, std::string &content)
+bool	Parser::get_file_content(const std::string &body, std::vector<char> &content)
 {
-	if (_request.find("boundary") == _request.end())
+	size_t	MAX_FILE_SIZE = 3000;
+
+	std::cout << BLUE BOLD << "BODY LENGTH IS " << body.length() << RESET << std::endl;
+	
+	if (body.length() > MAX_FILE_SIZE)
+	{
+		std::cerr << "File too heavy (> 10Mo)" << std::endl;
 		return (false);
+	}
+
+	if (_request.find("boundary") == _request.end())
+	{
+		std::cout << GREEN BOLD << "boundary" << RESET << std::endl;
+		return (false);
+	}
 
 	std::string	boundary = _request["boundary"][0];
 
 	size_t	content_begin = body.find("\r\n\r\n");
 	if (content_begin == std::string::npos)
+	{
+		std::cout << GREEN BOLD << "no begin" << RESET << std::endl;
 		return (false);
+	}
 	content_begin += 4;
 
 	size_t	content_end = body.find(boundary, content_begin);
 	if (content_end == std::string::npos)
-		return (false);
-	content_end -= 2;
+		content_end = body.length();
+	else
+		content_end -= 2;
 
-	content = body.substr(content_begin, content_end - content_begin);
+	content.assign(body.begin() + content_begin, body.begin() + content_end);
+	std::cout << BOLD BLUE << "content is";
+	for (std::vector<char>::iterator it = content.begin(); it < content.end(); it++)
+	{
+		std::cout << *it;
+	}
+	std::cout << RESET << std::endl;
 	return (true);
 }
 
