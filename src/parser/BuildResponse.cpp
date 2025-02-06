@@ -6,7 +6,7 @@
 /*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/05 23:48:25 by skiam            ###   ########.fr       */
+/*   Updated: 2025/02/06 17:43:05 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void  Parser::init_mime_types( void)
 	mime_types[".txt"] = "text/plain";
 	mime_types[".cgi"] = "application/x-httpd-cgi";
 	mime_types[".php"] = "application/x-httpd-cgi";
+	mime_types[".c"] = "text/x-c";
+	mime_types[".cpp"] = "text/x-c";
 	mime_types[".xml"] = "application/xml";
 	mime_types[".pdf"] = "application/pdf";
 }
@@ -76,9 +78,9 @@ void	Parser::get_content_category( void)
 	std::string		raw_text_files[11] = {".html", ".css", ".scss", ".js", ".txt", ".xml", ".json", ".csv",
 		".woff", ".woff2", ".ttf"};
 	std::string		image_files[6] = {".jpg", ".jpeg", ".png", ".gif", ".ico", ".svg"};
-	std::string		cgi[4] = {".py", ".sh", ".php", ".cgi"};
+	std::string		cgi[6] = {".py", ".sh", ".php", ".cgi", ".c", ".cpp"};
 
-	for (long unsigned int i = 0; i <= sizeof(raw_text_files) / sizeof(std::string); i++)
+	for (long unsigned int i = 0; i < sizeof(raw_text_files) / sizeof(std::string); i++)
 	{
 		if (raw_text_files[i] == _extension)
 		{
@@ -86,7 +88,7 @@ void	Parser::get_content_category( void)
 			return;
 		}
 	}
-	for (long unsigned int i = 0; i <= sizeof(image_files) / sizeof(std::string); i++)
+	for (long unsigned int i = 0; i < sizeof(image_files) / sizeof(std::string); i++)
 	{
 		if (image_files[i] == _extension)
 		{
@@ -94,7 +96,7 @@ void	Parser::get_content_category( void)
 			return;
 		}
 	}
-	for (long unsigned int i = 0; i <= sizeof(cgi) / sizeof(std::string); i++)
+	for (long unsigned int i = 0; i < sizeof(cgi) / sizeof(std::string); i++)
 	{
 		if (cgi[i] == _extension)
 		{

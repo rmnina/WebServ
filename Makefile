@@ -17,7 +17,7 @@ SRCS = Config.cpp ConfigStruct.cpp Handler.cpp \
 	ErrorPage.cpp BuildResponse.cpp Location.cpp main.cpp
 	
 # CGI files
-CGI_SOURCES = random_number.cpp infinite_loop.c # www/cgi/kaamelott.rb)
+CGI_SOURCES = random_number.cpp infinite_loop.c ft_strlen_crash.c # www/cgi/kaamelott.rb)
 
 # Filter cgi by extension
 CGI_CPP = $(filter %.cpp, $(CGI_SOURCES))

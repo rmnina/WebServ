@@ -42,7 +42,7 @@ transition: none !important;
 
 #container-random { margin: 1rem; }
 
-#parallaxRandom { height: 650px; }
+#parallaxRandom { height: 639px; }
 
 .topnav {
 	background-color: #191818;
@@ -265,6 +265,7 @@ footer a, footer a:hover {
 
 #random-page {
 	padding: 1em 0 1em 0;
+	padding: 0em 0 0em 0;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
