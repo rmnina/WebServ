@@ -146,15 +146,18 @@ footer a, footer a:hover {
 
 #cgi-link { margin-top: -3em; }
 
-#death, #temperance { padding-top: 36px; } 
+#death { padding-top: 36px; } 
 
-#temperance { filter: brightness(1.5); }
+#temperance { 
+	filter: brightness(1.5);
+	margin-top: -5px;
+}
 
 #moon { padding-top: 15px; } 
 
 .form-popup {
-	display: none; /* Caché par défaut */
-	position: fixed; /* Fixé par rapport à l'écran */
+	display: none; 
+	position: fixed;
 	top: 50%; /* Centre verticalement */
 	left: 50%; /* Centre horizontalement */
 	transform: translate(-50%, -50%); /* Ajuste l'origine pour le centrage parfait */

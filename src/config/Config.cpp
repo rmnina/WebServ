@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 23:05:06 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/06 14:16:10 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ std::vector<ConfigStruct>	Config::get_servers_conf(void) const
 
 bool    Config::_server_allowed(const std::string &keyword) 
 {
-	const std::string			array[10] = {"listen", "server_name", "dir_listing", "error", "method",
+	const std::string			array[12] = {"listen", "Cross-Origin-Resource-Policy:", "server_name", "dir_listing", "error", "method",
 											"upload", "root", "body_size", "index", "location"};
-	std::vector<std::string>	allowed(array, array + 10);
+	std::vector<std::string>	allowed(array, array + 12);
 
 	for (std::vector<std::string>::iterator it = allowed.begin(); it < allowed.end(); it++)
 	{
