@@ -1,4 +1,4 @@
-</html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>Webserv</title>
@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="assets/css/styles.css" />
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="shortcut icon" type="image/x-icon" href="https://i.postimg.cc/rmKr57y8/crane-favicon.png"/>
 		<!--<script src="/mon.js" defer></script>-->
 	</head>
 	<!--
@@ -31,6 +32,7 @@
 				<article class="presentation" id="random-page">
 					<p class="welcome-p" id="hierophant">Dive into nothingness</p>
 					<a href="/cgi/infinite_loop.cgi" id="generate-link"><button class="check-button" id="infinity-btn">Generate infinity</button></a>
+					<!--<a href="/cgi/ft_strlen_crash.cgi" id="generate-link"><button class="check-button" id="infinity-btn">Generate infinity</button></a>-->
 
 					<!--
 					<div id="infinite-loop">
@@ -56,7 +58,8 @@
 </div>
 					<div id="cgi-response"></div>
 					<div class="card" style="width: 13rem;" id="moon-infinite">
-						<img src="images/moon.jpeg" alt="" style="width: 100%">
+						<!--<img src="images/moon.jpeg" alt="" style="width: 100%">-->
+						<img src="https://i.postimg.cc/qByGYdLS/moon.png" alt="" style="width: 100%">
 					</div>
 				</article>
 				<script>
@@ -66,6 +69,7 @@
 						const loader = document.getElementById("loader-container");
 						loader.style.display = "flex";
 						xhr.open("GET", "/cgi/infinite_loop.cgi", true);
+						//xhr.open("GET", "/cgi/ft_strlen_crash.cgi", true);
 					  xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
 			loader.style.display = "none";

@@ -42,7 +42,7 @@ transition: none !important;
 
 #container-random { margin: 1rem; }
 
-#parallaxRandom { height: 650px; }
+#parallaxRandom { height: 639px; }
 
 .topnav {
 	background-color: #191818;
@@ -146,15 +146,18 @@ footer a, footer a:hover {
 
 #cgi-link { margin-top: -3em; }
 
-#death, #temperance { padding-top: 36px; } 
+#death { padding-top: 36px; } 
 
-#temperance { filter: brightness(1.5); }
+#temperance { 
+	filter: brightness(1.5);
+	margin-top: -5px;
+}
 
 #moon { padding-top: 15px; } 
 
 .form-popup {
-	display: none; /* Caché par défaut */
-	position: fixed; /* Fixé par rapport à l'écran */
+	display: none; 
+	position: fixed;
 	top: 50%; /* Centre verticalement */
 	left: 50%; /* Centre horizontalement */
 	transform: translate(-50%, -50%); /* Ajuste l'origine pour le centrage parfait */
@@ -262,6 +265,7 @@ footer a, footer a:hover {
 
 #random-page {
 	padding: 1em 0 1em 0;
+	padding: 0em 0 0em 0;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
@@ -291,6 +295,9 @@ footer a, footer a:hover {
 }
 
 #infinity-btn { margin: 2em; }
+/*
+#astro-btn { font-size: 10px; }
+*/
 
 #moon-infinite { margin-top: 25px; }
 

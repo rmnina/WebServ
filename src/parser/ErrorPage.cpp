@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 02:44:15 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/06 18:20:33 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ int Parser::build_error_page( void)
 	os << _error_code;
 	std::string	code_str = os.str();
 	
-	int	code[6] = {400, 403, 404, 405, 406, 410};
-	std::string	message[6] = {"Bad request syntax", "Forbidden", "Resource not found",
-							"Method not allowed", "Format not acceptable", "Resource gone"};
+	int	code[8] = {400, 403, 404, 405, 406, 410, 504, 418};
+	std::string	message[8] = {"Bad request syntax", "Forbidden", "Resource not found",
+							"Method not allowed", "Format not acceptable", "Resource gone", "Gateway Timeout", "I'm a teapot"};
 	
 	std::ifstream   error_file("www/error.html");
 	if (!error_file.is_open())
