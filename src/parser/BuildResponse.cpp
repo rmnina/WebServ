@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/07 03:14:54 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/07 19:58:43 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,85 +216,6 @@ std::string	trim_req_body(std::string str)
 	return (str.substr(pos3 + 1, pos4 - pos3 - 1));
 }
 
-/*
-void Parser::exec_cgi(std::string &filename, int method)
-{
-    std::cout << "Request body: " << _request_body << std::endl;
-
-    pid_t pid;
-    int pipe_in[2], pipe_out[2];
-
-    if (pipe(pipe_in) == -1 || pipe(pipe_out) == -1) {
-        std::cerr << "Error creating pipes\n";
-        return;
-    }
-
-    pid = fork();
-    if (pid == -1) {
-        std::cerr << "Error forking process\n";
-        return;
-    }
-
-    if (pid == 0) {
-        // --- Processus enfant ---
-        close(pipe_in[1]);  // On lit dans pipe_in
-        close(pipe_out[0]); // On écrit dans pipe_out
-
-        dup2(pipe_in[0], STDIN_FILENO);
-        dup2(pipe_out[1], STDOUT_FILENO);
-
-        close(pipe_in[0]);
-        close(pipe_out[1]);
-
-        // --- Préparation des variables d'environnement ---
-        char content_length[20];
-        sprintf(content_length, "CONTENT_LENGTH=%lu", (unsigned long)_request_body.size());
-
-        char *env[] = {
-            (char *)(method == GET ? "REQUEST_METHOD=GET" : "REQUEST_METHOD=POST"),
-            content_length,
-            (char *)"CONTENT_TYPE=application/x-www-form-urlencoded",
-	    (char *)"REDIRECT_STATUS=1",
-            NULL
-        };
-
-        char *argv[] = { (char *)filename.c_str(), NULL };
-        execve(filename.c_str(), argv, env);
-        std::cerr << "Error executing CGI script\n";
-        exit(1);
-    } else {
-
-		//handle_cgi_error(&status, pid); 
-        // --- Processus parent ---
-        close(pipe_in[0]);
-        close(pipe_out[1]);
-
-        // --- Envoi des données POST via STDIN ---
-        if (method == POST) {
-            write(pipe_in[1], _request_body.c_str(), _request_body.size());
-        }
-        close(pipe_in[1]);
-
-        // --- Lecture de la sortie du script ---
-        char buffer[1024];
-        std::string cgi_output;
-        int bytes_read;
-        while ((bytes_read = read(pipe_out[0], buffer, sizeof(buffer) - 1)) > 0) {
-            buffer[bytes_read] = '\0';
-            cgi_output.append(buffer);
-        }
-        close(pipe_out[0]);
-
-        // --- Attente du processus enfant ---
-        int status;
-        waitpid(pid, &status, 0);
-
-        _response = cgi_output;
-        std::cout << "CGI Response: " << _response << std::endl;
-    }
-}
-*/
-
 void Parser::exec_cgi(std::string &filename, int method) {
     std::cout << "Entering exec_cgi with filename: " << filename << std::endl;
 
@@ -392,92 +313,7 @@ else { // Parent process
         std::cout << "CGI Output:\n" << _response << std::endl;
     }
 }
-// void Parser::exec_cgi(std::string &filename, int method) {
-//     std::cout << "Entering exec_cgi with filename: " << filename << std::endl;
 
-//     pid_t pid;
-//     int input_pipe[2], output_pipe[2];
-
-// 	_request_body = "sign=" + trim_req_body(_request_body) + "\r\n";
-// 	std::cout << "req body after = " << _request_body << std::endl;
-//     if (pipe(input_pipe) == -1 || pipe(output_pipe) == -1) {
-//         std::cerr << "Error creating pipes\n";
-//         return;
-//     }
-
-//     pid = fork();
-//     if (pid == -1) {
-//         std::cerr << "Error forking process\n";
-//         return;
-//     }
-
-//     if (pid == 0) { // Child process
-//         close(input_pipe[1]);  // Close unused write end of input pipe
-//         close(output_pipe[0]); // Close unused read end of output pipe
-
-//         dup2(input_pipe[0], STDIN_FILENO);   // Redirect input pipe to stdin
-//         dup2(output_pipe[1], STDOUT_FILENO); // Redirect stdout to output pipe
-
-//         close(input_pipe[0]);
-//         close(output_pipe[1]);
-
-//         // Set up environment variables
-//         std::vector<std::string> env_list;
-// 		if (method == GET)
-//         	env_list.push_back("REQUEST_METHOD=GET");
-// 		else
-// 			env_list.push_back("REQUEST_METHOD=POST");
-//         if (method == POST) {
-//             std::stringstream ss;
-//             ss << _request_body.size();
-//             env_list.push_back("CONTENT_LENGTH=" + ss.str());
-// 			env_list.push_back("CONTENT_TYPE=application/x-www-form-urlencoded");
-//         }
-
-//         env_list.push_back("SCRIPT_NAME=" + filename);
-
-//         // Convert to char* array for execve
-//         char **envp = new char*[env_list.size() + 1];
-//         for (size_t i = 0; i < env_list.size(); i++) {
-//             envp[i] = strdup(env_list[i].c_str());
-// 			//std::cout << "env[i] = " << envp[i] << std::endl;
-// 		}
-//         envp[env_list.size()] = NULL;
-
-//         char *argv[] = { strdup(filename.c_str()), NULL };
-//         execve(filename.c_str(), argv, envp);
-
-//         std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
-//         exit(1);
-//     } 
-// 	else { // Parent process
-// 		int status;
-// 		handle_cgi_error(&status, pid); 
-//         close(input_pipe[0]);  // Close unused read end of input pipe
-//         close(output_pipe[1]); // Close unused write end of output pipe
-
-// 		std::cout << "request body dans parent = " << _request_body << std::endl;
-//         if (method == POST)
-//             write(input_pipe[1], _request_body.c_str(), _request_body.size());
-//         close(input_pipe[1]); // Close after writing
-
-//         char buffer[1024];
-//         std::string cgi_output;
-//         int bytes_read;
-//         while ((bytes_read = read(output_pipe[0], buffer, sizeof(buffer) - 1)) > 0) {
-//             buffer[bytes_read] = '\0';
-//             cgi_output += buffer;
-//         }
-//         close(output_pipe[0]);
-//         waitpid(pid, &status, 0);
-//         if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-//             std::cerr << "CGI script exited with error code: " << WEXITSTATUS(status) << "\n";
-//         }
-
-//         _response = cgi_output;
-//         std::cout << "CGI Output:\n" << _response << std::endl;
-//     }
-// }
 
 void	Parser::display_dirlist(std::string path)
 {
