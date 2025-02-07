@@ -30,35 +30,51 @@
 			<div class="container-random">
 				<article class="presentation" id="random-page">
 					<p class="welcome-p" id="hierophant">Tell us your sign</p>
-					<div id="astro">
-					</div>
-					<form action="cgi/astro.php" method="POST">
-						<label for="sign">Sign:</label>
-						<input type="text" id="sign" name="sign" required><br><br>
-				
-						<button type="submit" class="check-button" id="astro-btn"> Submit </button>
-					</form>
-					<div class="card" style="width: 13rem;">
-						<!-- <img src="images/temperance.jpeg" alt="" style="width: 100%">-->
-						<img src="https://i.postimg.cc/K8HLj9ft/temperance.png" alt="" style="width: 100%">
-					</div>
+					  <!-- Form to select zodiac sign -->
+                <form id="astro-form">
+                    <label for="sign">Choose your sign:</label>
+                    <select name="sign" id="sign">
+                        <option value="Aries">Aries</option>
+                        <option value="Taurus">Taurus</option>
+                        <option value="Leo">Leo</option>
+                        <option value="Gemini">Gemini</option>
+                        <option value="Cancer">Cancer</option>
+                        <option value="Virgo">Virgo</option>
+                        <option value="Libra">Libra</option>
+                        <option value="Scorpio">Scorpio</option>
+                        <option value="Sagittarius">Sagittarius</option>
+                        <option value="Capricorn">Capricorn</option>
+                        <option value="Aquarius">Aquarius</option>
+                        <option value="Pisces">Pisces</option>
+                    </select>
+                    <button type="submit" class="check-button">Get Your Horoscope</button>
+                </form>
+
+                <div id="cgi-response"></div>
 				</article>
 				<script>
-					document.querySelector("form").addEventListener("submit", function (event) {
+					document.getElementById("astro-form").addEventListener("submit", function (event) {
 						event.preventDefault();
 
 						const signValue = document.getElementById("sign").value; 
-						const formData = new FormData();
-						formData.append("sign", signValue);
-
+			//			const formData = new FormData();
+			//			formData.append("sign", signValue);
+			
 						const xhr = new XMLHttpRequest();
-						xhr.open("POST", "cgi/astro.php", true);
+						xhr.open("POST", "/cgi/astro.php", true);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
 						xhr.onreadystatechange = function () {
-							if (xhr.readyState === 4 && xhr.status === 200) {
-								document.getElementById("astro").innerHTML = xhr.responseText;
+							if (xhr.readyState === 4) {
+							 if (xhr.status === 200) {
+								document.getElementById("cgi-response").innerHTML = xhr.responseText;
+							 } else {
+								document.getElementById("cgi-response").innerHTML = "ERROR T'AS VU";
 							}
+						     }
 						};
-						xhr.send(formData);
+						console.log("Sending data: sign=" + encodeURIComponent(signValue));
+						xhr.send("sign=" + encodeURIComponent(signValue));
 					});
 				</script>
 			</div>

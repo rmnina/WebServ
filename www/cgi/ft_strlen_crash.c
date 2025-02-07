@@ -1,14 +1,5 @@
 #include <stdio.h>
 
-/*
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	while (str[i] !='\0')
-}
-*/
-
 int	main(int argc, char **argv)
 {
 	int	i;

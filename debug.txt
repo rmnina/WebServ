@@ -1,0 +1,85 @@
+
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 10
+QUERY_STRING: ''
+REQUEST_METHOD: 'POST'
+POST request received
+Reading POST data...
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 11
+QUERY_STRING: ''
+REQUEST_METHOD: 'POST'
+POST request received
+Reading POST data...
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 8
+QUERY_STRING: ''
+REQUEST_METHOD: 'POST'
+CONTENT_LENGTH again: 8
+Lecture manuelle de stdin...
+***** On entre dans le block de lecture
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 10
+QUERY_STRING: ''
+REQUEST_METHOD: 'POST'
+CONTENT_LENGTH again: 10
+Lecture manuelle de stdin...
+***** On entre dans le block de lecture
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 11
+QUERY_STRING: ''
+REQUEST_METHOD: 'POST'
+CONTENT_LENGTH again: 11
+Lecture manuelle de stdin...
+***** On entre dans le block de lecture
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 8
+QUERY_STRING: ''
+REQUEST_METHOD: 'POST'
+CONTENT_LENGTH again: 8
+Lecture manuelle de stdin...
+***** On entre dans le block de lecture
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 11
+QUERY_STRING: ''
+REQUEST_METHOD: 'POST'
+CONTENT_LENGTH again: 11
+Lecture manuelle de stdin...
+***** On entre dans le block de lecture
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 11
+QUERY_STRING: ''
+REQUEST_METHOD: 'POST'
+CONTENT_LENGTH again: 11
+Lecture manuelle de stdin...
+***** On entre dans le block de lecture
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 
+QUERY_STRING: ''
+REQUEST_METHOD: ''
+CONTENT_LENGTH again: 
+Lecture manuelle de stdin...
+***** CONTENT_LENGTH est vide ou nul !
+---- DEBUG: Lecture des données POST ----
+POST DATA: 
+***** Aucune donnée POST à traiter !
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 
+QUERY_STRING: ''
+REQUEST_METHOD: ''
+CONTENT_LENGTH again: 
+Lecture manuelle de stdin...
+***** CONTENT_LENGTH est vide ou nul !
+---- DEBUG: Lecture des données POST ----
+POST DATA: 
+***** Aucune donnée POST à traiter !
+---- DEBUG: Début du script ----
+CONTENT_LENGTH: 
+QUERY_STRING: ''
+REQUEST_METHOD: ''
+CONTENT_LENGTH again: 
+Lecture manuelle de stdin...
+***** CONTENT_LENGTH est vide ou nul !
+---- DEBUG: Lecture des données POST ----
+POST DATA: 
+***** Aucune donnée POST à traiter !

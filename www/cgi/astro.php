@@ -1,33 +1,60 @@
 #!/usr/bin/php
 <?php
-    file_put_contents("debug.txt", "RAW INPUT: " . file_get_contents("php://input") . "\n", FILE_APPEND);
-    file_put_contents("debug.txt", "POST DATA: " . print_r($_POST, true) . "\n", FILE_APPEND);
-    if (isset($_POST['sign']) && isset($_POST['sign']) == "Aries")
-        echo $_POST['sign'] . "<br/><strong>: Bold moves bring rewards; trust instincts today.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Taurus")
-        echo $_POST['sign'] . "<br/><strong>: Patience pays off; unexpected gains arrive tonight.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Gemini")
-        echo $_POST['sign'] . "<br/><strong>: Conversations spark joy; a surprise message lifts spirits.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Cancer")
-        echo $_POST['sign'] . "<br/><strong>: Home comforts heal; embrace quiet moments this week.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Leo")
-        echo $_POST['sign'] . "<br/><strong>: Creativity shines; share your talents, applause follows.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Virgo")
-        echo $_POST['sign'] . "<br/><strong>: Organize priorities, clarity emerges—trust your meticulous eye.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Libra")
-        echo $_POST['sign'] . "<br/><strong>: Harmony restored through compromise; love blooms unexpectedly.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Scorpio")
-        echo $_POST['sign'] . "<br/><strong>: Passion ignites; take risks, transformation begins.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Sagittarius")
-        echo $_POST['sign'] . "<br/><strong>: Wanderlust calls; say yes to spontaneous journeys.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Capricorn")
-        echo $_POST['sign'] . "<br/><strong>: Goals align; persistence opens doors—keep climbing.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Aquarius")
-        echo $_POST['sign'] . "<br/><strong>: Ideas electrify; collaborate, innovation thrives.</strong> ";
-    else if (isset($_POST['sign']) && isset($_POST['sign']) == "Pisces")
-        echo $_POST['sign'] . "<br/><strong>: Dreams guide; act on intuition, magic unfolds.</strong> ";
+header('Content-Type: text/plain');
+// Activer l'affichage des erreurs PHP
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-    else
-        echo "Please enter a real sign. Astrology is serious business";
-    //file_put_contents("debug_headers.txt", print_r(getallheaders(), true));
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $reqBody = file_get_contents('php://stdin');
+    parse_str($reqBody, $_POST);
+        $sign = $_POST['sign'];
+        echo "Received sign: " . htmlspecialchars($sign) . "<br>";
+
+        switch ($sign) {
+            case 'Aries':
+                echo "Bold moves bring rewards; trust instincts today.";
+                break;
+            case 'Taurus':
+                echo "Patience pays off; unexpected gains arrive tonight.";
+                break;
+            case 'Leo':
+                echo "Creativity shines; share your talents, applause follows.";
+                break;
+            case 'Gemini':
+                echo "Conversations spark joy; a surprise message lifts spirits.";
+                break;
+            case 'Cancer':
+                echo "Home comforts heal; embrace quiet moments this week.";
+                break;
+            case 'Virgo':
+                echo "Organize priorities, clarity emerges—trust your meticulous eye.";
+                break;
+            case 'Libra':
+                echo "Harmony restored through compromise; love blooms unexpectedly.";
+                break;
+            case 'Scorpio':
+                echo "Passion ignites; take risks, transformation begins.";
+                break;
+            case 'Sagittarius':
+                echo "Wanderlust calls; say yes to spontaneous journeys.";
+                break;
+            case 'Capricorn':
+                echo "Goals align; persistence opens doors—keep climbing.";
+                break;
+            case 'Aquarius':
+                echo "Ideas electrify; collaborate, innovation thrives.";
+                break;
+            case 'Pisces':
+                echo "Dreams guide; act on intuition, magic unfolds.";
+                break;
+            default:
+                echo "Please enter a valid sign.";
+                break;
+        }
+    } else {
+    echo "Request method is not POST.";
+}
 ?>
+
