@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reqBody = file_get_contents('php://stdin');
     parse_str($reqBody, $_POST);
         $sign = $_POST['sign'];
-        echo "Received sign: " . htmlspecialchars($sign) . "<br>";
+       # echo "Received sign: " . htmlspecialchars($sign) . "<br>";
 
         switch ($sign) {
             case 'Aries':
@@ -50,11 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo "Dreams guide; act on intuition, magic unfolds.";
                 break;
             default:
-                echo "Please enter a valid sign.";
+	 	echo "Please enter a real sign. Astrology is serious business";
                 break;
         }
     } else {
-    echo "Request method is not POST.";
+	 echo "Please enter a real sign. Astrology is serious business!";
 }
 ?>
 

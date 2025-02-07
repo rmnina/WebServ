@@ -6,7 +6,7 @@
 /*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/07 02:17:32 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/07 03:14:54 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,7 +354,7 @@ std::cout << "req body after = " << _request_body << std::endl;
         envp[env_list.size()] = NULL;
 
         char *argv[] = { strdup(filename.c_str()), NULL };
-std::cout << "\n\nrequest_body " << _request_body << "filename " << filename << "\n";
+//std::cout << "\n\nrequest_body " << _request_body << "filename " << filename << "\n";
         execve(filename.c_str(), argv, envp);
 
         std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";

@@ -34,6 +34,7 @@
                 <form id="astro-form">
                     <label for="sign">Choose your sign:</label>
                     <select name="sign" id="sign">
+                        <option value="-">-</option>
                         <option value="Aries">Aries</option>
                         <option value="Taurus">Taurus</option>
                         <option value="Leo">Leo</option>
@@ -47,19 +48,19 @@
                         <option value="Aquarius">Aquarius</option>
                         <option value="Pisces">Pisces</option>
                     </select>
-                    <button type="submit" class="check-button">Get Your Horoscope</button>
+                    <button type="submit" class="check-button" id="astro-btn">Get Your Horoscope</button>
                 </form>
 
                 <div id="cgi-response"></div>
+		<div class="card" style="width: 13rem;">
+			<img src="https://i.postimg.cc/K8HLj9ft/temperance.png" id="temperance" alt="" style="width: 100%">
+		</div>
 				</article>
 				<script>
 					document.getElementById("astro-form").addEventListener("submit", function (event) {
 						event.preventDefault();
 
 						const signValue = document.getElementById("sign").value; 
-			//			const formData = new FormData();
-			//			formData.append("sign", signValue);
-			
 						const xhr = new XMLHttpRequest();
 						xhr.open("POST", "/cgi/astro.php", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
