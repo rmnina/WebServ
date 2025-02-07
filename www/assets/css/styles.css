@@ -148,12 +148,14 @@ footer a, footer a:hover {
 
 #death { padding-top: 36px; } 
 
-#temperance { 
+#temperance, #temperance-astro { 
 	filter: brightness(1.5);
 	margin-top: -5px;
 }
 
 #moon { padding-top: 15px; } 
+
+#temperance-astro { padding-top: 35px; } 
 
 .form-popup {
 	display: none; 
@@ -288,10 +290,15 @@ footer a, footer a:hover {
 
 .real-sacred-nb { font-size: 12px; }
 
-
-#random-nb-btn, #infinity-btn, #astro-btn {
+#random-nb-btn, #infinity-btn {
 	font-size: 13px;
 	margin: 1em;
+}
+
+#astro-btn {
+	font-size: 12px;
+	margin-bottom: 1em;
+	margin-top: 0.5em;
 }
 
 #infinity-btn { margin: 2em; }
