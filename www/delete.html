@@ -28,9 +28,8 @@
 		<script>
 			async function fetchFiles() {
 				try {
+					const response = await fetch(`http://127.0.0.1:{{PORT}}/cgi/list-files.cgi`);
 					const data = await response.json();
-					
-					const response = await fetch(`http://127.0.0.1:${port}/cgi/list-files.cgi`);
 					if (!response.ok) {
 						throw new Error(`HTTP error! Status: ${response.status}`);
 					}
@@ -56,7 +55,7 @@
 
 						fileHTML += `
 							<br>
-							<button id="trash-btn" onclick="deleteFile('${fileName}', '${uploadDir}', ${port})">
+							<button id="trash-btn" onclick="deleteFile('${fileName}', '${uploadDir}')">
 								<i class="fas fa-trash" id="trash"></i>
 							</button>
 						</div><br><br>`;
@@ -71,9 +70,9 @@
 
 			window.onload = fetchFiles;
 
-			function deleteFile(fileName, uploadDir, port) {
+			function deleteFile(fileName, uploadDir) {
 				if (confirm(`Are you sure you want to delete ${fileName}?`)) {
-					fetch(`http://127.0.0.1:${port}/${uploadDir}/${fileName}`, {
+						fetch(`http://127.0.0.1:{{PORT}}/${uploadDir}/${fileName}`, {
 						method: 'DELETE',
 						headers: {
 							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',

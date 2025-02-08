@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 03:16:21 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/08 06:54:08 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class Parser
 		std::string											_request_body;
 		std::string											_response;
 		std::vector<unsigned char>							_image_response;
+		int													_port_code;
+		std::string											_port_page;
 
 		size_t												_body_size;
 		bool												_keep_alive;
@@ -108,6 +110,8 @@ class Parser
 		int			restore_error_page( void);
 		void		display_dirlist(std::string path);
 
+		int			build_delete_page( void);
+		int			restore_delete_page( void);
 		~Parser( void);
 	
 };

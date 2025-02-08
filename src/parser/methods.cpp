@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 02:17:46 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/08 06:59:37 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	Parser::POSTmethod( void)
 	}
 	else
 		build_response_content(path);
-	std::cout << __func__ << "\tpathHAHA = " << path << std::endl;
+	std::cout << __func__ << "\tpath = " << path << std::endl;
 }
 
 void	Parser::upload(void)
@@ -108,6 +108,43 @@ void	Parser::upload(void)
 	_error_code = 201;
 }
 
+int	Parser::build_delete_page( void)
+{
+	std::ostringstream	os;
+	os << _port_code;
+	std::string	port_str = os.str();
+
+	int	code[2] = {8081, 8082};
+	std::string	port[2] = {"8081", "8082"};
+
+	std::ifstream	delete_file("www/delete.html");
+	if (!delete_file.is_open())
+		std::cerr << "Error opening delete file" << std::endl;
+
+	std::ostringstream	tmp;
+	tmp << delete_file.rdbuf();
+	std::string	content = tmp.str();
+	_port_page = tmp.str();
+	delete_file.close();
+
+	size_t	pos = 0;
+	std::ofstream	output_file("www/delete.html");
+
+	if (!output_file.is_open())
+		std::cerr << "Error opening delete file in writing mode" << std::endl;
+	if ((pos = content.find("{{PORT}}")) != std::string::npos)
+	{
+		for (long unsigned int i = 0; i < sizeof(code) / sizeof(int) ; i++)
+		{
+			if (_port_code == code[i])
+				content.replace(pos, strlen("{{PORT}}"), port[i]);
+		}
+	}
+	output_file << content;
+	output_file.close();
+	return (SUCCESS);
+}
+
 void	Parser::DELETEmethod(void)
 {
 	std::string path = _request["path"][0];
@@ -117,12 +154,24 @@ void	Parser::DELETEmethod(void)
 	int isFound = path.find(_upload_dir) != std::string::npos;
 	if (!isFound)
 	{
-		std::cerr << path.c_str() + 4 << ": permission denied" << RESET << std::endl;
+		_error_code = 405;
+		std::cerr << path.c_str() + 4 << ": permission denied" << RESET << "\nError code: " << _error_code << std::endl;
 		return ;
 	}
 	int status = remove(path.c_str());
 	if (!status)
-		std::cout << path.substr(13) << ": successfully deleted" << std::endl;
+		std::cout << path.substr(13) << ": successfully deleted" << "\nCode: " << _error_code << std::endl;
 	else
 		std::cerr << path.substr(13) << ": " << strerror(errno) << std::endl;
+}
+
+int	Parser::restore_delete_page( void)
+{
+	std::ofstream	output_file("www/delete.html");
+
+	if (!output_file.is_open())
+		std::cerr << "Error opening delete file in writing mode" << std::endl;
+	output_file << _port_page;
+	output_file.close();
+	return (SUCCESS);
 }
