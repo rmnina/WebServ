@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 02:00:31 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/08 03:09:03 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,7 @@ void	Parser::display_dirlist(std::string path)
 	DIR *dir;
 	struct dirent *entry;
 
-	std::cout << "path dans le display dir = " << path << std::endl;
+	std::cout << "path dans " << __func__ << " " << path << std::endl;
 	if ((dir = opendir(path.c_str())) == NULL)
 	{ throw std::runtime_error("Error opening directory for dir_list"); return ;}
 
@@ -276,7 +276,7 @@ std::string	Parser::build_response( void)
 		if (_request.find("method")->second[0] == method[i])
 		{
 			(this->*func_method[i])();
-			std::cout << "\t\t\tmethod[i] " << method[i] << "\n";
+			std::cout << "Method: " << method[i] << "\n";
 			return (_response);
 		}
 	}

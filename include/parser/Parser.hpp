@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 01:47:38 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/08 03:16:21 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ class Parser
 		void		build_response_content( std::string &filename);
 		void		build_POST_response( std::string &filename);
 		void		exec_cgi( std::string &filename, int method);
+		void		handle_cgi_error(int *status, pid_t pid);
 
 		void		GETmethod( void);
 		void		POSTmethod( void);
