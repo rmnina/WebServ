@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/07 19:58:43 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/08 00:32:42 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ bool is_file(const std::string &path)
 	return S_ISREG(path_stat.st_mode);
 }
 
+
 std::string	Parser::build_response_header( void)
 {
 	std::ostringstream	header;
@@ -157,10 +158,6 @@ std::string	Parser::build_response_header( void)
 		else
 			header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
 	}
-
-	//get_content_length(_request["path"][0]);
-	// header << "Content-Length: " << get_content_length(_request["path"][0]) << "\r\n";
-	
 	if (_keep_alive)
 		header << "Connection: keep-alive\r\n";
 	else
@@ -187,133 +184,36 @@ void	Parser::build_response_content( std::string &filename)
 	file.close();
 }
 
-static void	handle_cgi_error(int *status, pid_t pid)
+void	Parser::build_response_upload()
 {
-	int	time = 0;
-	while (time < 2000000)
-	{
-		pid_t ret = waitpid(pid, status, WNOHANG);
-		if (ret == pid)
-			break ;
-		time += 1000;
-		usleep(1000);
-		if (time >= 2000000) 
-		{
-			kill(pid, SIGKILL);
-			break ;
-		}
-	}
-	return ;
-}
+	std::ostringstream	content;
 
-std::string	trim_req_body(std::string str)
-{
-	size_t pos1 = str.find('\n');
-	size_t pos2 = str.find('\n', pos1 + 1);
-	size_t pos3 = str.find('\n', pos2 + 1);
-	size_t pos4 = str.find('\n', pos3 + 1);
+	size_t	contentTypePos = _response.find("Content-Type:");
+	if (contentTypePos != std::string::npos) 
+	{
+		size_t	endLine = _response.find("\r\n", contentTypePos);
+		_response = _response.substr(0, contentTypePos) + 
+				   "Content-Type: application/json\r\n" +
+				   _response.substr(endLine + 2);
+	}
+
+	if (_error_code == 201)
+	{
+		content << "{\n"
+			   << "    \"status\": \"success\",\n"
+			   << "    \"message\": \"File uploaded successfully\"\n"
+			   << "}";
+	}
+	else
+	{
+		content << "{\n"
+			   << "    \"status\": \"error\",\n"
+			   << "    \"message\": \"Error uploading file\"\n"
+			   << "}";
+	}
 	
-	return (str.substr(pos3 + 1, pos4 - pos3 - 1));
+	_response += content.str();
 }
-
-void Parser::exec_cgi(std::string &filename, int method) {
-    std::cout << "Entering exec_cgi with filename: " << filename << std::endl;
-
-    pid_t pid;
-    int input_pipe[2], output_pipe[2];
-
-//std::cout << "req body before trim = " << _request_body << std::endl;
-//_request_body = "sign=" + trim_req_body(_request_body);
-std::cout << "req body after = " << _request_body << std::endl;
-
-    if (pipe(input_pipe) == -1 || pipe(output_pipe) == -1) {
-        std::cerr << "Error creating pipes\n";
-        return;
-    }
-
-    pid = fork();
-    if (pid == -1) {
-        std::cerr << "Error forking process\n";
-        return;
-    }
-
-    if (pid == 0) {
-        close(input_pipe[1]);
-        close(output_pipe[0]);
-
-        dup2(input_pipe[0], STDIN_FILENO);   // Redirect input pipe to stdin
-        dup2(output_pipe[1], STDOUT_FILENO); // Redirect stdout to output pipe
-
-        close(input_pipe[0]);
-        close(output_pipe[1]);
-
-        std::vector<std::string> env_list;
-	if (method == GET)
-			env_list.push_back("REQUEST_METHOD=GET");
-	else if (method == POST) {
-				env_list.push_back("REQUEST_METHOD=POST");
-				std::stringstream ss;
-				ss << _request_body.size();
-	//std::cout << "content length = " << ss.str() << std::endl;
-				env_list.push_back("CONTENT_LENGTH=" + ss.str());
-				env_list.push_back("CONTENT_TYPE=application/x-sh");
-        }
-
-	env_list.push_back("REDIRECT_STATUS=200");
-	env_list.push_back("GATEWAY_INTERFACE=CGI/1.1");
-	env_list.push_back("SERVER_PROTOCOL=HTTP/1.1");
-	env_list.push_back("QUERY_STRING=");
-			env_list.push_back("SCRIPT_NAME=" + filename);
-	env_list.push_back("SCRIPT_FILENAME=" + filename);
-
-        // Convert to char* array for execve
-    char **envp = new char*[env_list.size() + 1];
-        for (size_t i = 0; i < env_list.size(); i++) {
-            envp[i] = strdup(env_list[i].c_str());
-//std::cout << "env[i] = " << envp[i] << std::endl;
-}
-        envp[env_list.size()] = NULL;
-
-        char *argv[] = { strdup(filename.c_str()), NULL };
-//std::cout << "\n\nrequest_body " << _request_body << "filename " << filename << "\n";
-        execve(filename.c_str(), argv, envp);
-
-        std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
-        exit(1);
-    }
-else { // Parent process
-	int status;
-
-			close(input_pipe[0]);
-			close(output_pipe[1]);
-
-	//std::cout << "request body dans parent = " << _request_body << std::endl;
-			if (method == POST)
-	{
-	std::cerr << "ATTENTION TOUT LE MODE, JE SUIS UN POST\n";
-				write(input_pipe[1], _request_body.c_str(), _request_body.size());
-	}
-			close(input_pipe[1]); // Close after writing
-	handle_cgi_error(&status, pid);
-			char buffer[1024];
-			std::string cgi_output;
-			int bytes_read;
-			while ((bytes_read = read(output_pipe[0], buffer, sizeof(buffer) - 1)) > 0) {
-				buffer[bytes_read] = '\0';
-				cgi_output += buffer;
-			std::cout << "ON PASSE ICI: cgi_output: " << cgi_output << "\n";
-        }
-        close(output_pipe[0]);
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-            std::cerr << "CGI script exited with error code: " << WEXITSTATUS(status) << "\n";
-        }
-
-        _response = cgi_output;
-        std::cout << "CGI Output:\n" << _response << std::endl;
-    }
-}
-
 
 void	Parser::display_dirlist(std::string path)
 {
@@ -350,115 +250,6 @@ void	Parser::display_dirlist(std::string path)
 
 	_response += html.str();
 	std::cout << "response fin display_dir = " << _response << std::endl;
-}
-
-
-void	Parser::GETmethod( void)
-{	
-	std::string	path = _request["path"][0];
-	std::cout << "path before = " << path << std::endl;
-	if (path.substr(0, 2) != "./")
-		path = "./" + path;
-	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on")
-	{
-		std::cout << RED << "on a bien trouve le dir_listing" << RESET << std::endl;
-		if (path == "./www/index.html")
-			display_dirlist("./www");
-		else
-		{
-			if (is_directory(path))
-				display_dirlist(path);
-			else if (is_file(path))
-				build_response_content(path);
-		}
-	}
-	else if (!_category.compare("TEXT") || !_category.compare("IMAGE"))
-		build_response_content(path);
-	else if (!_category.compare("CGI"))
-		exec_cgi(path, GET);
-	else
-		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;
-}
-
-void	Parser::POSTmethod( void)
-{
-	std::string	path = _request["path"][0];
-
-	if (_request_body.find("filename=") != std::string::npos)
-		upload();
-	else if (!_category.compare("CGI"))
-	{
-		std::cout << "on est bien dans le cgi post\n";
-		exec_cgi(path, POST);
-	}
-	else
-		build_response_content(path);
-	std::cout << __func__ << "\tpathHAHA = " << path << std::endl;
-}
-
-void	Parser::upload(void)
-{
-	if (!fill_content_type_multipart(_request_body))
-		std::cerr << "Invalid upload request headers" << std::endl;
-
-	std::string			filename;
-	std::vector<char>	content;
-	
-	if (!get_file_name(_request_body, filename) ||
-		!get_file_content(_request_body, content))
-	{
-		std::cerr << "Could not extract file from request" << std::endl;
-		return;
-	}
-
-	std::string	upload_dir;
-	if (_server_conf.find("upload") != _server_conf.end() && 
-		_server_conf["upload"][0] == "on")
-		upload_dir = "www/" + _server_conf["upload"][1];
-	else
-		std::cerr << "Upload not configured" << std::endl;
-
-	struct stat info;
-	if (stat(upload_dir.c_str(), &info) != 0)
-	{
-		if (mkdir(upload_dir.c_str(), 0755) != 0)
-			std::cerr << "Error creating directory" << std::endl;
-	}
-	std::string	filepath = upload_dir + "/" + filename;
-	std::cout << BOLD YELLOW << "filepath is " << filepath << RESET << std::endl;
-	std::ofstream	file(filepath.c_str(), std::ios::binary);
-	if (!file.is_open())
-	{
-		std::cerr << "Cannot create file" << std::endl;
-		_error_code = 500;
-	}
-	file.write(content.data(), content.size());
-	file.close();
-	_error_code = 201;
-	// std::ostringstream response_body;
-	// response_body << "{ \"status\": \"success\", \"message\": \"File uploaded successfully\", \"filename\": \"" 
-	// 			 << filename << "\" }";
-	// _body_size = response_body.str().size();
-    // _response += response_body.str();
-}
-
-void	Parser::DELETEmethod(void)
-{
-	std::string path = _request["path"][0];
-	size_t pos = path.find("/delete");
-	if (pos != std::string::npos)
-		path = "www" + path.substr(pos + 7);
-	int isFound = path.find("uploaded") != std::string::npos;
-	if (!isFound)
-	{
-		std::cerr << path.c_str() + 4 << ": permission denied" << RESET << std::endl;
-		return ;
-	}
-	int status = remove(path.c_str());
-	if (!status)
-		std::cout << path.substr(13) << ": successfully deleted" << std::endl;
-	else
-		std::cerr << path.substr(13) << ": " << strerror(errno) << std::endl;
 }
 
 std::string	Parser::build_response( void)

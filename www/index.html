@@ -63,7 +63,7 @@
 										<p class="card-txt">Here, you can delete the files you uploaded. Don't try to flush anything else, we'll be watchin...</p>
 					</article></a>
 					<div class="form-popup" id="myForm">
-						<form action="/upload" method="post" enctype="multipart/form-data" class="popup-container" >
+						<form id="uploadForm" action="/" method="post" enctype="multipart/form-data" class="popup-container" >
 							<button type="button" class="close" onclick="closeForm()">
 								<i class="fa fa-times"></i>
 							</button>
@@ -203,6 +203,37 @@
 					<div class="eltouma"><a href="https://github.com/eltouma" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>eltouma</p></a></div>
 				</div>
 			</footer>
+
+			<script>
+				document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+					e.preventDefault();
+				
+ 				   const formData = new FormData(this);
+				
+ 				   try {
+ 					   const response = await fetch('/', {
+							method: 'POST',
+ 						   body: formData
+						});
+					
+ 					   const result = await response.json();
+ 					   alert(result.message);
+ 					   closeForm();
+					
+ 				   } catch (error) {
+ 					   alert('Error uploading file');
+						console.error('Error:', error);
+					}
+				});
+			
+				function openForm() { 
+					document.getElementById("myForm").style.display = "block"; 
+				}
+				
+				function closeForm() {
+					document.getElementById("myForm").style.display = "none";
+				}
+			</script>
 
 	</body>
 </html>
