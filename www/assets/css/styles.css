@@ -44,7 +44,7 @@ transition: none !important;
 
 #parallaxRandom { height: 639px; }
 
-#parallaxAstro { height: 610px; }
+#parallaxAstro, #parallaxKaamelott { height: 610px; }
 
 .topnav {
 	background-color: #191818;
