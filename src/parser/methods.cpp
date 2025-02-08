@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 06:59:37 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/08 18:24:50 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,12 +110,16 @@ void	Parser::upload(void)
 
 int	Parser::build_delete_page( void)
 {
-	std::ostringstream	os;
-	os << _port_code;
-	std::string	port_str = os.str();
+	std::stringstream	ss;
 
-	int	code[2] = {8081, 8082};
+	std::cout << __func__ << " " << __LINE__ << ": _port_code = " << _port_code << "\n"; // int
+	ss << _server->getPort();
+	ss >> _port_code;
+	std::cout << "le port du server est : " << _server->getPort() << "\n"; // string
+	std::cout << __func__ << " " << __LINE__ << ": _port_code = " << _port_code << "\n"; // int
+
 	std::string	port[2] = {"8081", "8082"};
+	int length = sizeof(port) / sizeof(port[0]);
 
 	std::ifstream	delete_file("www/delete.html");
 	if (!delete_file.is_open())
@@ -124,6 +128,7 @@ int	Parser::build_delete_page( void)
 	std::ostringstream	tmp;
 	tmp << delete_file.rdbuf();
 	std::string	content = tmp.str();
+	std::cout << __func__ << ": content avant = " << content << "\n";
 	_port_page = tmp.str();
 	delete_file.close();
 
@@ -134,11 +139,9 @@ int	Parser::build_delete_page( void)
 		std::cerr << "Error opening delete file in writing mode" << std::endl;
 	if ((pos = content.find("{{PORT}}")) != std::string::npos)
 	{
-		for (long unsigned int i = 0; i < sizeof(code) / sizeof(int) ; i++)
-		{
-			if (_port_code == code[i])
+		for (int i = 0; i < length; i++)
+			if (_server->getPort() == port[i])
 				content.replace(pos, strlen("{{PORT}}"), port[i]);
-		}
 	}
 	output_file << content;
 	output_file.close();
@@ -147,6 +150,7 @@ int	Parser::build_delete_page( void)
 
 void	Parser::DELETEmethod(void)
 {
+	build_delete_page();
 	std::string path = _request["path"][0];
 	size_t pos = path.find("/delete");
 	if (pos != std::string::npos)
@@ -171,6 +175,7 @@ int	Parser::restore_delete_page( void)
 
 	if (!output_file.is_open())
 		std::cerr << "Error opening delete file in writing mode" << std::endl;
+	std::cout << __func__ << ": _port_page = " << _port_page << "\n";
 	output_file << _port_page;
 	output_file.close();
 	return (SUCCESS);

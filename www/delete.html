@@ -26,13 +26,14 @@
 		<div id="file-list">
 		</div>
 		<script>
+			let port = location.port;
 			async function fetchFiles() {
 				try {
-					const response = await fetch(`http://127.0.0.1:{{PORT}}/cgi/list-files.cgi`);
+					console.log(port);
+					const response = await fetch(`http://127.0.0.1:${port}/cgi/list-files.cgi`);
 					const data = await response.json();
-					if (!response.ok) {
+					if (!response.ok) 
 						throw new Error(`HTTP error! Status: ${response.status}`);
-					}
 	
 					const uploadDir = data.upload_dir;
 					const files = data.files;
@@ -47,11 +48,8 @@
 							fileHTML += `
 								<img src="/${uploadDir}/${fileName}" alt="${fileName}" style="width: 10%">
 							`;
-						} else {
-							fileHTML += `
-								<span>${fileName}</span>
-							`;
-						}
+						} else
+							fileHTML += `<span>${fileName}</span>`;
 
 						fileHTML += `
 							<br>
@@ -72,7 +70,8 @@
 
 			function deleteFile(fileName, uploadDir) {
 				if (confirm(`Are you sure you want to delete ${fileName}?`)) {
-						fetch(`http://127.0.0.1:{{PORT}}/${uploadDir}/${fileName}`, {
+					console.log(port);
+						fetch(`http://127.0.0.1:${port}/${uploadDir}/${fileName}`, {
 						method: 'DELETE',
 						headers: {
 							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
@@ -93,7 +92,7 @@
 							}
 						
 							if (fileElement) {
-								fileElement.parentElement.remove();
+								fileElement.remove();
 							}
 						} else {
 							console.error(`Error: ${fileName}: ${response.status}`);

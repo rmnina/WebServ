@@ -55,7 +55,8 @@
 									</div>
 								</div>
 							</button>
-							<a href="http://127.0.0.1:8082/delete.html"  id="delete-link">
+							<!--							<a href="http://127.0.0.1:{{PORT}}/delete.html"  id="delete-link">-->
+								<a href="delete.html" onclick="getDelete()" id="delete-link">
 								<div class="card" style="width: 18rem;">
 									<!-- <img src="images/death.jpeg" id="death" alt="" style="width: 100%">-->
 									<img src="https://i.postimg.cc/hvz14kWz/death.png" id="death" alt="" style="width: 100%">
@@ -132,9 +133,10 @@
 						</a>
 					</article>
 					<script>
-
+						let port = location.port;
+						function getDelete() { console.log(`${port}`);  document.getElementById("delete-link").innerHTML = `<a>http://127.0.0.1:${port}/delete.html</a>`; } 
 						function openForm() { document.getElementById("myForm").style.display = "block"; }
-						function closeForm() {	console.log("TA MERE"); document.getElementById("myForm").style.display = "none"; }
+						function closeForm() { document.getElementById("myForm").style.display = "none"; }
 
 
 
