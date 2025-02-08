@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Handler.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/06 17:30:15 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/07 21:27:45 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Handler::Handler(const std::vector<ConfigStruct> servers_conf) : _servers_conf(s
 
 void	Handler::loadServ()
 {
+	
 	printConfig(_servers_conf);
 	for (std::vector<ConfigStruct>::iterator it = _servers_conf.begin(); it < _servers_conf.end();)
 	{
@@ -48,6 +49,7 @@ void	Handler::loadServ()
 		it++;
 		_servers.push_back(new Server(name, hostname, port, config, locations));
 	}
+	handle_upload_folders(this->_servers, CREATE_FOLDER);
 }
 
 Handler::Handler(const Handler &src)
@@ -142,7 +144,37 @@ int Handler::handleEvents()
 			}
 		}
 	}
+	if (g_sig != 0)
+		handle_upload_folders(this->_servers, DELETE_FOLDER);
 	return (SUCCESS);
+}
+
+void Handler::handle_upload_folders(std::vector<Server *> servers, int action)
+{
+	static int i = 0;
+	if (action == CREATE_FOLDER) {
+		for (std::vector<Server *>::iterator it = servers.begin(); it != servers.end(); it++)
+		{
+			std::string dir_name = "upload_";
+			std::ostringstream oss;
+			oss << dir_name << i; 
+			
+			if (mkdir(oss.str().c_str(), 0755) != 0)
+				std::cout << "mkdir failed\n";
+			i++;
+		}
+	}
+	else if (action == DELETE_FOLDER) {
+		i--;
+		for (std::vector<Server *>::iterator it = servers.begin(); it != servers.end(); it++)
+		{
+			std::string dir_name = "upload_";
+			std::ostringstream oss;
+			oss << "rm -rf " << dir_name << i; 
+ 			system(oss.str().c_str());
+			i--;
+		}
+	}
 }
 
 // Server *Handler::operator[](const int index)
@@ -157,4 +189,9 @@ Handler::~Handler()
 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
 		delete (*it);
 	close(_epfd);
+}
+
+std::vector<Server *>& Handler::getServers()
+{
+	return (this->_servers);
 }

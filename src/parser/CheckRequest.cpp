@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/05 02:44:23 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/07 22:56:32 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 Parser::Parser( void) {}
 
 Parser::Parser( Server *server) : _server(server) {}
-
-// Parser::Parser( const Parser &src) {}
-
-// Parser	&Parser::operator=( const Parser &rhs) {}
 
 bool	Parser::fill_method( const std::string &request)
 {
@@ -246,9 +242,9 @@ void	Parser::examine_request( int client_index)
 	init_mime_types();
 	if (!fill_path(request))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
-	if (!fill_method(request))
+	else if (!fill_method(request))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
-	if (!check_version(request) || !check_req_size(request))
+	else if (!check_version(request) || !check_req_size(request))
 		_error_code = 400; //ERROR BAD REQUEST
 	else
 		_error_code = 200;

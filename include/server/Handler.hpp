@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Handler.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:40:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/27 23:04:46 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/07 21:05:57 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,15 @@
 # include <exception>
 # include <sys/epoll.h>
 # include <vector>
+# include <sys/stat.h>
+# include <sstream>
 # include "Server.hpp"
 # include "../config/Config.hpp"
 
 # define MAX_EVENTS 1000
 # define MTU		1500
-
+# define CREATE_FOLDER 1
+# define DELETE_FOLDER 2
 class Handler
 {
 	private:
@@ -45,6 +48,9 @@ class Handler
 		void	add_event(int fd, int event);
 		void	modify_event(int fd, int event);
 		void	delete_event(int fd);
+		void	handle_upload_folders(std::vector<Server *> servers, int action);
+
+		std::vector<Server *> &getServers();
 
 		~Handler(void);
 };

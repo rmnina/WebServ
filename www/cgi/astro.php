@@ -10,44 +10,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reqBody = file_get_contents('php://stdin');
     parse_str($reqBody, $_POST);
         $sign = $_POST['sign'];
-       # echo "Received sign: " . htmlspecialchars($sign) . "<br>";
+        echo htmlspecialchars($sign) . "<br>";
 
         switch ($sign) {
             case 'Aries':
-                echo "Bold moves bring rewards; trust instincts today.";
+                echo "You will fall in love 20 times per day. Your love life is about to get busy.";
                 break;
             case 'Taurus':
-                echo "Patience pays off; unexpected gains arrive tonight.";
+                echo "Money is in the air! Gamble everything you have on a parlay tonight, trust the 🔮";
                 break;
             case 'Leo':
-                echo "Creativity shines; share your talents, applause follows.";
+                echo "Ouch. Sorry, your life just sucks right now. Better to stay inside for the following month.";
                 break;
             case 'Gemini':
-                echo "Conversations spark joy; a surprise message lifts spirits.";
+                echo "7 is your lucky number today! Or was it 11...? Naaaah, go for 7 👌";
                 break;
             case 'Cancer':
-                echo "Home comforts heal; embrace quiet moments this week.";
+                echo "Take risks today, leave your job and/or your companion. If you don't have any, ask yourself why.";
                 break;
             case 'Virgo':
-                echo "Organize priorities, clarity emerges—trust your meticulous eye.";
+                echo "Organize priorities, boost your elo in whatever multiplayer game you're playing, taxes will wait.";
                 break;
             case 'Libra':
-                echo "Harmony restored through compromise; love blooms unexpectedly.";
+                echo "Open your chakras. Visit www.spiritualiscam.com for the best advices!";
                 break;
             case 'Scorpio':
-                echo "Passion ignites; take risks, transformation begins.";
+                echo "New day, new you! Get a new identity in South America to start anew!";
                 break;
             case 'Sagittarius':
-                echo "Wanderlust calls; say yes to spontaneous journeys.";
+                echo "You have a talent for singing while drinking (or the other way around). Embrace it.";
                 break;
             case 'Capricorn':
-                echo "Goals align; persistence opens doors—keep climbing.";
+                echo "Money: you might want to invest into NFTs.";
                 break;
             case 'Aquarius':
-                echo "Ideas electrify; collaborate, innovation thrives.";
+                echo "You need a change in your life. Get a new tattoo today, you know there's no way you could regret that.";
                 break;
             case 'Pisces':
-                echo "Dreams guide; act on intuition, magic unfolds.";
+                echo "You might have flabby arms and glassy eyes, just don't believe your mirror.";
                 break;
             case 'Rabbit':
                 echo "No sweet heart";

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/05 01:53:14 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/07 22:39:26 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,9 @@ class Parser
 		void						get_location( const std::string &filename);
 		std::string					build_response_header( void);
 		std::string					build_response( void);
+		void						build_response_upload();
 
-		void						examine_request( int client_index);
+		void		examine_request( int client_index);
 		
 		bool		fill_method( const std::string &request);
 		bool		fill_path( const std::string &request);
@@ -109,6 +110,9 @@ class Parser
 	
 };
 
-std::string							get_time(void);
+std::string	get_time(void);
+
+bool 		is_directory(const std::string &path);
+bool 		is_file(const std::string &path);
 
 #endif
