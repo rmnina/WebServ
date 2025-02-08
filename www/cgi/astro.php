@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reqBody = file_get_contents('php://stdin');
     parse_str($reqBody, $_POST);
         $sign = $_POST['sign'];
-        echo htmlspecialchars($sign) . "<br>";
 
         switch ($sign) {
             case 'Aries':
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo "No sweet heart";
                 break;
             case 'Tiger':
-                echo "Are u kinding?";
+                echo "R u kinding?";
                 break;
             case 'Snake':
                 echo "Merci de faire ton boulot Antoine";
