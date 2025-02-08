@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 18:24:50 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/08 20:05:17 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,6 @@ int	Parser::build_delete_page( void)
 	std::ostringstream	tmp;
 	tmp << delete_file.rdbuf();
 	std::string	content = tmp.str();
-	std::cout << __func__ << ": content avant = " << content << "\n";
 	_port_page = tmp.str();
 	delete_file.close();
 

@@ -45,9 +45,7 @@
 						let fileHTML = `<div class="file-item">`;
 
 						if (fileName.match(/\.(jpg|jpeg|png|gif)$/i)) {
-							fileHTML += `
-								<img src="/${uploadDir}/${fileName}" alt="${fileName}" style="width: 10%">
-							`;
+							fileHTML += `<img src="/${uploadDir}/${fileName}" alt="${fileName}" style="width: 10%">`;
 						} else
 							fileHTML += `<span>${fileName}</span>`;
 
@@ -71,7 +69,7 @@
 			function deleteFile(fileName, uploadDir) {
 				if (confirm(`Are you sure you want to delete ${fileName}?`)) {
 					console.log(port);
-						fetch(`http://127.0.0.1:${port}/${uploadDir}/${fileName}`, {
+					fetch(`http://127.0.0.1:${port}/${uploadDir}/${fileName}`, {
 						method: 'DELETE',
 						headers: {
 							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
@@ -79,29 +77,21 @@
 						},
 					}).then(response => {
 						if (response.ok) {
-							console.log(`${fileName} successfully deleted.`);
-						
-							let fileElement = document.querySelector(`img[src="/${uploadDir}/${fileName}"]`);
-							if (!fileElement) {
-								const spans = document.querySelectorAll('span');
-								spans.forEach(span => {
-									if (span.textContent === fileName) {
-										fileElement = span; 
-									}
-								});
-							}
-						
-							if (fileElement) {
-								fileElement.remove();
-							}
-						} else {
-							console.error(`Error: ${fileName}: ${response.status}`);
-						}
+                					console.log(`${fileName} successfully deleted.`);
+							let fileItems = document.querySelectorAll(".file-item");
+							fileItems.forEach(item => {
+                    						let span = item.querySelector("span");
+                   						let img = item.querySelector("img");
+                    						if ((span && span.textContent === fileName) || (img && img.getAttribute("alt") === fileName))
+									item.parentElement.remove(); // Supprime le conteneur entier
+							});
+					} else
+						console.error(`Error: ${fileName}: ${response.status}`);
 					}).catch((error) => {
 						console.log("Error:", error);
 					});
 				}
-			}
+		}
 		</script>
 	</body>
 </html>

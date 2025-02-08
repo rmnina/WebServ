@@ -47,7 +47,6 @@
 							<div></div>
 							<button class="upload-button" onclick="openForm()">
 								<div class="card" style="width: 18rem;">
-									<!--<img src="images/magician.jpeg" alt="" style="width: 100%"> -->
 									<img src="https://i.postimg.cc/5y0kBKcb/magician.png" alt="" style="width: 100%"> 
 									<div class="card-body">
 										<h3 class="card-title">Upload</h3>
@@ -55,10 +54,8 @@
 									</div>
 								</div>
 							</button>
-							<!--							<a href="http://127.0.0.1:{{PORT}}/delete.html"  id="delete-link">-->
 								<a href="delete.html" onclick="getDelete()" id="delete-link">
 								<div class="card" style="width: 18rem;">
-									<!-- <img src="images/death.jpeg" id="death" alt="" style="width: 100%">-->
 									<img src="https://i.postimg.cc/hvz14kWz/death.png" id="death" alt="" style="width: 100%">
 									<div class="card-body">
 										<h3 class="card-title">Delete</h3>
@@ -87,9 +84,8 @@
 						</div>
 					</article>
 					<article class="wrapper-cgi">
-						<a href="http://127.0.0.1:8082/randomnb.html"  id="cgi-link">
+						<a href="randomnb.html" onclick="getRandomNb()" id="cgi-link">
 							<div class="card" style="width: 18rem;" id="delete-link">
-								<!--<img src="images/hierophant.jpeg" id="death" alt="" style="width: 100%">-->
 								<img src="https://i.postimg.cc/50HsjY82/hierophant.png" id="hierophant" alt="" style="width: 100%">
 								<div class="card-body">
 									<h3 class="card-title">Sacred number generator</h3>
@@ -98,9 +94,8 @@
 								</div>
 							</div>
 						</a>
-						<a href="http://127.0.0.1:8082/infinite_loop.html"  id="cgi-link">
+						<a href="infinite_loop.html" onclick="getInfinity()" id="cgi-link">
 							<div class="card" style="width: 18rem;" id="delete-link">
-								<!--<img src="images/moon.jpeg" id="moon" alt="" style="width: 100%">-->
 								<img src="https://i.postimg.cc/qByGYdLS/moon.png" id="moon" alt="" style="width: 100%">
 								<div class="card-body">
 									<h3 class="card-title">The endless</h3>
@@ -109,9 +104,8 @@
 								</div>
 							</div>
 						</a>
-						<a href="http://127.0.0.1:8082/astro.html"  id="cgi-link">
+						<a href="astro.html" onclick="getAstro()" id="cgi-link">
 							<div class="card" style="width: 18rem;" id="delete-link">
-								<!--<img src="images/temperance.jpeg" id="temperance" alt="" style="width: 100%">-->
 								<img src="https://i.postimg.cc/R0Z1BPQX/wheel.png" id="wheel" alt="" style="width: 100%">
 								<div class="card-body">
 									<h3 class="card-title">Get your free reading !!11!</h3>
@@ -120,9 +114,8 @@
 								</div>
 							</div>
 						</a>
-						<a href="http://127.0.0.1:8082/kaamelott.html"  id="cgi-link">
+						<a href="kaamelott.html" onclick="getKaamelott()" id="cgi-link">
 							<div class="card" style="width: 18rem;" id="delete-link">
-								<!--<img src="images/temperance.jpeg" id="temperance" alt="" style="width: 100%">-->
 								<img src="https://i.postimg.cc/0Q6p6b4S/king.png" id="king" alt="" style="width: 100%">
 								<div class="card-body">
 									<h3 class="card-title">IA (Invoke Arthur)</h3>
@@ -134,7 +127,11 @@
 					</article>
 					<script>
 						let port = location.port;
-						function getDelete() { console.log(`${port}`);  document.getElementById("delete-link").innerHTML = `<a>http://127.0.0.1:${port}/delete.html</a>`; } 
+						function getDelete() { console.log(`${port}`);  document.getElementById("delete-link").innerHTML = `<a>http://127.0.0.1:${port}/</a>`; }
+						function getRandomNb() { console.log(`${port}`);  document.getElementById("cgi-link").innerHTML = `<a>http://127.0.0.1:${port}/</a>`; }
+						function getInfinity() { console.log(`${port}`);  document.getElementById("cgi-link").innerHTML = `<a>http://127.0.0.1:${port}/</a>`; }
+						function getAstro() { console.log(`${port}`);  document.getElementById("cgi-link").innerHTML = `<a>http://127.0.0.1:${port}/</a>`; }
+						function getKaamelott() { console.log(`${port}`);  document.getElementById("cgi-link").innerHTML = `<a>http://127.0.0.1:${port}</a>`; }
 						function openForm() { document.getElementById("myForm").style.display = "block"; }
 						function closeForm() { document.getElementById("myForm").style.display = "none"; }
 
