@@ -34,52 +34,52 @@
                 <form id="astro-form">
                     <label for="sign">Choose your sign:</label>
                     <select name="sign" id="sign">
-                        <option value="-">-</option>
-                        <option value="Aries">Aries</option>
-                        <option value="Taurus">Taurus</option>
-                        <option value="Leo">Leo</option>
-                        <option value="Gemini">Gemini</option>
-                        <option value="Cancer">Cancer</option>
-                        <option value="Virgo">Virgo</option>
-                        <option value="Libra">Libra</option>
-                        <option value="Scorpio">Scorpio</option>
-                        <option value="Sagittarius">Sagittarius</option>
-                        <option value="Capricorn">Capricorn</option>
-                        <option value="Aquarius">Aquarius</option>
-                        <option value="Pisces">Pisces</option>
+                       	<option value="-">-</option>
+						          	<option value="Rabbit">Rabbit</option>
+						          	<option value="Aries">Aries</option>
+					          		<option value="Taurus">Taurus</option>
+					  	        	<option value="Tiger">Tiger</option>
+							          <option value="Leo">Leo</option>
+						          	<option value="Gemini">Gemini</option>
+					          		<option value="Cancer">Cancer</option>
+					          		<option value="Goat">Goat</option>
+					          		<option value="Virgo">Virgo</option>
+					          		<option value="Libra">Libra</option>
+					          		<option value="Scorpio">Scorpio</option>
+				          			<option value="Sagittarius">Sagittarius</option>
+				          			<option value="Snake">Snake</option>
+					           		<option value="Capricorn">Capricorn</option>
+					           		<option value="Aquarius">Aquarius</option>
+					          		<option value="Pisces">Pisces</option>
                     </select>
-                    <button type="submit" class="check-button" id="astro-btn">Get Your Horoscope</button>
+                    <button type="submit" class="check-button" id="astro-btn">Get your horoscope</button>
                 </form>
-
-                <div id="cgi-response"></div>
-		<div class="card" style="width: 13rem;">
-			<img src="https://i.postimg.cc/K8HLj9ft/temperance.png" id="temperance" alt="" style="width: 100%">
-		</div>
+					<div id="cgi-response"></div>
+					<div class="card" style="width: 13rem;">
+						<img src="https://i.postimg.cc/R0Z1BPQX/wheel.png" id="wheel-astro" alt="" style="width: 100%">
+					</div>
 				</article>
 				<script>
 					document.getElementById("astro-form").addEventListener("submit", function (event) {
 						event.preventDefault();
-
 						const signValue = document.getElementById("sign").value; 
 						const xhr = new XMLHttpRequest();
 						xhr.open("POST", "/cgi/astro.php", true);
 						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
 						xhr.onreadystatechange = function () {
-							if (xhr.readyState === 4) {
-							 if (xhr.status === 200) {
+						if (xhr.readyState === 4) {
+							if (xhr.status === 200) {
 								document.getElementById("cgi-response").innerHTML = xhr.responseText;
-							 } else {
-								document.getElementById("cgi-response").innerHTML = "ERROR T'AS VU";
+							} else {
+								document.getElementById("cgi-response").innerHTML = "ERROR";
+								}
 							}
-						     }
 						};
 						console.log("Sending data: sign=" + encodeURIComponent(signValue));
 						xhr.send("sign=" + encodeURIComponent(signValue));
 					});
 				</script>
 			</div>
-
 		</div>
 		<footer>
 			<p>Follow us on GitHub</p>
@@ -89,7 +89,5 @@
 				<div class="eltouma"><a href="https://github.com/eltouma" target="_blank"><i style="font-size:24px" class="fa">&#xf09b;</i><p>eltouma</p></a></div>
 			</div>
 		</footer>
-
-
 	</body>
 </html>

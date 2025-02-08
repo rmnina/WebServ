@@ -22,7 +22,7 @@ void  Parser::init_mime_types( void)
 	mime_types[".woff"] = "font/woff";
 	mime_types[".woff2"] = "font/woff2";
 	mime_types[".ttf"] = "font/ttf";
-	mime_types[".js"] = "application/javascript";
+	mime_types[".js"] = "text/plain";
 	mime_types[".json"] = "application/json";
 	mime_types[".py"] = "application/py";
 	mime_types[".jpg"] = "image/jpeg";
@@ -75,10 +75,10 @@ std::string	Parser::get_content_type( const std::string &filename)
 
 void	Parser::get_content_category( void)
 {
-	std::string		raw_text_files[11] = {".html", ".css", ".scss", ".js", ".txt", ".xml", ".json", ".csv",
+	std::string		raw_text_files[11] = {".html", ".css", ".scss", ".txt", ".xml", ".json", ".csv",
 		".woff", ".woff2", ".ttf"};
 	std::string		image_files[6] = {".jpg", ".jpeg", ".png", ".gif", ".ico", ".svg"};
-	std::string		cgi[6] = {".py", ".sh", ".php", ".cgi", ".c", ".cpp"};
+	std::string		cgi[7] = {".py", ".sh", ".php", ".cgi", ".c", ".cpp", ".js"};
 
 	for (long unsigned int i = 0; i < sizeof(raw_text_files) / sizeof(std::string); i++)
 	{

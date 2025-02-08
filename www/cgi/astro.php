@@ -49,6 +49,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             case 'Pisces':
                 echo "You might have flabby arms and glassy eyes, just don't believe your mirror.";
                 break;
+            case 'Rabbit':
+                echo "No sweet heart";
+                break;
+            case 'Tiger':
+                echo "Are u kinding?";
+                break;
+            case 'Snake':
+                echo "Merci de faire ton boulot Antoine";
+                break;
+            case 'Goat':
+                echo "Merci de faire ton boulot Antoine, au lieu de came a lot devant Monster Hunter";
+                break;
             default:
 	 	echo "Please enter a real sign. Astrology is serious business";
                 break;
