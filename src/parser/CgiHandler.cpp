@@ -79,12 +79,14 @@ void	Parser::exec_cgi(std::string &filename, int method)
 			env_list.push_back("CONTENT_TYPE=application/x-sh");
 		}
 
-		env_list.push_back("REDIRECT_STATUS=200");
-		env_list.push_back("GATEWAY_INTERFACE=CGI/1.1");
-		env_list.push_back("SERVER_PROTOCOL=HTTP/1.1");
-		env_list.push_back("QUERY_STRING=");
-		env_list.push_back("SCRIPT_NAME=" + filename);
-		env_list.push_back("SCRIPT_FILENAME=" + filename);
+
+	env_list.push_back("REDIRECT_STATUS=200");
+	env_list.push_back("GATEWAY_INTERFACE=CGI/1.1");
+	env_list.push_back("SERVER_PROTOCOL=HTTP/1.1");
+	env_list.push_back("QUERY_STRING=");
+			env_list.push_back("SCRIPT_NAME=" + filename);
+	env_list.push_back("SCRIPT_FILENAME=" + filename);
+    env_list.push_back("UPLOAD_PATH=" + _upload_dir);
 
 		// Convert to char* array for execve
 		char **envp = new char*[env_list.size() + 1];

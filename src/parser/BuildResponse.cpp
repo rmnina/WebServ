@@ -146,15 +146,15 @@ std::string	Parser::build_response_header( void)
 	header << "Date: " << get_time() << "\r\n";
 	if (_category == "IMAGE")
 		header << "Accept-Ranges: bytes\r\n";
-	if (_category == "CGI") {
-		header << "Content-Type: text/html\r\n";
+	else if (_category == "CGI") {
+		header << "Content-Type: application/json\r\n";
 		header << "Content-Length: " << _body_size << "\r\n";
 	}
 	else {
 		if (_server_conf.find("dir_listing") != _server_conf.end() && _server_conf["dir_listing"][0] == "on" && is_directory(_request["path"][0]))
 			header << "Content-Type: text/html\r\n";
 		else if (get_content_type(_request["path"][0]) == "application/x-httpd-cgi")
-			header << "Content-Type: text/html\r\n";
+			header << "Content-Type: application/json\r\n";
 		else
 			header << "Content-Type: " << get_content_type(_request["path"][0]) << "\r\n";
 	}
@@ -260,6 +260,10 @@ std::string	Parser::build_response( void)
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
+
+	if (_server_conf.find("upload") != _server_conf.end() && 
+		_server_conf["upload"][0] == "on")
+		_upload_dir = "www/" + _server_conf["upload"][1];
 	if (_request["path"][0] == "www/error.html")
 	{
 		build_response_content(_request["path"][0]);

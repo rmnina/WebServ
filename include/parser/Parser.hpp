@@ -49,6 +49,7 @@ class Parser
 		std::string											_category;
 		int													_error_code;
 		std::string											_error_page;
+		std::string											_upload_dir;
 
 		Server												*_server;
 		server_data											_server_conf;
