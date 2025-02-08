@@ -6,14 +6,14 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 03:09:03 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/08 18:29:39 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser/Parser.hpp"
 #include <cstdio>
 
-void  Parser::init_mime_types( void)
+void	Parser::init_mime_types( void)
 {
 	mime_types[".html"] = "text/html";
 	mime_types[".htm"] = "text/html";
@@ -40,7 +40,7 @@ void  Parser::init_mime_types( void)
 	mime_types[".pdf"] = "application/pdf";
 }
 
-std::string get_time(void)
+std::string	get_time(void)
 {
 	std::time_t	now = std::time(NULL);
 	std::tm*	gmt = std::gmtime(&now);
@@ -120,7 +120,7 @@ size_t	Parser::get_content_length( const std::string &filename)
 	return (_resp_size);
 }
 
-bool is_directory(const std::string &path)
+bool	is_directory(const std::string &path)
 {
 	struct stat path_stat;
 	if (stat(path.c_str(), &path_stat) != 0)
@@ -128,7 +128,7 @@ bool is_directory(const std::string &path)
 	return S_ISDIR(path_stat.st_mode);
 }
 
-bool is_file(const std::string &path)
+bool	is_file(const std::string &path)
 {
 	struct stat path_stat;
 	if (stat(path.c_str(), &path_stat) != 0)
@@ -268,6 +268,18 @@ std::string	Parser::build_response( void)
 	{
 		build_response_content(_request["path"][0]);
 		restore_error_page();
+		std::cout << "_response: " << _response << "\n";
+		return (_response);
+	}
+	if (_request["path"][0] == "www/delete.html")
+	{
+		std::cerr << BLUE << "1.1\n" << RESET;
+		build_delete_page();
+		std::cerr << BLUE << "1.2\n" << RESET;
+		build_response_content(_request["path"][0]);
+		std::cerr << BLUE << "1.3\n" << RESET;
+		restore_delete_page();
+		std::cerr << BLUE << "1.4\n" << RESET;
 		return (_response);
 	}
 	std::cout << RED << "BODY :" << _request_body << RESET << std::endl;

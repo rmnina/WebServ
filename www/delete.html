@@ -26,14 +26,14 @@
 		<div id="file-list">
 		</div>
 		<script>
+			let port = location.port;
 			async function fetchFiles() {
 				try {
-					const data = await response.json();
-					
+					console.log(port);
 					const response = await fetch(`http://127.0.0.1:${port}/cgi/list-files.cgi`);
-					if (!response.ok) {
+					const data = await response.json();
+					if (!response.ok) 
 						throw new Error(`HTTP error! Status: ${response.status}`);
-					}
 	
 					const uploadDir = data.upload_dir;
 					const files = data.files;
@@ -45,18 +45,13 @@
 						let fileHTML = `<div class="file-item">`;
 
 						if (fileName.match(/\.(jpg|jpeg|png|gif)$/i)) {
-							fileHTML += `
-								<img src="/${uploadDir}/${fileName}" alt="${fileName}" style="width: 10%">
-							`;
-						} else {
-							fileHTML += `
-								<span>${fileName}</span>
-							`;
-						}
+							fileHTML += `<img src="/${uploadDir}/${fileName}" alt="${fileName}" style="width: 10%">`;
+						} else
+							fileHTML += `<span>${fileName}</span>`;
 
 						fileHTML += `
 							<br>
-							<button id="trash-btn" onclick="deleteFile('${fileName}', '${uploadDir}', ${port})">
+							<button id="trash-btn" onclick="deleteFile('${fileName}', '${uploadDir}')">
 								<i class="fas fa-trash" id="trash"></i>
 							</button>
 						</div><br><br>`;
@@ -71,8 +66,9 @@
 
 			window.onload = fetchFiles;
 
-			function deleteFile(fileName, uploadDir, port) {
+			function deleteFile(fileName, uploadDir) {
 				if (confirm(`Are you sure you want to delete ${fileName}?`)) {
+					console.log(port);
 					fetch(`http://127.0.0.1:${port}/${uploadDir}/${fileName}`, {
 						method: 'DELETE',
 						headers: {
@@ -81,29 +77,21 @@
 						},
 					}).then(response => {
 						if (response.ok) {
-							console.log(`${fileName} successfully deleted.`);
-						
-							let fileElement = document.querySelector(`img[src="/${uploadDir}/${fileName}"]`);
-							if (!fileElement) {
-								const spans = document.querySelectorAll('span');
-								spans.forEach(span => {
-									if (span.textContent === fileName) {
-										fileElement = span; 
-									}
-								});
-							}
-						
-							if (fileElement) {
-								fileElement.parentElement.remove();
-							}
-						} else {
-							console.error(`Error: ${fileName}: ${response.status}`);
-						}
+                					console.log(`${fileName} successfully deleted.`);
+							let fileItems = document.querySelectorAll(".file-item");
+							fileItems.forEach(item => {
+                    						let span = item.querySelector("span");
+                   						let img = item.querySelector("img");
+                    						if ((span && span.textContent === fileName) || (img && img.getAttribute("alt") === fileName))
+									item.parentElement.remove(); // Supprime le conteneur entier
+							});
+					} else
+						console.error(`Error: ${fileName}: ${response.status}`);
 					}).catch((error) => {
 						console.log("Error:", error);
 					});
 				}
-			}
+		}
 		</script>
 	</body>
 </html>

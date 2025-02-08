@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/06 18:20:33 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/08 16:41:47 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 int Parser::build_error_page( void)
 {	
 	std::ostringstream os;
+	std::cout << __func__ << " " << __LINE__ << ": _error_code = " << _error_code << "\n";
 	os << _error_code;
+
 	std::string	code_str = os.str();
 	
 	int	code[8] = {400, 403, 404, 405, 406, 410, 504, 418};
