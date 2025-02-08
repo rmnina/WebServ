@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reqBody = file_get_contents('php://stdin');
     parse_str($reqBody, $_POST);
         $sign = $_POST['sign'];
+    	$link_add = 'https://www.miviludes.interieur.gouv.fr/';
 
         switch ($sign) {
             case 'Aries':
@@ -31,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo "Organize priorities, boost your elo in whatever multiplayer game you're playing, taxes will wait.";
                 break;
             case 'Libra':
-                echo "Open your chakras. Visit www.spiritualiscam.com for the best advices!";
+                echo "Open your chakras. Visit <a href ='$link_add' class='spiritual' target='_blank'> www.spiritualiscam.com</a> for the best advices!";
                 break;
             case 'Scorpio':
                 echo "New day, new you! Get a new identity in South America to start anew!";

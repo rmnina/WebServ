@@ -44,6 +44,8 @@ transition: none !important;
 
 #parallaxRandom { height: 639px; }
 
+#parallaxAstro { height: 610px; }
+
 .topnav {
 	background-color: #191818;
 	overflow: hidden;
@@ -73,8 +75,6 @@ transition: none !important;
 	font-size: 17px;
 	color: white;
 }
-
-
 
 .headlines p {
 	font-size: 16px;
@@ -322,9 +322,6 @@ footer a, footer a:hover {
 }
 
 #infinity-btn { margin: 2em; }
-/*
-#astro-btn { font-size: 10px; }
-*/
 
 #moon-infinite { margin-top: 25px; }
 
@@ -461,6 +458,10 @@ blockquote {
     border-radius: 10px;
 }
 
+.spiritual { color: #e3e4e8; }
+
+.spiritual:hover { color: #ffd700b5; }
+
 /* Style du texte */
 blockquote {
     font-size: 12px;
@@ -483,3 +484,4 @@ blockquote {
         grid-template-columns: repeat(1, 1fr); /* 1 carte par ligne sur petits écrans */
     }
 }
+
