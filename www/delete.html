@@ -8,40 +8,71 @@
 		<link rel="stylesheet" href="assets/css/styles.css" />
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 		<link rel="shortcut icon" type="image/x-icon" href="https://i.postimg.cc/rmKr57y8/crane-favicon.png"/>
-		<!--<script src="/mon.js" defer></script>-->
+		
+		<!-- Ajout du CSS pour décaler uniquement la liste -->
+		<style>
+			#file-list {
+				padding-top: 80px;  /* Décale la liste sans affecter la navbar */
+			}
+		</style>
 	</head>
-	<!--
-		<body class ="is-preload">
-	-->
 	<body class="ParallaxMainContent">
-                <div class="topnav">
-                        <a href="/" class="nav-link">Home</a>
-                        <a href="/#request" class="nav-link">Requests</a>
-                        <a href="/#script">CGI Scripts</a>
-                        <a href="/#review">Reviews</a>
-                </div>
+		<div class="topnav">
+			<a href="/" class="nav-link">Home</a>
+			<a href="/#request" class="nav-link">Requests</a>
+			<a href="/#script">CGI Scripts</a>
+			<a href="/#review">Reviews</a>
+		</div>
 		<div id="file-list">
 		</div>
 		<script>
-			const files = ["magician.jpeg", "death.jpeg"];
-			const fileList = document.getElementById("file-list");
+			async function fetchFiles() {
+				try {
+					const response = await fetch("http://127.0.0.1:8082/cgi/list-files.cgi");
+					if (!response.ok) {
+						throw new Error(`HTTP error! Status: ${response.status}`);
+					}
+					const data = await response.json();
+	
+					const uploadDir = data.upload_dir;
+					const files = data.files;
+					const fileList = document.getElementById("file-list");
+					fileList.innerHTML = ""; 
+	
+					files.forEach((fileName) => {
+						const fileWrapper = document.createElement("div");
+						let fileHTML = `<div class="file-item">`;
 
-			files.forEach((fileName) => {
-				const fileWrapper = document.createElement("div");
-				fileWrapper.innerHTML = `
-		       <div class="trash-div">
-					<img src="uploaded/${fileName}" alt="${fileName}" style="width: 10%"></br>
-					<button id="trash-btn" onclick="deleteFile('${fileName}')">
-						<i class="fas fa-trash" id="trash"></i>
-		       			</button>
-		       </div>
-					</br></br>
-				`;
-				fileList.appendChild(fileWrapper);
-			});
-			function deleteFile(fileName) {
-				if (confirm(`Are you sure you want to delete ${fileName} ?`)) {
-					fetch(`http:/127.0.0.1:8082/delete/uploaded/${fileName}`, {
+						if (fileName.match(/\.(jpg|jpeg|png|gif)$/i)) {
+							fileHTML += `
+								<img src="/${uploadDir}/${fileName}" alt="${fileName}" style="width: 10%">
+							`;
+						} else {
+							fileHTML += `
+								<span>${fileName}</span>
+							`;
+						}
+
+						fileHTML += `
+							<br>
+							<button id="trash-btn" onclick="deleteFile('${fileName}', '${uploadDir}')">
+								<i class="fas fa-trash" id="trash"></i>
+							</button>
+						</div><br><br>`;
+						
+						fileWrapper.innerHTML = fileHTML;
+						fileList.appendChild(fileWrapper);
+					});
+				} catch (error) {
+					console.error("Error fetching file list:", error);
+				}
+			}
+
+			window.onload = fetchFiles;
+
+			function deleteFile(fileName, uploadDir) {
+				if (confirm(`Are you sure you want to delete ${fileName}?`)) {
+					fetch(`http://127.0.0.1:8082/${uploadDir}/${fileName}`, {
 						method: 'DELETE',
 						headers: {
 							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
@@ -50,20 +81,28 @@
 					}).then(response => {
 						if (response.ok) {
 							console.log(`${fileName} successfully deleted.`);
-							const file = document.querySelector(`img[src="uploaded/${fileName}"]`).parentElement;
-							if (file) {
-								file.remove();
+						
+							let fileElement = document.querySelector(`img[src="/${uploadDir}/${fileName}"]`);
+							if (!fileElement) {
+								const spans = document.querySelectorAll('span');
+								spans.forEach(span => {
+									if (span.textContent === fileName) {
+										fileElement = span; 
+									}
+								});
+							}
+						
+							if (fileElement) {
+								fileElement.parentElement.remove();
 							}
 						} else {
 							console.error(`Error: ${fileName}: ${response.status}`);
-							console.log(`Error: ${fileName}: ${response.status}`);
 						}
 					}).catch((error) => {
-						console.log(`Error: `, error);
+						console.log("Error:", error);
 					});
-					}
 				}
+			}
 		</script>
 	</body>
 </html>
-

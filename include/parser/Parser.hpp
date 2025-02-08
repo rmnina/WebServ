@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/07 22:39:26 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/08 01:47:38 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class Parser
 		std::string											_category;
 		int													_error_code;
 		std::string											_error_page;
+		std::string											_upload_dir;
 
 		Server												*_server;
 		server_data											_server_conf;

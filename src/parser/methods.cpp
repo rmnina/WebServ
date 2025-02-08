@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 00:37:13 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/08 02:17:46 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,9 @@ void	Parser::upload(void)
 		return;
 	}
 
-	std::string	upload_dir;
 	if (_server_conf.find("upload") != _server_conf.end() && 
 		_server_conf["upload"][0] == "on")
-		upload_dir = "www/" + _server_conf["upload"][1];
+		_upload_dir = "www/" + _server_conf["upload"][1];
 	else
 	{
 		std::cerr << "Upload not configured" << std::endl;
@@ -88,15 +87,15 @@ void	Parser::upload(void)
 	}
 
 	struct stat info;
-	if (stat(upload_dir.c_str(), &info) != 0)
+	if (stat(_upload_dir.c_str(), &info) != 0)
 	{
-		if (mkdir(upload_dir.c_str(), 0755) != 0)
+		if (mkdir(_upload_dir.c_str(), 0755) != 0)
 		{
 			std::cerr << "Error creating directory" << std::endl;
 			_error_code = 500;
 		}
 	}
-	std::string	filepath = upload_dir + "/" + filename;
+	std::string	filepath = _upload_dir + "/" + filename;
 	std::cout << BOLD YELLOW << "filepath is " << filepath << RESET << std::endl;
 	std::ofstream	file(filepath.c_str(), std::ios::binary);
 	if (!file.is_open())
@@ -115,7 +114,7 @@ void	Parser::DELETEmethod(void)
 	size_t pos = path.find("/delete");
 	if (pos != std::string::npos)
 		path = "www" + path.substr(pos + 7);
-	int isFound = path.find("uploaded") != std::string::npos;
+	int isFound = path.find(_upload_dir) != std::string::npos;
 	if (!isFound)
 	{
 		std::cerr << path.c_str() + 4 << ": permission denied" << RESET << std::endl;
