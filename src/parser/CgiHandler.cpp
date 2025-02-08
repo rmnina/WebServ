@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:19:27 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 01:48:54 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/08 04:27:22 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void Parser::exec_cgi(std::string &filename, int method)
 			env_list.push_back("SCRIPT_NAME=" + filename);
 	env_list.push_back("SCRIPT_FILENAME=" + filename);
     env_list.push_back("UPLOAD_PATH=" + _upload_dir);
+    env_list.push_back("PORT=" + _server->getPort());
 
 		// Convert to char* array for execve
 	char **envp = new char*[env_list.size() + 1];

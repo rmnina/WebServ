@@ -6,6 +6,7 @@
 int main()
 {
 	const char	*upload_path = getenv("UPLOAD_PATH");
+	const char	*port = getenv("PORT");
 	if (!upload_path)
 	{
 		std::cout << "Content-Type: application/json\r\n\r\n[]";
@@ -27,7 +28,7 @@ int main()
 	if (pos == 0)
 		upload_dir = upload_dir.substr(4);
 
-	std::cout << "{ \"upload_dir\": \"" << upload_dir << "\", \"files\": [";
+	std::cout << "{ \"port\":\"" << port << "\", \"upload_dir\": \"" << upload_dir << "\", \"files\": [";
 	while ((entry = readdir(dir)) != NULL)
 	{
 		if (std::strcmp(entry->d_name, ".") == 0 || std::strcmp(entry->d_name, "..") == 0)

@@ -6,7 +6,7 @@
 #    By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 19:01:05 by jdufour           #+#    #+#              #
-#    Updated: 2025/02/08 03:13:33 by jdufour          ###   ########.fr        #
+#    Updated: 2025/02/08 04:10:01 by jdufour          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ SRCS = Config.cpp ConfigStruct.cpp Handler.cpp \
 	CgiHandler.cpp methods.cpp main.cpp
 	
 # CGI files
-CGI_SOURCES = random_number.cpp infinite_loop.c ft_strlen_crash.c # www/cgi/kaamelott.rb)
+CGI_SOURCES = random_number.cpp infinite_loop.c ft_strlen_crash.c list-files.cpp # www/cgi/kaamelott.rb)
 
 # Filter cgi by extension
 CGI_CPP = $(filter %.cpp, $(CGI_SOURCES))
