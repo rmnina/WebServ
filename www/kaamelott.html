@@ -9,7 +9,8 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="shortcut icon" type="image/x-icon" href="https://i.postimg.cc/rmKr57y8/crane-favicon.png"/>
-		<!--<script src="/mon.js" defer></script>-->
+		<!--		<script src="/cgi/kaamelott.js" defer></script>-->
+		<!--		<script type="text/javascript" src="/cgi/kaamelott.js"></script>-->
 	</head>
 	<!--
 		<body class ="is-preload">
@@ -29,54 +30,29 @@
 		<div class="ParallaxMainContent">
 			<div class="container-random">
 				<article class="presentation" id="random-page">
-					<p class="welcome-p" id="hierophant">Tell us your sign</p>
-					<form id="astro-form">
-						<label for="sign">Choose your sign:</label>
-						<select name="sign" id="sign">
-							<option value="-">-</option>
-							<option value="Rabbit">Rabbit</option>
-							<option value="Aries">Aries</option>
-							<option value="Taurus">Taurus</option>
-							<option value="Tiger">Tiger</option>
-							<option value="Leo">Leo</option>
-							<option value="Gemini">Gemini</option>
-							<option value="Cancer">Cancer</option>
-							<option value="Goat">Goat</option>
-							<option value="Virgo">Virgo</option>
-							<option value="Libra">Libra</option>
-							<option value="Scorpio">Scorpio</option>
-							<option value="Sagittarius">Sagittarius</option>
-							<option value="Snake">Snake</option>
-							<option value="Capricorn">Capricorn</option>
-							<option value="Aquarius">Aquarius</option>
-							<option value="Pisces">Pisces</option>
-						</select>
-						<button type="submit" class="check-button" id="astro-btn">Get your horoscope</button>
-					</form>
-
-					<div id="cgi-response"></div>
+					<p class="welcome-p" id="hierophant">But do we know if he came a lot? Or, like, just the same as an average man?</p>
+					<button type="submit" class="check-button" id="astro-btn">Get your horoscope</button>
+					<div id="kaamelott-response"></div>
 					<div class="card" style="width: 13rem;">
-						<img src="https://i.postimg.cc/R0Z1BPQX/wheel.png" id="wheel-astro" alt="" style="width: 100%">
+						<img src="https://i.postimg.cc/0Q6p6b4S/king.png" id="king-astro" alt="" style="width: 100%">
 					</div>
 				</article>
+
 				<script>
-					document.getElementById("astro-form").addEventListener("submit", function (event) {
-						event.preventDefault();
-						const signValue = document.getElementById("sign").value; 
+					document.getElementById("astro-btn").addEventListener("click", function (event) {
+						event.preventDefault(); // Prevent default link behavior
 						const xhr = new XMLHttpRequest();
-						xhr.open("POST", "/cgi/astro.php", true);
-						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+						xhr.open("GET", "/cgi/kaamelott.js", true);
 						xhr.onreadystatechange = function () {
-						if (xhr.readyState === 4) {
-							if (xhr.status === 200) {
-								document.getElementById("cgi-response").innerHTML = xhr.responseText;
-							} else {
-								document.getElementById("cgi-response").innerHTML = "ERROR";
+							if (xhr.readyState === 4) {
+								if (xhr.status === 200) {
+									document.getElementById("kaamelott-response").innerHTML = xhr.responseText;
+								} else {
+									document.getElementById("kaamelott-response").innerHTML = "Error";
 								}
 							}
 						};
-						console.log("Sending data: sign=" + encodeURIComponent(signValue));
-						xhr.send("sign=" + encodeURIComponent(signValue));
+						xhr.send(); // Send the request
 					});
 				</script>
 			</div>
