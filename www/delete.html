@@ -38,24 +38,26 @@
 					const uploadDir = data.upload_dir;
 					const files = data.files;
 					const fileList = document.getElementById("file-list");
-					fileList.innerHTML = ""; 
-	
+					fileList.innerHTML = "";
+					console.log(`files: ${files}`);
+					if (files.length === 0) 
+						document.getElementById("file-list").innerHTML = "This is no more than a wasteland for now. Bring me something so that I can ERASE IT!"
 					files.forEach((fileName) => {
 						const fileWrapper = document.createElement("div");
 						let fileHTML = `<div class="file-item">`;
-
 						if (fileName.match(/\.(jpg|jpeg|png|gif)$/i)) {
-							fileHTML += `<img src="/${uploadDir}/${fileName}" alt="${fileName}" style="width: 10%">`;
+							fileHTML += `<img src="/${uploadDir}/${fileName}"
+								alt="${fileName}"
+								style="width: 10%"
+								onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
+							<span style="display: inline">${fileName}</span>`;
 						} else
 							fileHTML += `<span>${fileName}</span>`;
 
 						fileHTML += `
-							<br>
 							<button id="trash-btn" onclick="deleteFile('${fileName}', '${uploadDir}')">
 								<i class="fas fa-trash" id="trash"></i>
-							</button>
-						</div><br><br>`;
-						
+							</button><br>`;
 						fileWrapper.innerHTML = fileHTML;
 						fileList.appendChild(fileWrapper);
 					});

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 20:05:17 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/09 19:45:53 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ void	Parser::upload(void)
 {
 	if (!fill_content_type_multipart(_request_body))
 	{
-		std::cerr << "Invalid upload request headers" << std::endl;
 		_error_code = 400;
+		std::cerr << "Invalid upload request headers" << "\nError code: " << _error_code << std::endl;
 		return;
 	}
 
@@ -72,8 +72,8 @@ void	Parser::upload(void)
 	if (!get_file_name(_request_body, filename) ||
 		!get_file_content(_request_body, content))
 	{
-		std::cerr << "Could not extract file from request" << std::endl;
 		_error_code = 400;
+		std::cerr << "Could not extract file from request" << "\nError code: " << _error_code << std::endl;
 		return;
 	}
 
@@ -108,48 +108,8 @@ void	Parser::upload(void)
 	_error_code = 201;
 }
 
-int	Parser::build_delete_page( void)
-{
-	std::stringstream	ss;
-
-	std::cout << __func__ << " " << __LINE__ << ": _port_code = " << _port_code << "\n"; // int
-	ss << _server->getPort();
-	ss >> _port_code;
-	std::cout << "le port du server est : " << _server->getPort() << "\n"; // string
-	std::cout << __func__ << " " << __LINE__ << ": _port_code = " << _port_code << "\n"; // int
-
-	std::string	port[2] = {"8081", "8082"};
-	int length = sizeof(port) / sizeof(port[0]);
-
-	std::ifstream	delete_file("www/delete.html");
-	if (!delete_file.is_open())
-		std::cerr << "Error opening delete file" << std::endl;
-
-	std::ostringstream	tmp;
-	tmp << delete_file.rdbuf();
-	std::string	content = tmp.str();
-	_port_page = tmp.str();
-	delete_file.close();
-
-	size_t	pos = 0;
-	std::ofstream	output_file("www/delete.html");
-
-	if (!output_file.is_open())
-		std::cerr << "Error opening delete file in writing mode" << std::endl;
-	if ((pos = content.find("{{PORT}}")) != std::string::npos)
-	{
-		for (int i = 0; i < length; i++)
-			if (_server->getPort() == port[i])
-				content.replace(pos, strlen("{{PORT}}"), port[i]);
-	}
-	output_file << content;
-	output_file.close();
-	return (SUCCESS);
-}
-
 void	Parser::DELETEmethod(void)
 {
-	build_delete_page();
 	std::string path = _request["path"][0];
 	size_t pos = path.find("/delete");
 	if (pos != std::string::npos)
@@ -157,8 +117,8 @@ void	Parser::DELETEmethod(void)
 	int isFound = path.find(_upload_dir) != std::string::npos;
 	if (!isFound)
 	{
-		_error_code = 405;
-		std::cerr << path.c_str() + 4 << ": permission denied" << RESET << "\nError code: " << _error_code << std::endl;
+		_error_code = 403;
+		std::cerr << "Remove " << path.c_str() + 4 << ": Forbidden" << RESET << "\nError code: " << _error_code << std::endl;
 		return ;
 	}
 	int status = remove(path.c_str());
@@ -166,16 +126,4 @@ void	Parser::DELETEmethod(void)
 		std::cout << path.substr(13) << ": successfully deleted" << "\nCode: " << _error_code << std::endl;
 	else
 		std::cerr << path.substr(13) << ": " << strerror(errno) << std::endl;
-}
-
-int	Parser::restore_delete_page( void)
-{
-	std::ofstream	output_file("www/delete.html");
-
-	if (!output_file.is_open())
-		std::cerr << "Error opening delete file in writing mode" << std::endl;
-	std::cout << __func__ << ": _port_page = " << _port_page << "\n";
-	output_file << _port_page;
-	output_file.close();
-	return (SUCCESS);
 }
