@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 18:29:39 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/09 16:18:26 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,9 +268,10 @@ std::string	Parser::build_response( void)
 	{
 		build_response_content(_request["path"][0]);
 		restore_error_page();
-		std::cout << "_response: " << _response << "\n";
+//		std::cout << "_response: " << _response << "\n";
 		return (_response);
 	}
+	/*
 	if (_request["path"][0] == "www/delete.html")
 	{
 		std::cerr << BLUE << "1.1\n" << RESET;
@@ -283,6 +284,7 @@ std::string	Parser::build_response( void)
 		return (_response);
 	}
 	std::cout << RED << "BODY :" << _request_body << RESET << std::endl;
+	*/
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
 		if (_request.find("method")->second[0] == method[i])

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 16:41:47 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/09 15:48:37 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ int	Parser::restore_error_page( void)
 	if (!output_file.is_open())
 		std::cerr << "Error opening error file in writing mode" << std::endl;
 	output_file << _error_page;
-	
 	output_file.close();
 	return (SUCCESS);
 }

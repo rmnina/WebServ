@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/07 22:56:32 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/09 21:35:55 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,14 @@ bool	Parser::fill_content_length(const std::string &request)
 	return (true);
 }
 
+static bool	removeSpaces(std::string filename)
+{
+	for (size_t i = 0; i < filename.length(); i++)
+		if (filename[i] == ' ')
+			return (false);
+	return (true);
+}
+
 bool	Parser::get_file_name(const std::string &body, std::string &filename)
 {
 	size_t	filename_pos = body.find("filename=\"");
@@ -164,6 +172,8 @@ bool	Parser::get_file_name(const std::string &body, std::string &filename)
 		std::cerr << "Error: invalid filename" << std::endl;
 		return (false);
 	}
+	if (!removeSpaces(filename))
+		return (false);
 	return (true);
 }
 
