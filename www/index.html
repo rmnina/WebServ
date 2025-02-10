@@ -84,7 +84,7 @@
 						</div>
 					</article>
 					<article class="wrapper-cgi">
-						<a href="randomnb.html" onclick="getRandomNb()" id="cgi-link">
+						<a href="/randomnb.html" onclick="getRandomNb()" id="cgi-link">
 							<div class="card" style="width: 18rem;" id="delete-link">
 								<img src="https://i.postimg.cc/50HsjY82/hierophant.png" id="hierophant" alt="" style="width: 100%">
 								<div class="card-body">
@@ -127,11 +127,11 @@
 					</article>
 					<script>
 						let port = location.port;
-						function getDelete() { console.log(`${port}`);  document.getElementById("delete-link").innerHTML = `<a>http://127.0.0.1:${port}/</a>`; }
-						function getRandomNb() { console.log(`${port}`);  document.getElementById("cgi-link").innerHTML = `<a>http://127.0.0.1:${port}/</a>`; }
-						function getInfinity() { console.log(`${port}`);  document.getElementById("cgi-link").innerHTML = `<a>http://127.0.0.1:${port}/</a>`; }
-						function getAstro() { console.log(`${port}`);  document.getElementById("cgi-link").innerHTML = `<a>http://127.0.0.1:${port}/</a>`; }
-						function getKaamelott() { console.log(`${port}`);  document.getElementById("cgi-link").innerHTML = `<a>http://127.0.0.1:${port}</a>`; }
+						function getDelete() { console.log(`${port}`);  document.getElementById("delete-link").href = `http://127.0.0.1:${port}/delete.html`; }
+						function getRandomNb() { console.log(`${port}`);  document.getElementById("cgi-link").href = `http://127.0.0.1:${port}/randomnb.html`; }
+						function getInfinity() { console.log(`${port}`);  document.getElementById("cgi-link").href = `http://127.0.0.1:${port}/infinite_loop.html`; }
+						function getAstro() { console.log(`${port}`);  document.getElementById("cgi-link").href = `http://127.0.0.1:${port}/astro.html`; }
+						function getKaamelott() { console.log(`${port}`);  document.getElementById("cgi-link").href = `http://127.0.0.1:${port}/kaamelott.html`; }
 						function openForm() { document.getElementById("myForm").style.display = "block"; }
 						function closeForm() { document.getElementById("myForm").style.display = "none"; }
 
