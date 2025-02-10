@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/10 14:38:32 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/10 15:04:18 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,7 +278,7 @@ std::string	Parser::build_response( void)
 	{
 		build_response_content(_request["path"][0]);
 		restore_error_page();
-		//display_code();
+		display_code();
 		return (_response);
 	}
 
@@ -288,7 +288,7 @@ std::string	Parser::build_response( void)
 		{
 			(this->*func_method[i])();
 			std::cout << "Method: " << method[i] << "\n";
-			//display_code();
+			display_code();
 			return (_response);
 		}
 	}

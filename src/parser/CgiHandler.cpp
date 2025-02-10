@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiHandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:19:27 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 04:35:55 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/10 15:05:15 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		std::cerr << "Error forking process\n";
 		return;
 	}
-	if (pid == 0) {
+	if (pid == 0) { // Child
 		close(input_pipe[1]);
 		close(output_pipe[0]);
 
@@ -74,7 +74,6 @@ void	Parser::exec_cgi(std::string &filename, int method)
 			env_list.push_back("REQUEST_METHOD=POST");
 			std::stringstream ss;
 			ss << _request_body.size();
-			//std::cout << "content length = " << ss.str() << std::endl;
 			env_list.push_back("CONTENT_LENGTH=" + ss.str());
 			env_list.push_back("CONTENT_TYPE=application/x-sh");
 		}
@@ -89,16 +88,12 @@ void	Parser::exec_cgi(std::string &filename, int method)
     env_list.push_back("UPLOAD_PATH=" + _upload_dir);
     env_list.push_back("PORT=" + _server->getPort());
 
-		// Convert to char* array for execve
 		char **envp = new char*[env_list.size() + 1];
-		for (size_t i = 0; i < env_list.size(); i++) {
+		for (size_t i = 0; i < env_list.size(); i++)
 			envp[i] = strdup(env_list[i].c_str());
-			//std::cout << "env[i] = " << envp[i] << std::endl;
-		}
 		envp[env_list.size()] = NULL;
 
 		char *argv[] = { strdup(filename.c_str()), NULL };
-		//std::cout << "\n\nrequest_body " << _request_body << "filename " << filename << "\n";
 		execve(filename.c_str(), argv, envp);
 		std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
 		exit(1);
@@ -109,7 +104,6 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		close(input_pipe[0]);
 		close(output_pipe[1]);
 
-		//std::cout << "request body dans parent = " << _request_body << std::endl;
 		if (method == POST)
 			write(input_pipe[1], _request_body.c_str(), _request_body.size());
 		close(input_pipe[1]); // Close after writing
@@ -128,6 +122,5 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		}
 
 		_response = cgi_output;
-		std::cout << "CGI output:\n" << _response << "\nError code: " << _error_code << std::endl;
 	}
 }
