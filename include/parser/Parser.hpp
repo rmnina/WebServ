@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/08 06:54:08 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/10 14:28:44 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,10 @@ class Parser
 		int			throw_error_page( void);
 		int			restore_error_page( void);
 		void		display_dirlist(std::string path);
+		
+		void        display_code(void);
+        bool        is_directory(const std::string &path);
+        bool        is_file(const std::string &path);
 
 		int			build_delete_page( void);
 		int			restore_delete_page( void);

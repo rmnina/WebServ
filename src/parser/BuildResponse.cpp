@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/09 16:18:26 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/10 14:38:32 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,21 +120,33 @@ size_t	Parser::get_content_length( const std::string &filename)
 	return (_resp_size);
 }
 
-bool	is_directory(const std::string &path)
+void    Parser::display_code(void)
 {
-	struct stat path_stat;
-	if (stat(path.c_str(), &path_stat) != 0)
-		return false;
-	return S_ISDIR(path_stat.st_mode);
+    if (_error_code)
+    {
+        if (_error_code == 200 || _error_code == 201 || _error_code == 204)
+            std::cout << "\nStatus code: " << _error_code << std::endl;
+        else
+            std::cout << "\nError code: " << _error_code << std::endl;
+    }
 }
 
-bool	is_file(const std::string &path)
+bool    Parser::is_directory(const std::string &path)
 {
-	struct stat path_stat;
-	if (stat(path.c_str(), &path_stat) != 0)
-		return false;
-	return S_ISREG(path_stat.st_mode);
+    struct stat path_stat;
+    if (stat(path.c_str(), &path_stat) != 0)
+        return false;
+    return S_ISDIR(path_stat.st_mode);
 }
+
+bool    Parser::is_file(const std::string &path)
+{
+    struct stat path_stat;
+    if (stat(path.c_str(), &path_stat) != 0)
+        return false;
+    return S_ISREG(path_stat.st_mode);
+}
+
 
 
 std::string	Parser::build_response_header( void)
@@ -246,8 +258,6 @@ void	Parser::display_dirlist(std::string path)
 	html << "</ul></body></html>";
 	closedir(dir);
 
-	_response = build_response_header();
-
 	_response += html.str();
 	std::cout << "response fin display_dir = " << _response << std::endl;
 }
@@ -268,32 +278,21 @@ std::string	Parser::build_response( void)
 	{
 		build_response_content(_request["path"][0]);
 		restore_error_page();
-//		std::cout << "_response: " << _response << "\n";
+		//display_code();
 		return (_response);
 	}
-	/*
-	if (_request["path"][0] == "www/delete.html")
-	{
-		std::cerr << BLUE << "1.1\n" << RESET;
-		build_delete_page();
-		std::cerr << BLUE << "1.2\n" << RESET;
-		build_response_content(_request["path"][0]);
-		std::cerr << BLUE << "1.3\n" << RESET;
-		restore_delete_page();
-		std::cerr << BLUE << "1.4\n" << RESET;
-		return (_response);
-	}
-	std::cout << RED << "BODY :" << _request_body << RESET << std::endl;
-	*/
+
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
 		if (_request.find("method")->second[0] == method[i])
 		{
 			(this->*func_method[i])();
 			std::cout << "Method: " << method[i] << "\n";
+			//display_code();
 			return (_response);
 		}
 	}
+	display_code();
 	return ("");
 }
 
