@@ -50,16 +50,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo "You might have flabby arms and glassy eyes, just don't believe your mirror.";
                 break;
             case 'Rabbit':
-                echo "No sweet heart";
+                echo "Awwww cute 🥰🥰🥰🥰... This ain't Chinese zodiac buddy. Next.";
                 break;
             case 'Tiger':
-                echo "R u kinding?";
+                echo "Didn't you get the memo from the rabbit? Go over there and tell him I said hi.";
                 break;
             case 'Snake':
-                echo "Merci de faire ton boulot Antoine";
+                echo "That's it, I'm cursing you for the next twelve generations. GET OUT!!";
                 break;
             case 'Goat':
-                echo "Merci de faire ton boulot Antoine, au lieu de came a lot devant Monster Hunter";
+                echo "Are you testing my patience, mortal?!";
                 break;
             default:
 	 	echo "Please enter a real sign. Astrology is serious business";
