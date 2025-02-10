@@ -6,12 +6,13 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/10 19:54:14 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/10 20:05:22 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/config/Config.hpp"
 #include <sstream>
+#include <cstdlib>
 
 Config::Config(void) {}
 
@@ -184,13 +185,18 @@ bool	check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 	{
 		if (tmp.size() > 1)
 			return (false);
-		std::stringstream ss(tmp[0]);
-		int nb;
-		ss >> nb;
+		// std::stringstream ss(tmp[0]);
+		char *endptr;
+		long nb = strtol(tmp[0].c_str(), &endptr, 10);
+		if (endptr == tmp[0].c_str() || *endptr != '\0')
+			return (false);
+		// ss >> nb;
+		
+		// if (ss.fail()) 
+        // 	throw std::runtime_error("Invalid integer conversion");
+		
 		std::cout << "nb = " << nb << std::endl;
-		if (ss.fail()) 
-        	throw std::runtime_error("Invalid integer conversion");
-		else if (nb < 1024 || nb > 65535)
+		if (nb < 1024 || nb > 65535)
 			return (false);
 		else
 			return (true);
