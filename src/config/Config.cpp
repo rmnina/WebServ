@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/09 19:11:58 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/10 19:54:14 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/config/Config.hpp"
+#include <sstream>
 
 Config::Config(void) {}
 
@@ -25,7 +26,7 @@ std::vector<ConfigStruct>	Config::get_servers_conf(void) const
 
 bool    Config::_server_allowed(const std::string &keyword) 
 {
-	const std::string			array[12] = {"listen", "Cross-Origin-Resource-Policy:", "server_name", "dir_listing", "error", "method",
+	const std::string			array[12] = {"listen", "Cross-Origin-Resource-Policy", "server_name", "dir_listing", "error", "method",
 											"upload", "root", "body_size", "index", "location"};
 	std::vector<std::string>	allowed(array, array + 12);
 
@@ -177,6 +178,30 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 // 		brackets = _update_brackets_state(brackets);
 // }
 
+bool	check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
+{
+	if (!keyword.compare("listen"))
+	{
+		if (tmp.size() > 1)
+			return (false);
+		std::stringstream ss(tmp[0]);
+		int nb;
+		ss >> nb;
+		std::cout << "nb = " << nb << std::endl;
+		if (ss.fail()) 
+        	throw std::runtime_error("Invalid integer conversion");
+		else if (nb < 1024 || nb > 65535)
+			return (false);
+		else
+			return (true);
+	}
+	// else if (!keyword.compare("host"))
+	// {
+	// 	if ()
+	// }
+	return (true);
+}
+
 void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets)
 {
 	int i;
@@ -202,6 +227,8 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 			{
 				if (!line.compare(0, 1, "}"))
 					_update_brackets_state(brackets);
+				else
+					throw std::invalid_argument("");
 				break ;
 			}
 			if (!keyword.compare("location"))
@@ -209,13 +236,15 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 			else
 			{
 				std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
+				if (!check_keyword_validity(keyword, tmp))
+					throw std::invalid_argument("Unauthorized argument in conf file");
 				server[keyword] = tmp;
 			}
 			std::getline(conf_file, line);
 		}
 	}
 	if (!line.empty() && !line.compare(0, 1, "}"))
-		brackets = _update_brackets_state(brackets);	
+		brackets = _update_brackets_state(brackets);
 }
 
 void printConfig(const std::vector<ConfigStruct> &servers_conf)
