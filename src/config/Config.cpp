@@ -62,37 +62,53 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 	size_t		start, end;
 	int 		i;
 
+	std::cout << "line avant le for: " << line << std::endl;
 	for (i = 0; line[i] == ' '; i++);
 	start = line.find(' ', i);
 	end = line.find_last_of(' ') + 1;
+	std::cout << "start: " << start << " end: " << end << "\n";
 	std::string route = line.substr(start, end - start);
+	std::cout << "route: " << route << "\n";
 	
 	std::vector<std::string> tmp_vect;
 	tmp_vect.push_back(route);
 	loc_i["route"] = tmp_vect;
 
 	std::vector<std::string>::iterator it;
+	std::cout << "loc_i[\"route\"]: ";
+	for (it = loc_i["route"].begin(); it != loc_i["route"].end(); it++)
+		std::cout << *it << " ";
+	std::cout << "\nline: " << line << std::endl;
 	std::getline(conf_file, line);
-	
-	if (!line.empty() && !line.compare(0, 1, "{"))
+	std::cout << "After line break: " << line << std::endl;
+	for (i = 0; line[i] == ' '; i++);
+	if (!line.empty() && !line.compare(i, 1, "{"))
 		brackets = _update_brackets_state(brackets);
+	else
+		throw std::invalid_argument("C'est non 2");
 	std::getline(conf_file, line);
+	std::cout << "After bracket: " << line << std::endl;
 	while (!line.empty())
 	{
 		for (i = 0; line[i] == ' '; i++);
 		line = line.substr(i, line.size() - i);
+		std::cout << "!line.empty(): " << line << std::endl;
 		if (line[0] == '#')
 			std::getline(conf_file, line);
+			
 		size_t		space_pos = line.find(" ");
 		std::string keyword = line.substr(0, space_pos);
+		std::cout << "keyword: " << keyword << std::endl;
 		if (!_location_allowed(keyword))
+		{
+			std::cout << "keyword before break: " << keyword << std::endl;
 			break ;
+		}
 		std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
 		loc_i[keyword] = tmp;
 		std::getline(conf_file, line);
 	}
 	location.push_back(loc_i);
-	/*
 	for (location_data::iterator vec_it = location.begin(); vec_it != location.end(); ++vec_it) {
         std::cout << "Map: \n";
         for (std::map<std::string, std::vector<std::string> >::iterator map_it = vec_it->begin(); map_it != vec_it->end(); ++map_it) {
@@ -104,10 +120,62 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
         }
     }
 	std::cout << "\n";
-	*/
 	if (!line.empty() && !line.compare(0, 1, "}"))
 		brackets = _update_brackets_state(brackets);
 }
+
+// void	Config::fill_locations(std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets)
+// {
+// 	location_i_data loc_i;
+// 	size_t		start, end;
+// 	int 		i;
+
+// 	for (i = 0; line[i] == ' '; i++);
+// 	start = line.find(' ', i);
+// 	end = line.find_last_of(' ') + 1;
+// 	std::string route = line.substr(start, end - start);
+	
+// 	std::vector<std::string> tmp_vect;
+// 	tmp_vect.push_back(route);
+// 	loc_i["route"] = tmp_vect;
+
+// 	std::vector<std::string>::iterator it;
+// 	std::getline(conf_file, line);
+	
+// 	if (!line.empty() && !line.compare(0, 1, "{"))
+// 		brackets = _update_brackets_state(brackets);
+// 	std::getline(conf_file, line);
+// 	while (!line.empty())
+// 	{
+// 		for (i = 0; line[i] == ' '; i++);
+// 		line = line.substr(i, line.size() - i);
+// 		if (line[0] == '#')
+// 			std::getline(conf_file, line);
+// 		size_t		space_pos = line.find(" ");
+// 		std::string keyword = line.substr(0, space_pos);
+// 		if (!_location_allowed(keyword))
+// 			break ;
+// 		std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
+// 		loc_i[keyword] = tmp;
+// 		std::getline(conf_file, line);
+// 	}
+// 	location.push_back(loc_i);
+// 	/*
+// 	for (location_data::iterator vec_it = location.begin(); vec_it != location.end(); ++vec_it) {
+//         std::cout << "Map: \n";
+//         for (std::map<std::string, std::vector<std::string> >::iterator map_it = vec_it->begin(); map_it != vec_it->end(); ++map_it) {
+//             std::cout << "  Key: " << map_it->first << "\n  Values: ";
+//             for (std::vector<std::string>::iterator vec_str_it = map_it->second.begin(); vec_str_it != map_it->second.end(); ++vec_str_it) {
+//                 std::cout << *vec_str_it << " ";
+// 				       }
+//             std::cout << "\n";
+//         }
+//     }
+// 	std::cout << "\n";
+// 	*/
+// 	if (!line.empty() && !line.compare(0, 1, "}"))
+// 		brackets = _update_brackets_state(brackets);
+// }
 
 void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets)
 {
@@ -116,6 +184,8 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 	std::getline(conf_file, line);
 	if (!line.empty() && !line.compare(0, 1, "{"))
 		brackets = _update_brackets_state(brackets);
+	else
+		throw std::invalid_argument("C'est non 1");
 	std::getline(conf_file, line);
 
 	while (!line.empty())
