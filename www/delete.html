@@ -26,11 +26,12 @@
 		<div id="file-list">
 		</div>
 		<script>
-			let port = location.port;
+			let origin = location.origin;
 			async function fetchFiles() {
 				try {
-					console.log(port);
-					const response = await fetch(`http://127.0.0.1:${port}/cgi/list-files.cgi`);
+					console.log(`On delete page, origin: ${origin}`);
+					console.log(origin);
+					const response = await fetch(`${origin}/cgi/list-files.cgi`);
 					const data = await response.json();
 					if (!response.ok) 
 						throw new Error(`HTTP error! Status: ${response.status}`);
@@ -40,7 +41,7 @@
 					const fileList = document.getElementById("file-list");
 					fileList.innerHTML = "";
 					console.log(`files: ${files}`);
-					if (files.length === 0) 
+					if (files.length === 0 || files == null) 
 						document.getElementById("file-list").innerHTML = "This is no more than a wasteland for now. Bring me something so that I can ERASE IT!"
 					files.forEach((fileName) => {
 						const fileWrapper = document.createElement("div");
@@ -70,8 +71,8 @@
 
 			function deleteFile(fileName, uploadDir) {
 				if (confirm(`Are you sure you want to delete ${fileName}?`)) {
-					console.log(port);
-					fetch(`http://127.0.0.1:${port}/${uploadDir}/${fileName}`, {
+					console.log(`On delete page, origin: ${origin}`);
+					fetch(`${origin}/${uploadDir}/${fileName}`, {
 						method: 'DELETE',
 						headers: {
 							'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
@@ -91,7 +92,7 @@
 						console.error(`Error: ${fileName}: ${response.status}`);
 					}).catch((error) => {
 						console.log("Error:", error);
-					});
+					})
 				}
 		}
 		</script>

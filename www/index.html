@@ -126,25 +126,25 @@
 						</a>
 					</article>
 					<script>
-						let port = location.port;
-						function getDelete() { console.log(`${port}`);  document.getElementById("delete-link").href = `http://127.0.0.1:${port}/delete.html`; }
-						function getRandomNb() { console.log(`${port}`);  document.getElementById("cgi-link").href = `http://127.0.0.1:${port}/randomnb.html`; }
-						function getInfinity() { console.log(`${port}`);  document.getElementById("cgi-link").href = `http://127.0.0.1:${port}/infinite_loop.html`; }
-						function getAstro() { console.log(`${port}`);  document.getElementById("cgi-link").href = `http://127.0.0.1:${port}/astro.html`; }
-						function getKaamelott() { console.log(`${port}`);  document.getElementById("cgi-link").href = `http://127.0.0.1:${port}/kaamelott.html`; }
+						let origin = window.location.origin;
+						console.log("origin ", origin);
+		
+						function getDelete() { console.log(`${origin}`); document.getElementById("delete-link").href = `${origin}/delete.html`; }
+						function getRandomNb() { console.log(`${origin}`);  document.getElementById("cgi-link").href = `${origin}/randomnb.html`; }
+						function getInfinity() { console.log(`${origin}`);  document.getElementById("cgi-link").href = `${origin}/infinite_loop.html`; }
+						function getAstro() { console.log(`${origin}`);  document.getElementById("cgi-link").href = `${origin}/astro.html`; }
+						function getKaamelott() { console.log(`${origin}`);  document.getElementById("cgi-link").href = `${origin}/kaamelott.html`; }
 						function openForm() { document.getElementById("myForm").style.display = "block"; }
 						function closeForm() { document.getElementById("myForm").style.display = "none"; }
-
-
 
 						const navLinks = document.querySelectorAll('.nav-link');
 
 						navLinks.forEach(link => {
-													link.addEventListener('click', function () {
-																				navLinks.forEach(link => link.classList.remove('active'));
-																				this.classList.add('active');
-																			});
-												});
+							link.addEventListener('click', function () {
+									navLinks.forEach(link => link.classList.remove('active'));
+									this.classList.add('active');
+								});
+						});
 					</script>
 
 					<article class="presentation" id="pres-cgi">
