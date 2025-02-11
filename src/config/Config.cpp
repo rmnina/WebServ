@@ -6,15 +6,11 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/11 19:00:07 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/11 19:10:45 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/config/Config.hpp"
-#include <sstream>
-#include <cstdlib>
-#include <string>
-#include <cstring>
 
 Config::Config(void) {}
 
@@ -181,7 +177,7 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 // 		brackets = _update_brackets_state(brackets);
 // }
 
-bool check_valid_nb(const std::string& str) 
+bool Config::check_valid_nb(const std::string& str) 
 {
     if (str.empty()) 
 		return (false); 
@@ -192,7 +188,7 @@ bool check_valid_nb(const std::string& str)
     return true;
 }
 
-bool check_valid_ip(const std::string& ip) 
+bool Config::check_valid_ip(const std::string& ip) 
 {
     if (ip.empty()) 
 		return false;

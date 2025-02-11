@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:15 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/11 18:06:03 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/11 19:11:21 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,11 @@
 # include <string>
 # include <fstream>
 # include <exception>
+# include <sstream>
+# include <cstdlib>
+# include <cstring>
 # include "ConfigStruct.hpp"
+
 
 # define RED		"\x1b[31m"
 # define BLUE		"\x1b[34m"
@@ -56,6 +60,8 @@ class Config
 		void		fill_locations(std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets);
 		void		fill_conf_vector(const std::string &filename);
 		bool		check_keyword_validity(std::string keyword, std::vector<std::string> tmp);
+		bool 		check_valid_ip(const std::string& ip);
+		bool 		check_valid_nb(const std::string& str); 
 
 		~Config(void);
 };
