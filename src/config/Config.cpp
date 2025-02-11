@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/11 14:18:49 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/11 14:59:21 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ std::vector<ConfigStruct>	Config::get_servers_conf(void) const
 
 bool    Config::_server_allowed(const std::string &keyword) 
 {
-	const std::string			array[12] = {"listen", "Cross-Origin-Resource-Policy", "server_name", "dir_listing", "error", "method",
-											"upload", "root", "body_size", "index", "location"};
-	std::vector<std::string>	allowed(array, array + 12);
+	const std::string			array[13] = {"listen", "Cross-Origin-Resource-Policy", "server_name", "dir_listing", "error", "method",
+											"upload", "root", "body_size", "index", "location", "host"};
+	std::vector<std::string>	allowed(array, array + 13);
 
 	for (std::vector<std::string>::iterator it = allowed.begin(); it < allowed.end(); it++)
 	{
@@ -217,7 +217,7 @@ bool	check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 	{
 		if (tmp.size() != 1)
 			return (false);
-		if (tmp[0].substr(tmp[0].size() - 6, 5).compare(".html"))
+		if (tmp[0].substr(tmp[0].size() - 5, 5).compare(".html"))
 			return (false);
 		std::string path = "www/" + tmp[0];
 		std::ifstream file(path.c_str());
@@ -238,6 +238,16 @@ bool	check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 			return (false);
 		else
 			return (true);
+	}
+	else if (!keyword.compare("method"))
+	{
+		if (tmp.size() < 1 || tmp.size() > 3)
+			return (false);
+		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		{
+			if (*it != "GET" && *it != "POST" && *it != "DELETE")
+				return (false);
+		}
 	}
 	return (true);
 }
@@ -277,8 +287,10 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 			else
 			{
 				std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
-				if (!check_keyword_validity(keyword, tmp))
+				if (!check_keyword_validity(keyword, tmp)) {
+					std::cout << "keyword qui foire = " << keyword << std::endl;
 					throw std::invalid_argument("Unauthorized argument in conf file");
+				}
 				server[keyword] = tmp;
 			}
 			std::getline(conf_file, line);
