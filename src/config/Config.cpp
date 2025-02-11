@@ -6,14 +6,11 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/11 14:59:21 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/11 19:10:45 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/config/Config.hpp"
-#include <sstream>
-#include <cstdlib>
-#include <string>
 
 Config::Config(void) {}
 
@@ -180,29 +177,69 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 // 		brackets = _update_brackets_state(brackets);
 // }
 
-bool	check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
+bool Config::check_valid_nb(const std::string& str) 
+{
+    if (str.empty()) 
+		return (false); 
+    for (size_t i = 0; i < str.length(); i++) {
+        if (str[i] < '0' || str[i] > '9')
+			return (false); 
+    }
+    return true;
+}
+
+bool Config::check_valid_ip(const std::string& ip) 
+{
+    if (ip.empty()) 
+		return false;
+
+    char ipCopy[16];
+    std::strncpy(ipCopy, ip.c_str(), 15);
+    ipCopy[15] = '\0'; 
+
+    int parts = 0;
+    char* token = std::strtok(ipCopy, "."); 
+    while (token) {
+        std::string part(token);
+
+        if (!check_valid_nb(part)) 
+			return (false);
+
+        int num = std::atoi(part.c_str());
+        if (num < 0 || num > 255) 
+			return (false);
+
+        parts++;
+        token = std::strtok(NULL, ".");
+    }
+    return (parts == 4);
+}
+
+bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 {
 	if (!keyword.compare("listen"))
 	{
-		if (tmp.size() != 1)
-			return (false);
 		char *endptr;
-		long nb = strtol(tmp[0].c_str(), &endptr, 10);
-		if (endptr == tmp[0].c_str() || *endptr != '\0')
-			return (false);
-		if (nb < 1024 || nb > 65535)
-			return (false);
-		else
-			return (true);
+		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		{
+			std::string tmp_str = *it;
+			long nb = strtol(tmp_str.c_str(), &endptr, 10);
+			if (endptr == tmp_str.c_str() || *endptr != '\0')
+				return (false);
+			if (nb < 1024 || nb > 65535)
+				return (false);
+		}
+		return (true);
 	}
 	else if (!keyword.compare("host"))
 	{
 		if (tmp.size() != 1)
 			return (false);
-		if (!tmp[0].compare("127.0.0.1") || !tmp[0].compare("localhost"))
+		if (!tmp[0].compare("localhost")) 
 			return (true);
-		else
+		else if (!check_valid_ip(tmp[0]))
 			return (false);
+		return (true);
 	}
 	else if (!keyword.compare("dir_listing"))
 	{
@@ -249,6 +286,16 @@ bool	check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 				return (false);
 		}
 	}
+	else if (!keyword.compare("upload"))
+	{
+		if (tmp.size() != 2)
+			return (false);
+		if (tmp[0] != "on")
+			return (false);
+		return (true);
+	}
+	else if (!keyword.compare("server_name") && tmp.size() != 1)
+		return (false);
 	return (true);
 }
 
@@ -339,6 +386,7 @@ void printConfig(const std::vector<ConfigStruct> &servers_conf)
 		std::cout << "\n";
 	}
 }
+
 
 void    Config::fill_conf_vector(const std::string &filename) 
 {
