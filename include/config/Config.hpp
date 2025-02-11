@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:15 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/24 15:56:08 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/11 18:06:03 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ class Config
 		void		fill_servers(std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets);
 		void		fill_locations(std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets);
 		void		fill_conf_vector(const std::string &filename);
+		bool		check_keyword_validity(std::string keyword, std::vector<std::string> tmp);
 
 		~Config(void);
 };
