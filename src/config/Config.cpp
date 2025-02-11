@@ -6,13 +6,14 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/10 20:05:22 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/11 14:18:49 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/config/Config.hpp"
 #include <sstream>
 #include <cstdlib>
+#include <string>
 
 Config::Config(void) {}
 
@@ -183,28 +184,61 @@ bool	check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 {
 	if (!keyword.compare("listen"))
 	{
-		if (tmp.size() > 1)
+		if (tmp.size() != 1)
 			return (false);
-		// std::stringstream ss(tmp[0]);
 		char *endptr;
 		long nb = strtol(tmp[0].c_str(), &endptr, 10);
 		if (endptr == tmp[0].c_str() || *endptr != '\0')
 			return (false);
-		// ss >> nb;
-		
-		// if (ss.fail()) 
-        // 	throw std::runtime_error("Invalid integer conversion");
-		
-		std::cout << "nb = " << nb << std::endl;
 		if (nb < 1024 || nb > 65535)
 			return (false);
 		else
 			return (true);
 	}
-	// else if (!keyword.compare("host"))
-	// {
-	// 	if ()
-	// }
+	else if (!keyword.compare("host"))
+	{
+		if (tmp.size() != 1)
+			return (false);
+		if (!tmp[0].compare("127.0.0.1") || !tmp[0].compare("localhost"))
+			return (true);
+		else
+			return (false);
+	}
+	else if (!keyword.compare("dir_listing"))
+	{
+		if (tmp.size() != 1)
+			return (false);
+		if (!tmp[0].compare("on") || !tmp[0].compare("off"))
+			return (true);
+		else
+			return (false);
+	}
+	else if (!keyword.compare("index"))
+	{
+		if (tmp.size() != 1)
+			return (false);
+		if (tmp[0].substr(tmp[0].size() - 6, 5).compare(".html"))
+			return (false);
+		std::string path = "www/" + tmp[0];
+		std::ifstream file(path.c_str());
+		if (file.good())
+			return (true);
+		else
+			return (false);
+	}
+	else if (!keyword.compare("body_size"))
+	{
+		if (tmp.size() > 1)
+			return (false);
+		char *endptr;
+		long nb = strtol(tmp[0].c_str(), &endptr, 10);
+		if (endptr == tmp[0].c_str() || *endptr != '\0')
+			return (false);
+		if (nb < 256 || nb > 65535)
+			return (false);
+		else
+			return (true);
+	}
 	return (true);
 }
 
@@ -221,6 +255,7 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 
 	while (!line.empty())
 	{
+		std::cout << "boucle fill server\n";
 		for (i = 0; line[i] == ' '; i++);
 		line = line.substr(i, line.size() - i);
 		if (line[0] == '#')
