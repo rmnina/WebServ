@@ -6,20 +6,27 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 01:12:29 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/07 21:04:28 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/13 22:21:29 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/config/Config.hpp"
 #include "../include/server/Handler.hpp"
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	std::string	filename = "test.conf";
+	(void)argv;
+	//std::string	filename = "test.conf";
 	Config	config;
 
+	std::string filename;
 
 	try {
+//		std::string filename;
+		if (argc == 2)
+			filename = argv[1];
+		else
+			filename = "test.conf";
 		config.fill_conf_vector(filename);
 		Handler	handler(config.get_servers_conf());	
 		try 
