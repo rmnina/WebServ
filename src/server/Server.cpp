@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/05 01:07:17 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/13 15:56:03 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,12 @@ Server::Server(const std::string &servername, const std::string &hostname, const
 }
 
 Server::Server(const Server &src) :
+
 	_config(src._config),
 	_location(src._location),
 	_name(src._name),
 	_hostname(src._hostname),
+
 	_port(src._port),
 	_server_socket(src._server_socket),
 	_client_sock(src._client_sock),
@@ -96,7 +98,7 @@ int Server::create_socket()
 				  << _server_socket << std::endl;
 		return (FAILURE);
 	}
-	std::cout << BLUE << "Server " << BOLD << _name << RESET BLUE << " is launched !" << RESET << std::endl;
+	std::cout << BLUE << "Server " << BOLD << _name << RESET BLUE << " with host " << _hostname << " is launched on port " << _port << RESET << std::endl;
 	if (getaddrinfo(_hostname.c_str(), _port.c_str(), NULL, &_info) != 0) 
 	{
 		std::cerr << "getaddrinfo failed on" << _name << std::endl;

@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/07 21:27:45 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/13 15:48:21 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void	Handler::loadServ()
 		// if (it->get_container_type() != ConfigStruct::SERVER_VECTOR)
 		// 	std::cerr << RED BOLD << "not normal to enter there. i failed my calculations didnt i" << RESET << std::endl;
 		std::string	name = it->get_server_value("server_name")[0];
-		std::string	hostname = "localhost";
+		//std::string	hostname = "localhost";
+		std::string	hostname = it->get_server_value("host")[0];
 		std::string	port = it->get_server_value("listen")[0];
 		config = (*it).serverData;
 		if (loc != _servers_conf.end())
