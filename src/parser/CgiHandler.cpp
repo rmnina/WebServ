@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:19:27 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 14:59:45 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 19:24:56 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	Parser::handle_cgi_error(int *status, pid_t pid)
 		{
 			kill(pid, SIGKILL);
 			_error_code = 504;
+			std::cout << "\nError code: " << _error_code << " Gateway Tiemout" << "\n";
 			break ;
 		}
 	}
