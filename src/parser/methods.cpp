@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 17:06:57 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 20:23:59 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,10 @@
 void	Parser::GETmethod( void)
 {	
 	std::string	path = _request["path"][0];
-	std::cout << "path before = " << path << std::endl;
 	if (path.substr(0, 2) != "./")
 		path = "./" + path;
 	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on")
 	{
-		std::cout << RED << "on a bien trouve le dir_listing" << RESET << std::endl;
 		if (path == "./www/index.html")
 			display_dirlist("./www");
 		else
@@ -54,11 +52,10 @@ void	Parser::POSTmethod( void)
 	}
 	else
 		build_response_content(path);
-	std::cout << __func__ << "\tpath = " << path << std::endl;
 }
 
 void	Parser::upload(void)
-{
+{	
 	if (!fill_content_type_multipart(_request_body))
 	{
 		_error_code = 400;
@@ -66,9 +63,17 @@ void	Parser::upload(void)
 		return;
 	}
 
+	if (!_request["File_Type"][0].compare("text/plain"))
+	{
+		_error_code = 400;
+		std::cerr << "Invalid file. Server only accepts text/plain" << "\nError code: " << _error_code << std::endl;
+		return;
+	}
+	
 	std::string			filename;
 	std::vector<char>	content;
 	
+	content.push_back('\0');
 	if (!get_file_name(_request_body, filename) ||
 		!get_file_content(_request_body, content))
 	{
@@ -96,7 +101,6 @@ void	Parser::upload(void)
 		}
 	}
 	std::string	filepath = _upload_dir + "/" + filename;
-	std::cout << BOLD YELLOW << "filepath is " << filepath << RESET << std::endl;
 	std::ofstream	file(filepath.c_str(), std::ios::binary);
 	if (!file.is_open())
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/10 14:28:44 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 18:08:51 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class Parser
 		std::string											_req_str;
 		std::map<std::string, std::vector<std::string> >	_request;
 		std::string											_request_body;
+		std::vector<char>									_req_binary;
 		std::string											_response;
 		std::vector<unsigned char>							_image_response;
 		int													_port_code;
@@ -99,6 +100,7 @@ class Parser
 		bool		fill_content_type( const std::string &request);
 		bool		check_version( const std::string &request);
 		bool		check_req_size( const std::string &request);
+		bool		check_body_size( void);
 
 		bool		fill_content_type_multipart( const std::string &request);
 		bool		fill_content_length( const std::string &request);

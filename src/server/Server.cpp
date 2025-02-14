@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/13 15:56:03 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/14 20:24:42 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,12 @@ void	Server::modify_event(int &epfd, int fd, uint32_t flag)
 
 void	Server::delete_event(int &epfd, int fd)
 {
+	std::ostringstream fdstring;
+
+	fdstring << fd;
+	
 	if (epoll_ctl(epfd, EPOLL_CTL_DEL, fd, NULL) == -1)
-		throw (std::runtime_error("error on removing event to epoll"));
+		throw (std::runtime_error("error on removing event to epoll ; fd = " + fdstring.str()));
 }
 
 int Server::create_socket()
@@ -143,9 +147,14 @@ int	Server::accept_connection(int &epfd)
 		return (FAILURE);
 	}
 	add_event(epfd, client_sock);
+
+	std::vector<char>	tmp;
+	tmp.push_back('\0');
+
 	_client_sock.push_back(client_sock);
 	_request.push_back("");
 	_req_body.push_back("");
+	_req_binary.push_back(tmp);
 	_nb_bytes.push_back(0);
 	_keep_alive.push_back(false);
 	return (SUCCESS);
@@ -165,11 +174,10 @@ int	Server::receive_request(int client_index, int &epfd)
 	size_t conn_pos = _request[client_index].find("Connection: keep-alive");
 	if (conn_pos != std::string::npos) 
 		_keep_alive[client_index] = true;
-	std::cout << ORANGE BOLD << "REQ IS " << std::endl << buffer << RESET << std::endl;
 
 	if (nb_bytes < 0) 
 	{
-		std::cerr << "Error on recv on " << _name << " Errno is " << errno << std::endl;
+		std::cerr << "Error on recv on " << _name << " Errno is " << errno << " fd is " << _client_sock[client_index] << std::endl;
 		delete_event(epfd, _client_sock[client_index]);
 		close(_client_sock[client_index]);
 		_client_sock.erase(_client_sock.begin() + client_index);
@@ -191,18 +199,24 @@ int	Server::receive_request(int client_index, int &epfd)
 		pos = _request[client_index].find("content-length: ");
 	if (pos != std::string::npos)
 	{
-		size_t		content_length;
-		size_t		body_start;
-		std::string	req_body;
+		size_t				content_length;
+		size_t				body_start;
+		std::string			req_body;
+		std::vector<char>	req_binary;
+
 		content_length = atoi(_request[client_index].c_str() + pos + strlen("Content-Length: "));
 		body_start = _request[client_index].find("\r\n\r\n");
 		if (body_start != std::string::npos)
 			body_start += 4;
 		if (_nb_bytes[client_index] < content_length + body_start)
 			return (CONTINUE);
+
 		req_body = _request[client_index].substr(body_start, content_length);
-		std::cout << YELLOW BOLD << "BODY IS " << std::endl << req_body << RESET << std::endl;
 		_req_body[client_index].append(req_body);
+
+		for (size_t i = 0; buffer[i] && i < content_length; i++)
+			req_binary.push_back(buffer[i]);
+		_req_binary[client_index].insert(_req_binary[client_index].end(), req_binary.begin(), req_binary.end());
 	}	
 	return (SUCCESS);
 }
@@ -276,6 +290,7 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 		_request[client_index].clear();
 		_nb_bytes[client_index] = 0;
 		_req_body[client_index].clear();
+		_req_binary[client_index].clear();
 		_keep_alive[client_index] = false;
 		return (SUCCESS);
 	}
@@ -283,6 +298,8 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 		return (CONTINUE);
 	return (FAILURE);
 }
+
+/******----------------***** GETTERS *****----------------******/
 
 server_data	Server::getConfig( void) const { return (_config); }
 
@@ -303,6 +320,8 @@ std::string Server::getPort( void) const { return (_port); }
 std::vector<std::string>	Server::getRequest( void) const { return (_request); }
 
 std::vector<std::string>	Server::getReqBody( void) const { return (_req_body); }
+
+std::vector<std::vector<char> >	Server::getReqBinary( void) const { return (_req_binary);}
 
 std::vector<bool>			Server::getConnectionStatus( void) const { return (_keep_alive); }
  

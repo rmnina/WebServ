@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   CheckRequest.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 19:18:58 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 20:23:17 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser/Parser.hpp"
+#include <cstring>
 
 Parser::Parser( void) {}
 
@@ -109,6 +110,17 @@ bool	Parser::fill_content_type_multipart(const std::string &request)
 	boundary_vec.push_back(boundary);
 	_request["boundary"] = boundary_vec;
 
+	size_t	filetype_pos = request.find("Content-Type: ");
+	if (filetype_pos == std::string::npos)
+		return (false);
+	
+	size_t	filetype_end = request.find("\r\n", filetype_pos);
+	std::string	file_type = request.substr(filetype_pos + 14, filetype_end);
+	
+	std::vector<std::string>	file_type_vec;
+	file_type_vec.push_back(file_type);
+	_request["File_Type"] = file_type_vec;
+
 	return (true);
 }
 
@@ -180,44 +192,32 @@ bool	Parser::get_file_name(const std::string &body, std::string &filename)
 bool	Parser::get_file_content(const std::string &body, std::vector<char> &content)
 {
 	size_t	MAX_FILE_SIZE = 3000;
+	char	*body_binary = &_req_binary[1];
 
-	std::cout << BLUE BOLD << "BODY LENGTH IS " << body.length() << RESET << std::endl;
-	
-	if (body.length() > MAX_FILE_SIZE)
+	(void)body;
+
+	if (strlen(body_binary) > MAX_FILE_SIZE)
 	{
 		std::cerr << "File too heavy (> 10Mo)" << std::endl;
 		return (false);
 	}
 
 	if (_request.find("boundary") == _request.end())
-	{
-		std::cout << GREEN BOLD << "boundary" << RESET << std::endl;
 		return (false);
-	}
-
 	std::string	boundary = _request["boundary"][0];
+	
+	char	*content_start = std::strstr(body_binary, "\r\n\r\n");
+	if (!content_start)
+		return (false);	
+	content_start += 4;
 
-	size_t	content_begin = body.find("\r\n\r\n");
-	if (content_begin == std::string::npos)
-	{
-		std::cout << GREEN BOLD << "no begin" << RESET << std::endl;
-		return (false);
-	}
-	content_begin += 4;
-
-	size_t	content_end = body.find(boundary, content_begin);
-	if (content_end == std::string::npos)
-		content_end = body.length();
-	else
-		content_end -= 2;
-
-	content.assign(body.begin() + content_begin, body.begin() + content_end);
-	std::cout << BOLD BLUE << "content is";
-	for (std::vector<char>::iterator it = content.begin(); it < content.end(); it++)
-	{
-		std::cout << *it;
-	}
-	std::cout << RESET << std::endl;
+	std::string end_boundary = boundary + "--";
+	char	*content_end = std::strstr(content_start, end_boundary.c_str());
+	
+	if (!content_end)
+		content_end = body_binary + strlen(body_binary);
+	content.assign(content_start, content_end);
+	
 	return (true);
 }
 
@@ -238,17 +238,36 @@ bool	Parser::check_req_size( const std::string &request)
 	return (true);
 }
 
+bool	Parser::check_body_size( void)
+{
+	server_data::iterator	pos = _server_conf.find("body_size");
+	if (pos == _server_conf.end())
+		return (true);
+	size_t	body_size = std::atoi(pos->second[0].c_str());
+	
+	std::ofstream	file("tmp", std::ios::binary);
+	std::ostringstream tmp;
+	tmp << RED BOLD << "BODY SIZE IN CONF IS " << body_size << " AND ACTUAL BODY SIZE IS " << _request_body.size() << RESET << std::endl;
+	
+	std::string	content = tmp.str();
+	file.write(content.c_str(), content.size());
+	file.close();
+	if (_request_body.size() > body_size)
+		return (false);
+	return (true);
+}
+
 std::string trim_request(std::string request)
 {
 	size_t first_space = request.find(' ');
-    if (first_space == std::string::npos)  
-        return "";
+	if (first_space == std::string::npos)  
+		return "";
 
-    size_t second_space = request.find(' ', first_space + 1);
-    if (second_space == std::string::npos)  
-        return "";
+	size_t second_space = request.find(' ', first_space + 1);
+	if (second_space == std::string::npos)  
+		return "";
 
-    return request.substr(first_space + 1, second_space - first_space - 1);
+	return request.substr(first_space + 1, second_space - first_space - 1);
 }
 
 void	Parser::examine_request( int client_index)
@@ -257,12 +276,12 @@ void	Parser::examine_request( int client_index)
 	_location = _server->getLocation();
 	_request_body = _server->getReqBody()[client_index];
 	_keep_alive = _server->getConnectionStatus()[client_index];
+	_req_binary = _server->getReqBinary()[client_index];
 	
 	std::string	request = _server->getRequest()[client_index];
 	if (request.empty())
 		return ;
 	std::string trim_req = "www" + trim_request(request);
-	std::cout << "request = " << request << " | trim_req = " << trim_req << std::endl;
 	init_mime_types();
 	if (!fill_path(request))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
@@ -270,7 +289,7 @@ void	Parser::examine_request( int client_index)
 		_error_code = 400;
 	else if (!fill_method(request))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
-	else if (!check_version(request) || !check_req_size(request))
+	else if (!check_version(request) || !check_req_size(request) || !check_body_size())
 		_error_code = 400; //ERROR BAD REQUEST
 	else
 		_error_code = 200;

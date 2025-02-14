@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/05 00:49:26 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/14 16:38:38 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,22 +35,23 @@
 class Server
 {
 	private:		
-		server_data					_config;
-		location_data				_location;
+		server_data						_config;
+		location_data					_location;
 		
-		const std::string			_name;
-		const std::string			_hostname;
-		const std::string			_port;
-		int							_server_socket;
-		std::vector<int>			_client_sock;
-		std::vector<size_t>			_nb_bytes;
-		std::vector<std::string>	_request;
-		std::vector<std::string>	_req_body;
-		std::vector<bool>			_keep_alive;;
-		struct addrinfo				*_info;
-		struct epoll_event			_event;
+		const std::string				_name;
+		const std::string				_hostname;
+		const std::string				_port;
+		int								_server_socket;
+		std::vector<int>				_client_sock;
+		std::vector<size_t>				_nb_bytes;
+		std::vector<std::string>		_request;
+		std::vector<std::string>		_req_body;
+		std::vector<std::vector<char> > _req_binary;
+		std::vector<bool>				_keep_alive;;
+		struct addrinfo					*_info;
+		struct epoll_event				_event;
 
-		bool						_error_page;
+		bool							_error_page;
 
  	public:
 		Server(void);
@@ -58,18 +59,19 @@ class Server
 		Server(const Server &src);
 		Server &operator=(const Server &src);
 
-		server_data					getConfig(void) const;
-		location_data				getLocation(void) const;
-		int							getSocket(void) const;
-		std::vector<int>			getClientSock(void) const;
-		std::vector<size_t>			getNbBytes(void) const;
-		std::string					getName(void) const;
-		std::string					getHost(void) const;
-		std::string					getPort(void) const;
-		std::vector<std::string>	getRequest(void) const;
-		std::vector<std::string>	getReqBody( void) const;
-		std::vector<bool>			getConnectionStatus( void) const;
-		bool						getErrorPage( void) const;
+		server_data						getConfig(void) const;
+		location_data					getLocation(void) const;
+		int								getSocket(void) const;
+		std::vector<int>				getClientSock(void) const;
+		std::vector<size_t>				getNbBytes(void) const;
+		std::string						getName(void) const;
+		std::string						getHost(void) const;
+		std::string						getPort(void) const;
+		std::vector<std::string>		getRequest(void) const;
+		std::vector<std::string>		getReqBody( void) const;
+		std::vector<std::vector<char> >	getReqBinary( void) const;
+		std::vector<bool>				getConnectionStatus( void) const;
+		bool							getErrorPage( void) const;
 
 		void	add_event(int &epfd, int socket);
 		void	modify_event(int &epfd, int socket, uint32_t flag);
