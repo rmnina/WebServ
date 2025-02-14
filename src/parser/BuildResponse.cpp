@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/10 15:04:18 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 18:52:26 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,12 +182,19 @@ std::string	Parser::build_response_header( void)
 	return (_response);
 }
 
+
 void	Parser::build_response_content( std::string &filename)
 {
 	std::string		line;
 	std::string		content;
-	std::ifstream	file(filename.c_str());
-
+	std::ifstream 	file;
+	
+	// if (opendir(filename.c_str()) != NULL) {
+	// 	std::cout << "on entre dans le opendir\n";
+	// 	file.open(teapot.c_str());
+	// }
+	// else
+	file.open(filename.c_str());
 	if (!file.is_open())
 		std::cerr << "Couldnt open file " << std::endl;
 	while (std::getline(file, line))
@@ -239,12 +246,10 @@ void	Parser::display_dirlist(std::string path)
 	std::ostringstream html;
 	html << "<html><head><title>Directory Listing</title></head><body>";
 	html << "<h1>Index of " << path << "</h1><ul>";
-	std::cout << "on est dans display dirlist\n";
 	while ((entry = readdir(dir)) != NULL)
 	{
-		std::cout << "boucle display dir\n";
 		std::string name(entry->d_name);
-		std::cout << "name = " << name << std::endl;
+		// std::cout << "name = " << name << std::endl;
 		if (name != "." && name != "..")
 		{
 			std::string full_path = path + "/" + name;
@@ -270,7 +275,7 @@ std::string	Parser::build_response( void)
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
-
+	std::cout << "path = " << _request["path"][0] << std::endl;
 	if (_server_conf.find("upload") != _server_conf.end() && 
 		_server_conf["upload"][0] == "on")
 		_upload_dir = "www/" + _server_conf["upload"][1];
