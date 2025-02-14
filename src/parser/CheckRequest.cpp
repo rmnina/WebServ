@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CheckRequest.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/09 21:35:55 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/14 19:18:58 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,19 @@ bool	Parser::check_req_size( const std::string &request)
 	return (true);
 }
 
+std::string trim_request(std::string request)
+{
+	size_t first_space = request.find(' ');
+    if (first_space == std::string::npos)  
+        return "";
+
+    size_t second_space = request.find(' ', first_space + 1);
+    if (second_space == std::string::npos)  
+        return "";
+
+    return request.substr(first_space + 1, second_space - first_space - 1);
+}
+
 void	Parser::examine_request( int client_index)
 {	
 	_server_conf = _server->getConfig();
@@ -248,10 +261,13 @@ void	Parser::examine_request( int client_index)
 	std::string	request = _server->getRequest()[client_index];
 	if (request.empty())
 		return ;
-
+	std::string trim_req = "www" + trim_request(request);
+	std::cout << "request = " << request << " | trim_req = " << trim_req << std::endl;
 	init_mime_types();
 	if (!fill_path(request))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
+	else if (trim_req != "www/" && opendir(trim_req.c_str()) != NULL)
+		_error_code = 400;
 	else if (!fill_method(request))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
 	else if (!check_version(request) || !check_req_size(request))
