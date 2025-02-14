@@ -42,7 +42,7 @@ body.is-preload *, body.is-preload *:before, body.is-preload *:after {
 
 #container-random { margin: 1rem; }
 
-#parallaxRandom { height: 639px; }
+#parallaxRandom { height: 595px; }
 
 #parallaxAstro, #parallaxKaamelott { height: 610px; }
 
@@ -261,7 +261,6 @@ footer a, footer a:hover {
 	background-color: #333;
 	color: #afb0b3;
 	cursor: pointer;
-	font-size: 16px;
 	border: black;
 	padding: 1em;
 	margin: 2em;
@@ -326,6 +325,7 @@ footer a, footer a:hover {
 #moon-infinite { margin-top: 25px; }
 
 .loading-wrapper {
+	margin-top: -6em;
 	position: relative;
 	width:	100px;
 	height:	100px;
