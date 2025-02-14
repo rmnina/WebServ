@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/11 19:10:45 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 14:00:40 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,59 +124,6 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 		brackets = _update_brackets_state(brackets);
 }
 
-// void	Config::fill_locations(std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets)
-// {
-// 	location_i_data loc_i;
-// 	size_t		start, end;
-// 	int 		i;
-
-// 	for (i = 0; line[i] == ' '; i++);
-// 	start = line.find(' ', i);
-// 	end = line.find_last_of(' ') + 1;
-// 	std::string route = line.substr(start, end - start);
-	
-// 	std::vector<std::string> tmp_vect;
-// 	tmp_vect.push_back(route);
-// 	loc_i["route"] = tmp_vect;
-
-// 	std::vector<std::string>::iterator it;
-// 	std::getline(conf_file, line);
-	
-// 	if (!line.empty() && !line.compare(0, 1, "{"))
-// 		brackets = _update_brackets_state(brackets);
-// 	std::getline(conf_file, line);
-// 	while (!line.empty())
-// 	{
-// 		for (i = 0; line[i] == ' '; i++);
-// 		line = line.substr(i, line.size() - i);
-// 		if (line[0] == '#')
-// 			std::getline(conf_file, line);
-// 		size_t		space_pos = line.find(" ");
-// 		std::string keyword = line.substr(0, space_pos);
-// 		if (!_location_allowed(keyword))
-// 			break ;
-// 		std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
-// 		loc_i[keyword] = tmp;
-// 		std::getline(conf_file, line);
-// 	}
-// 	location.push_back(loc_i);
-// 	/*
-// 	for (location_data::iterator vec_it = location.begin(); vec_it != location.end(); ++vec_it) {
-//         std::cout << "Map: \n";
-//         for (std::map<std::string, std::vector<std::string> >::iterator map_it = vec_it->begin(); map_it != vec_it->end(); ++map_it) {
-//             std::cout << "  Key: " << map_it->first << "\n  Values: ";
-//             for (std::vector<std::string>::iterator vec_str_it = map_it->second.begin(); vec_str_it != map_it->second.end(); ++vec_str_it) {
-//                 std::cout << *vec_str_it << " ";
-// 				       }
-//             std::cout << "\n";
-//         }
-//     }
-// 	std::cout << "\n";
-// 	*/
-// 	if (!line.empty() && !line.compare(0, 1, "}"))
-// 		brackets = _update_brackets_state(brackets);
-// }
-
 bool Config::check_valid_nb(const std::string& str) 
 {
     if (str.empty()) 
@@ -217,87 +164,51 @@ bool Config::check_valid_ip(const std::string& ip)
 
 bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 {
-	if (!keyword.compare("listen"))
-	{
-		char *endptr;
-		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
-		{
-			std::string tmp_str = *it;
-			long nb = strtol(tmp_str.c_str(), &endptr, 10);
-			if (endptr == tmp_str.c_str() || *endptr != '\0')
-				return (false);
-			if (nb < 1024 || nb > 65535)
-				return (false);
-		}
-		return (true);
-	}
-	else if (!keyword.compare("host"))
-	{
-		if (tmp.size() != 1)
-			return (false);
-		if (!tmp[0].compare("localhost")) 
-			return (true);
-		else if (!check_valid_ip(tmp[0]))
-			return (false);
-		return (true);
-	}
-	else if (!keyword.compare("dir_listing"))
-	{
-		if (tmp.size() != 1)
-			return (false);
-		if (!tmp[0].compare("on") || !tmp[0].compare("off"))
-			return (true);
-		else
-			return (false);
-	}
-	else if (!keyword.compare("index"))
-	{
-		if (tmp.size() != 1)
-			return (false);
-		if (tmp[0].substr(tmp[0].size() - 5, 5).compare(".html"))
-			return (false);
-		std::string path = "www/" + tmp[0];
-		std::ifstream file(path.c_str());
-		if (file.good())
-			return (true);
-		else
-			return (false);
-	}
-	else if (!keyword.compare("body_size"))
-	{
-		if (tmp.size() > 1)
-			return (false);
-		char *endptr;
-		long nb = strtol(tmp[0].c_str(), &endptr, 10);
-		if (endptr == tmp[0].c_str() || *endptr != '\0')
-			return (false);
-		if (nb < 256 || nb > 65535)
-			return (false);
-		else
-			return (true);
-	}
-	else if (!keyword.compare("method"))
-	{
-		if (tmp.size() < 1 || tmp.size() > 3)
-			return (false);
-		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
-		{
-			if (*it != "GET" && *it != "POST" && *it != "DELETE")
-				return (false);
-		}
-	}
-	else if (!keyword.compare("upload"))
-	{
-		if (tmp.size() != 2)
-			return (false);
-		if (tmp[0] != "on")
-			return (false);
-		return (true);
-	}
-	else if (!keyword.compare("server_name") && tmp.size() != 1)
-		return (false);
-	return (true);
+    if (keyword == "listen") {
+        char *endptr;
+        for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
+            long nb = strtol(it->c_str(), &endptr, 10);
+            if (*endptr != '\0' || nb < 1024 || nb > 65535)
+                return false;
+        }
+        return true;
+    } 
+    else if (keyword == "host") {
+        return (tmp.size() == 1 && (tmp[0] == "localhost" || check_valid_ip(tmp[0])));
+    } 
+    else if (keyword == "dir_listing") {
+        return (tmp.size() == 1 && (tmp[0] == "on" || tmp[0] == "off"));
+    } 
+    else if (keyword == "index") {
+        if (tmp.size() != 1 || tmp[0].substr(tmp[0].size() - 5) != ".html")
+            return false;
+        std::ifstream file(("www/" + tmp[0]).c_str());
+        return file.good();
+    } 
+    else if (keyword == "body_size") {
+        if (tmp.size() != 1)
+            return false;
+        char *endptr;
+        long nb = strtol(tmp[0].c_str(), &endptr, 10);
+        return (*endptr == '\0' && nb >= 1 && nb <= 424242);
+    } 
+    else if (keyword == "method") {
+        if (tmp.empty() || tmp.size() > 3)
+            return false;
+        for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
+            if (*it != "GET" && *it != "POST" && *it != "DELETE")
+                return false;
+        }
+    } 
+    else if (keyword == "upload") {
+        return (tmp.size() == 2 && tmp[0] == "on");
+    } 
+    else if (keyword == "server_name") {
+        return (tmp.size() == 1);
+    }
+    return true;
 }
+
 
 void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets)
 {
@@ -307,12 +218,11 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 	if (!line.empty() && !line.compare(0, 1, "{"))
 		brackets = _update_brackets_state(brackets);
 	else
-		throw std::invalid_argument("C'est non 1");
+		throw std::invalid_argument("Problem with brackets in the conf file");
 	std::getline(conf_file, line);
 
 	while (!line.empty())
 	{
-		std::cout << "boucle fill server\n";
 		for (i = 0; line[i] == ' '; i++);
 		line = line.substr(i, line.size() - i);
 		if (line[0] == '#')

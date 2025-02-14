@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/13 15:48:21 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/14 13:41:25 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ void	Handler::loadServ()
 		it++;
 		_servers.push_back(new Server(name, hostname, port, config, locations));
 	}
-	handle_upload_folders(this->_servers, CREATE_FOLDER);
 }
 
 Handler::Handler(const Handler &src)
@@ -145,37 +144,7 @@ int Handler::handleEvents()
 			}
 		}
 	}
-	if (g_sig != 0)
-		handle_upload_folders(this->_servers, DELETE_FOLDER);
 	return (SUCCESS);
-}
-
-void Handler::handle_upload_folders(std::vector<Server *> servers, int action)
-{
-	static int i = 0;
-	if (action == CREATE_FOLDER) {
-		for (std::vector<Server *>::iterator it = servers.begin(); it != servers.end(); it++)
-		{
-			std::string dir_name = "upload_";
-			std::ostringstream oss;
-			oss << dir_name << i; 
-			
-			if (mkdir(oss.str().c_str(), 0755) != 0)
-				std::cout << "mkdir failed\n";
-			i++;
-		}
-	}
-	else if (action == DELETE_FOLDER) {
-		i--;
-		for (std::vector<Server *>::iterator it = servers.begin(); it != servers.end(); it++)
-		{
-			std::string dir_name = "upload_";
-			std::ostringstream oss;
-			oss << "rm -rf " << dir_name << i; 
- 			system(oss.str().c_str());
-			i--;
-		}
-	}
 }
 
 // Server *Handler::operator[](const int index)
