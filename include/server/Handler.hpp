@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:40:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/07 21:05:57 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 13:31:33 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ class Handler
 		void	add_event(int fd, int event);
 		void	modify_event(int fd, int event);
 		void	delete_event(int fd);
-		void	handle_upload_folders(std::vector<Server *> servers, int action);
 
 		std::vector<Server *> &getServers();
 

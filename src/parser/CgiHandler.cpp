@@ -6,7 +6,7 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:19:27 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/10 15:05:15 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 14:59:45 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,23 +79,29 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		}
 
 
-	env_list.push_back("REDIRECT_STATUS=200");
-	env_list.push_back("GATEWAY_INTERFACE=CGI/1.1");
-	env_list.push_back("SERVER_PROTOCOL=HTTP/1.1");
-	env_list.push_back("QUERY_STRING=");
-			env_list.push_back("SCRIPT_NAME=" + filename);
-	env_list.push_back("SCRIPT_FILENAME=" + filename);
-    env_list.push_back("UPLOAD_PATH=" + _upload_dir);
-    env_list.push_back("PORT=" + _server->getPort());
+		env_list.push_back("REDIRECT_STATUS=200");
+		env_list.push_back("GATEWAY_INTERFACE=CGI/1.1");
+		env_list.push_back("SERVER_PROTOCOL=HTTP/1.1");
+		env_list.push_back("QUERY_STRING=");
+		env_list.push_back("SCRIPT_NAME=" + filename);
+		env_list.push_back("SCRIPT_FILENAME=" + filename);
+		env_list.push_back("UPLOAD_PATH=" + _upload_dir);
+		env_list.push_back("PORT=" + _server->getPort());
 
 		char **envp = new char*[env_list.size() + 1];
-		for (size_t i = 0; i < env_list.size(); i++)
-			envp[i] = strdup(env_list[i].c_str());
+		for (size_t i = 0; i < env_list.size(); i++) {
+			char *buff_env = new char[env_list[i].size() + 1];
+			envp[i] = strcpy(buff_env, env_list[i].c_str());
+		}
 		envp[env_list.size()] = NULL;
 
-		char *argv[] = { strdup(filename.c_str()), NULL };
+		char *buff_argv = new char[filename.size() + 1];
+		char *argv[] = { strcpy(buff_argv, filename.c_str()), NULL };
 		execve(filename.c_str(), argv, envp);
 		std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
+		delete argv[0];
+		for (int j = 0; envp[j]; j++)
+			delete envp[j];
 		exit(1);
 	}
 	else { // Parent process
