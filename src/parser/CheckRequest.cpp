@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 20:23:17 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/14 23:13:29 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ bool	Parser::fill_method( const std::string &request)
 	}
 	if (_request.find("method") == _request.end())
 	{
-		std::cerr << "Error : invalid method" << std::endl;
+		print_log(RED, "Error", _server->getName(), "Bad method. Use GET, POST or DELETE.", ' ');
 		return (false);
 	}
 	else
@@ -51,6 +51,7 @@ bool	Parser::fill_method( const std::string &request)
 			if (_request["method"][0] == *it)
 				return (true); 
 		}
+		print_log(RED, "Error", _server->getName(), "Unallowed method : ", _request["method"][0]);
 		return (false);
 	}
 }
@@ -74,7 +75,7 @@ bool	Parser::fill_path( const std::string &request)
 	std::ifstream	resource(path.c_str());
 	if (!resource.is_open())
 	{
-		std::cerr << "Couldnt open resource located at " << path << std::endl;
+		print_log(RED, "Error", _server->getName(), "Could not open ressource located at ", path);
 		return (false);
 	}
 	resource.close();
@@ -132,14 +133,14 @@ bool	Parser::fill_content_length(const std::string &request)
 
 	if (length_begin == std::string::npos)
 	{
-		std::cerr << "Error: no Content-Length header found" << std::endl;
+		print_log(RED, "Error", _server->getName(), "no Content-Length header found", ' ');
 		return (false);
 	}
 	
 	size_t	length_end = request.find("\r\n", length_begin);
 	if (length_end == std::string::npos)
 	{
-		std::cerr << "Error: malformed Content-Length header" << std::endl;
+		print_log(RED, "Error", _server->getName(), "malformed Content-Length header", ' ');
 		return (false);
 	}
 	std::string	length_str = request.substr(length_begin + 15, 
@@ -165,14 +166,14 @@ bool	Parser::get_file_name(const std::string &body, std::string &filename)
 	size_t	filename_pos = body.find("filename=\"");
 	if (filename_pos == std::string::npos)
 	{
-		std::cerr << "Error: no filename in request" << std::endl;
+		print_log(RED, "Error", _server->getName(), "no filename in upload request", ' ');
 		return (false);
 	}
 
 	size_t	filename_end = body.find("\"", filename_pos + 10);
 	if (filename_end == std::string::npos)
 	{
-		std::cerr << "Error: malformed filename" << std::endl;
+		print_log(RED, "Error", _server->getName(), "malformed filename in upload request", ' ');
 		return (false);
 	}
 
@@ -181,7 +182,7 @@ bool	Parser::get_file_name(const std::string &body, std::string &filename)
 	if (filename.find('/') != std::string::npos || 
 		filename.find("..") != std::string::npos)
 	{
-		std::cerr << "Error: invalid filename" << std::endl;
+		print_log(RED, "Error", _server->getName(), "invalid filename in upload request", ' ');
 		return (false);
 	}
 	if (!removeSpaces(filename))
@@ -194,14 +195,14 @@ bool	Parser::get_file_content(const std::string &body, std::vector<char> &conten
 	size_t	MAX_FILE_SIZE = 3000;
 	char	*body_binary = &_req_binary[1];
 
-	(void)body;
-
-	if (strlen(body_binary) > MAX_FILE_SIZE)
+	std::cout << "YO1" << std::endl;
+	if (strlen(body.c_str()) > MAX_FILE_SIZE || strlen(body_binary) > MAX_FILE_SIZE)
 	{
-		std::cerr << "File too heavy (> 10Mo)" << std::endl;
+		std::string log = "File should contain under " + MAX_FILE_SIZE;
+		log.append(" characters. Current : ");
+		print_log(RED, "Error", _server->getName(), log.c_str(), strlen(body_binary));
 		return (false);
 	}
-
 	if (_request.find("boundary") == _request.end())
 		return (false);
 	std::string	boundary = _request["boundary"][0];
@@ -225,7 +226,7 @@ bool	Parser::check_version( const std::string &request)
 {
 	if (request.find("HTTP/1.1") == std::string::npos)
 	{
-		std::cerr << "Error : wrong HTTP version" << std::endl;
+		print_log(RED, "Error", _server->getName(), "wrong HTTP version. Expected : HTTP/1.1", ' ');
 		return (false);
 	}
 	return (true);		
@@ -247,7 +248,6 @@ bool	Parser::check_body_size( void)
 	
 	std::ofstream	file("tmp", std::ios::binary);
 	std::ostringstream tmp;
-	tmp << RED BOLD << "BODY SIZE IN CONF IS " << body_size << " AND ACTUAL BODY SIZE IS " << _request_body.size() << RESET << std::endl;
 	
 	std::string	content = tmp.str();
 	file.write(content.c_str(), content.size());

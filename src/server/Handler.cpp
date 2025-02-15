@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Handler.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 13:41:25 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/15 18:08:59 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ void	Handler::loadServ()
 	}
 }
 
-Handler::Handler(const Handler &src)
-{
-	*this = src;
-}
+// Handler::Handler(const Handler &src)
+// {
+// 	*this = src;
+// }
 
 // Handler &Handler::operator=(const Handler &rhs)
 // {
@@ -72,23 +72,23 @@ void	Handler::add_event(int fd, int flag)
 	event.events = flag;
 	event.data.fd = fd;
 	if (epoll_ctl(_epfd, EPOLL_CTL_ADD, fd, &event) == -1) 
-		throw (std::runtime_error("error on adding event to epoll"));
+		print_log(RED, "Error", "EPOLL", "Failed on adding epoll event. Socket fd: ", fd);
 }
 
-void	Handler::modify_event(int fd, int flag)
-{
-	struct epoll_event event;
-	event.events = flag;
-	event.data.fd = fd;
-	if (epoll_ctl(_epfd, EPOLL_CTL_MOD, fd, &event) == -1)
-		throw (std::runtime_error("error on modifying event to epoll"));
-}
+// void	Handler::modify_event(int fd, int flag)
+// {
+// 	struct epoll_event event;
+// 	event.events = flag;
+// 	event.data.fd = fd;
+// 	if (epoll_ctl(_epfd, EPOLL_CTL_MOD, fd, &event) == -1)
+// 		print_log(RED, "Error", "EPOLL", "Failed on modifying epoll event. Socket fd: ", fd);
+// }
 
-void	Handler::delete_event(int fd)
-{
-	if (epoll_ctl(_epfd, EPOLL_CTL_DEL, fd, NULL) == -1)
-		throw (std::runtime_error("error on removing event to epoll"));
-}
+// void	Handler::delete_event(int fd)
+// {
+// 	if (epoll_ctl(_epfd, EPOLL_CTL_DEL, fd, NULL) == -1)
+// 		print_log(RED, "Error", "EPOLL", "Failed on deleting epoll event. Socket fd: ", fd);
+// }
 
 int Handler::launchServers()
 {
@@ -123,24 +123,30 @@ int Handler::handleEvents()
 			std::cerr << "Error on epoll_wait" << std::endl;
 			return (FAILURE);
 		}
-		for (int i = 0; i < nfds; i++) 
-		{
-			for (it = _servers.begin(); it < _servers.end(); it++) 
+
+		for (int i = 0; i < nfds; i++) {
+			bool handled = false;
+			for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); ++it) 
 			{
-				if (_events[i].data.fd == (*it)->getSocket())
-					(*it)->accept_connection(_epfd);
-			}
-			if (it == _servers.end())
-			{
-				for (it = _servers.begin(); it < _servers.end(); it++) 
+				if (_events[i].data.fd == (*it)->getSocket()) 
 				{
-					int handled = (*it)->handle_existing_client(_events[i].data.fd, _epfd);
-					if (handled == FAILURE)
-					{
-						std::cout << YELLOW BOLD ITALIC << "c'est dans le handled que ca sort????" << RESET << std::endl;
+					if ((*it)->accept_connection(_epfd) == FAILURE)
 						return (FAILURE);
+					handled = true;
+					break;
+				}
+			}
+			if (!handled) 
+			{
+				for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); ++it) 
+				{
+					if ((*it)->has_client(_events[i].data.fd)) 
+					{
+						if ((*it)->handle_existing_client(_events[i].data.fd, _epfd) == FAILURE) 
+							return (FAILURE);
+						break;
 					}
-				}	
+				}
 			}
 		}
 	}

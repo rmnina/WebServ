@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 16:38:38 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/15 17:03:45 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,15 @@ class Server
 		void	modify_event(int &epfd, int socket, uint32_t flag);
 		void	delete_event(int &epfd, int socket);
 		
-		int	create_socket(void);
-		int	set_socket(void);
-		int	accept_connection(int &epfd);
-		int	receive_request(int client_index, int &epfd);
-		int	get_client_index(int event_fd);
-		int	handle_existing_client(int event_fd, int &epfd);
-		int	send_image(unsigned char *response, size_t size, int client_index, int &epfd);
-		int	send_response(std::string &response, int client_index, int &epfd);
+		int		create_socket(void);
+		int		set_socket(void);
+		int		accept_connection(int &epfd);
+		int		receive_request(int client_index, int &epfd);
+		int		get_client_index(int event_fd);
+		bool	has_client(int fd) const;
+		int		handle_existing_client(int event_fd, int &epfd);
+		int		send_image(unsigned char *response, size_t size, int client_index, int &epfd);
+		int		send_response(std::string &response, int client_index, int &epfd);
 		
 
 		~Server( void);

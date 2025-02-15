@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BuildResponse.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 18:52:26 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/14 23:17:23 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,9 @@ void    Parser::display_code(void)
     if (_error_code)
     {
         if (_error_code == 200 || _error_code == 201 || _error_code == 204)
-            std::cout << "\nStatus code: " << _error_code << std::endl;
+			print_log(PINK, "Status code ", _server->getName(), " ", _error_code);
         else
-            std::cout << "\nError code: " << _error_code << std::endl;
+			print_log(PINK, "Error code ", _server->getName(), " ", _error_code);
     }
 }
 
@@ -196,7 +196,7 @@ void	Parser::build_response_content( std::string &filename)
 	// else
 	file.open(filename.c_str());
 	if (!file.is_open())
-		std::cerr << "Couldnt open file " << std::endl;
+		print_log(RED, "Error", _server->getName(), "could not open requested file for response. Filename : ", filename);
 	while (std::getline(file, line))
 		content += line + "\n";
 	_response += content;
@@ -239,7 +239,6 @@ void	Parser::display_dirlist(std::string path)
 	DIR *dir;
 	struct dirent *entry;
 
-	std::cout << "path dans " << __func__ << " " << path << std::endl;
 	if ((dir = opendir(path.c_str())) == NULL)
 	{ throw std::runtime_error("Error opening directory for dir_list"); return ;}
 
@@ -264,7 +263,6 @@ void	Parser::display_dirlist(std::string path)
 	closedir(dir);
 
 	_response += html.str();
-	std::cout << "response fin display_dir = " << _response << std::endl;
 }
 
 std::string	Parser::build_response( void)
@@ -275,7 +273,6 @@ std::string	Parser::build_response( void)
 	get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
-	std::cout << "path = " << _request["path"][0] << std::endl;
 	if (_server_conf.find("upload") != _server_conf.end() && 
 		_server_conf["upload"][0] == "on")
 		_upload_dir = "www/" + _server_conf["upload"][1];
@@ -292,8 +289,6 @@ std::string	Parser::build_response( void)
 		if (_request.find("method")->second[0] == method[i])
 		{
 			(this->*func_method[i])();
-			std::cout << "Method: " << method[i] << "\n";
-			display_code();
 			return (_response);
 		}
 	}

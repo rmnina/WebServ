@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiHandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:19:27 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 19:24:56 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/14 23:21:43 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	Parser::handle_cgi_error(int *status, pid_t pid)
 		{
 			kill(pid, SIGKILL);
 			_error_code = 504;
-			std::cout << "\nError code: " << _error_code << " Gateway Tiemout" << "\n";
+			print_log(RED, "Error", _server->getName(), "Gateway Timeout", ' ');
 			break ;
 		}
 	}
@@ -49,13 +49,15 @@ void	Parser::exec_cgi(std::string &filename, int method)
 	pid_t pid;
 	int input_pipe[2], output_pipe[2];
 
-	if (pipe(input_pipe) == -1 || pipe(output_pipe) == -1) {
-		std::cerr << "Error creating pipes\n";
+	if (pipe(input_pipe) == -1 || pipe(output_pipe) == -1) 
+	{
+		print_log(RED, "Error", _server->getName(), "Pipe creation failed in ", __func__);
 		return;
 	}
 	pid = fork();
-	if (pid == -1) {
-		std::cerr << "Error forking process\n";
+	if (pid == -1) 
+	{
+		print_log(RED, "Error", _server->getName(), "Pipe creation failed in ", __func__);
 		return;
 	}
 	if (pid == 0) { // Child
@@ -99,7 +101,7 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		char *buff_argv = new char[filename.size() + 1];
 		char *argv[] = { strcpy(buff_argv, filename.c_str()), NULL };
 		execve(filename.c_str(), argv, envp);
-		std::cerr << "Error executing CGI script: " << strerror(errno) << "\n";
+		print_log(RED, "Error", _server->getName(), "CGI script could not be executed. ", strerror(errno));
 		delete argv[0];
 		for (int j = 0; envp[j]; j++)
 			delete envp[j];
@@ -124,9 +126,8 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		}
 		close(output_pipe[0]);
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-			std::cerr << "CGI script exited with error code: " << WEXITSTATUS(status) << "\n";
-		}
+		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+			print_log(RED, "Error", _server->getName(), "CGI script exited with error code: ", WEXITSTATUS(status));
 
 		_response = cgi_output;
 	}
