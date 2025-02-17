@@ -6,6 +6,7 @@
 int main()
 {
 	const char	*upload_path = getenv("UPLOAD_PATH");
+	const char	*root = getenv("ROOT");
 	if (!upload_path)
 	{
 		std::cout << "Content-Type: application/json\r\n\r\n[]";
@@ -23,7 +24,7 @@ int main()
 	bool	first = true;
 
 	std::string upload_dir = upload_path;
-	size_t pos = upload_dir.find("www/");
+	size_t pos = upload_dir.find(root);
 	if (pos == 0)
 		upload_dir = upload_dir.substr(4);
 

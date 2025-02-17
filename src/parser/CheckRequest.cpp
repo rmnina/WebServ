@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 01:20:30 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 03:34:13 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ bool	Parser::fill_path( const std::string &request)
 		path = "/index.html";
 	else if (!path.compare("/delete"))
 		path = "/delete.html";
-	path = "www" + path;
+	path = _server_conf["root"][0] + path;
 	
 	std::vector<std::string>	tmp;
 	tmp.push_back(path);
@@ -284,11 +284,11 @@ void	Parser::examine_request( int client_index)
 	std::string	request = _server->getRequest()[client_index];
 	if (request.empty())
 		return ;
-	std::string trim_req = "www" + trim_request(request);
+	std::string trim_req = _server_conf["root"][0] + trim_request(request);
 	init_mime_types();
 	if (!fill_path(request))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
-	else if (trim_req != "www/" && opendir(trim_req.c_str()) != NULL)
+	else if (trim_req != _server_conf["root"][0] + "/" && opendir(trim_req.c_str()) != NULL)
 		_error_code = 400;
 	else if (!fill_method(request))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED

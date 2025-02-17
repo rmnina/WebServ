@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/16 16:20:59 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 03:37:44 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	Parser::GETmethod( void)
 		path = "./" + path;
 	if (_server_conf.find("dir_listing") != _server_conf.end() &&_server_conf["dir_listing"][0] == "on")
 	{
-		if (path == "./www/index.html")
-			display_dirlist("./www");
+		if (path == "./" + _server_conf["root"][0] + "/" + "index.html")
+			display_dirlist("./" + _server_conf["root"][0]);
 		else
 		{
 			if (is_directory(path))
@@ -84,7 +84,7 @@ void	Parser::upload(void)
 
 	if (_server_conf.find("upload") != _server_conf.end() && 
 		_server_conf["upload"][0] == "on")
-		_upload_dir = "www/" + _server_conf["upload"][1];
+		_upload_dir = _server_conf["root"][0] + "/" + _server_conf["upload"][1];
 	else
 	{
 		print_log(CERR, RED, "Error", _server->getName(), "Upload not configured", " ");
@@ -118,7 +118,7 @@ void	Parser::DELETEmethod(void)
 	std::string path = _request["path"][0];
 	size_t pos = path.find("/delete");
 	if (pos != std::string::npos)
-		path = "www" + path.substr(pos + 7);
+		path = _server_conf["root"][0] + path.substr(pos + 7);
 	int isFound = path.find(_upload_dir) != std::string::npos;
 	if (!isFound)
 	{

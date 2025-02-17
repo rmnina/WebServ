@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 01:19:59 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 03:33:37 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,8 +269,10 @@ std::string	Parser::build_response( void)
 
 	if (_server_conf.find("upload") != _server_conf.end() && 
 		_server_conf["upload"][0] == "on")
-		_upload_dir = "www/" + _server_conf["upload"][1];
-	if (_request["path"][0] == "www/error.html")
+	{
+		_upload_dir = _server_conf["root"][0] + "/" + _server_conf["upload"][1];
+	}
+	if (_request["path"][0] == _server_conf["root"][0] + "/" + "error.html")
 	{
 		build_response_content(_request["path"][0]);
 		restore_error_page();

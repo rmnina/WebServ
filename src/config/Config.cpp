@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/16 21:50:37 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 03:30:54 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,46 +63,33 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 	size_t		start, end;
 	int 		i;
 
-	std::cout << "line avant le for: " << line << std::endl;
 	for (i = 0; line[i] == ' '; i++);
 	start = line.find(' ', i) + 1;
 	end = line.find_last_of('\n');
-	std::cout << "start: " << start << " end: " << end << "\n";
 	std::string route = line.substr(start, end - start);
-	std::cout << "route: " << route << "\n";
 	
 	std::vector<std::string> tmp_vect;
 	tmp_vect.push_back(route);
 	loc_i["route"] = tmp_vect;
 
-	std::vector<std::string>::iterator it;
-	std::cout << "loc_i[\"route\"]: ";
-	for (it = loc_i["route"].begin(); it != loc_i["route"].end(); it++)
-		std::cout << *it << " ";
-	std::cout << "\nline: " << line << std::endl;
 	std::getline(conf_file, line);
-	std::cout << "After line break: " << line << std::endl;
 	for (i = 0; line[i] == ' '; i++);
 	if (!line.empty() && !line.compare(i, 1, "{"))
 		brackets = _update_brackets_state(brackets);
 	else
 		throw std::invalid_argument("C'est non 2");
 	std::getline(conf_file, line);
-	std::cout << "After bracket: " << line << std::endl;
 	while (!line.empty())
 	{
 		for (i = 0; line[i] == ' '; i++);
 		line = line.substr(i, line.size() - i);
-		std::cout << "!line.empty(): " << line << std::endl;
 		if (line[0] == '#')
 			std::getline(conf_file, line);
 			
 		size_t		space_pos = line.find(" ");
 		std::string keyword = line.substr(0, space_pos);
-		std::cout << "keyword: " << keyword << std::endl;
 		if (!_location_allowed(keyword))
 		{
-			std::cout << "keyword before break: " << keyword << std::endl;
 			break ;
 		}
 		std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
@@ -172,8 +159,8 @@ bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string
 	else if (keyword == "index") {
 		if (tmp.size() != 1 || tmp[0].substr(tmp[0].size() - 5) != ".html")
 			return (false);
-		std::ifstream file(("www/" + tmp[0]).c_str());
-		return file.good();
+		// std::ifstream file(("www/" + tmp[0]).c_str());
+		// return file.good();
 	} 
 	else if (keyword == "body_size") {
 		if (tmp.size() != 1)

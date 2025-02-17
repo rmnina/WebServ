@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/15 19:09:33 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 03:41:31 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int Parser::build_error_page( void)
 	std::string	message[8] = {"Bad request syntax", "Forbidden", "Resource not found",
 							"Method not allowed", "Format not acceptable", "Resource gone", "Gateway Timeout", "I'm a teapot"};
 	
-	std::ifstream   error_file("www/error.html");
+	std::string		tmp_filename = _server_conf["root"][0] + "/" + "error.html";
+	std::ifstream   error_file(tmp_filename.c_str());
 	if (!error_file.is_open())
 		std::cerr << "Error opening error file" << std::endl;
 	
@@ -35,7 +36,8 @@ int Parser::build_error_page( void)
 	error_file.close();
 
 	size_t	pos = 0;
-	std::ofstream	output_file("www/error.html");
+
+	std::ofstream	output_file(tmp_filename.c_str());
 	std::string		image("images/" + code_str + ".jpg");
 	if (!output_file.is_open())
 		std::cerr << "Error opening error file in writing mode" << std::endl;
@@ -65,7 +67,7 @@ int	Parser::throw_error_page( void)
 		if (_error_code == error_code[i])
 		{
 			build_error_page();
-			_request["path"][0] = "www/error.html";
+			_request["path"][0] = _server_conf["root"][0] + "/" + "error.html";
 			return (FAILURE);
 		}
 	}
@@ -74,7 +76,8 @@ int	Parser::throw_error_page( void)
 
 int	Parser::restore_error_page( void)
 {
-	std::ofstream	output_file("www/error.html");
+	std::string		tmp_filename = _server_conf["root"][0] + "/" + "error.html";
+	std::ofstream	output_file(tmp_filename.c_str());
 
 	if (!output_file.is_open())
 		std::cerr << "Error opening error file in writing mode" << std::endl;

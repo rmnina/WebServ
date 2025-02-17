@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 21:48:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 01:23:19 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 03:35:54 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ location_i_data	Parser::find_location( const std::string &path)
 			location_path.erase(0, 1);
 			if (!location_path.compare("/"))
 				location_path = "/index.html";
-			location_path = "www" + location_path;
+			location_path = _server_conf["root"][0] + location_path;
 			return (*it);
 		}
 	}
@@ -40,14 +40,14 @@ void	Parser::get_location( const std::string &path)
 	if (location.empty())
 		return;
 	if (location.find("route") != location.end())
-		cmp = "www/" + location.find("route")->second[0];
+		cmp = _server_conf["root"][0] + "/" + location.find("route")->second[0];
 	for (location_i_data::iterator it = location.begin(); it != location.end(); it++)
 	{
 		if (it->first == "redirect")
 		{
 			if (cmp == path)
 			{
-				std::string	tmp = "www/" + it->second[0];
+				std::string	tmp = _server_conf["root"][0] + "/" + it->second[0];
 				std::vector<std::string>	tmp_vec;
 
 				tmp_vec.push_back(tmp);

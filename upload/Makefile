@@ -9,7 +9,7 @@ RESET := \e[0m
 
 # Sources paths
 SRCS_PATH = $(shell find src -type d)
-CGI_PATH = www/cgi
+CGI_PATH = www2/cgi
 
 # Main files
 SRCS = Config.cpp ConfigStruct.cpp Handler.cpp \
