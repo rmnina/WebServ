@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 15:44:43 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 16:23:04 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@ void	Parser::examine_request( int client_index)
 	if (!fill_path(request))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
 	else if (trim_req != _server_conf["root"][0] + "/" && opendir(trim_req.c_str()) != NULL)
-		_error_code = 400;
+		_error_code = 418;
 	else if (!fill_method(request))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
 	else if (!check_version(request) || !check_req_size(request) || !check_body_size())
