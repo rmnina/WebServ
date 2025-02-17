@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:19:27 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 03:55:33 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 15:46:25 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	Parser::exec_cgi(std::string &filename, int method)
 {
 	pid_t pid;
 	int input_pipe[2], output_pipe[2];
-	std::cerr << TURQUOISE BOLD << "FILENAME IS " << filename.c_str() << RESET << std::endl;
 
 	if (pipe(input_pipe) == -1 || pipe(output_pipe) == -1) 
 	{

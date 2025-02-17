@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 03:33:37 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 16:04:38 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void    Parser::display_code(void)
 {
     if (_error_code)
     {
-        if (_error_code == 200 || _error_code == 201 || _error_code == 204 || _error_code == 301)
+        if (_error_code == 200 || _error_code == 201 || _error_code == 204 || _error_code == 301 || _error_code == 504)
 			print_log(COUT, PINK, "Status code ", _server->getName(), " ", _error_code);
         else
 			print_log(CERR, PINK, "Error code ", _server->getName(), " ", _error_code);
@@ -285,10 +285,10 @@ std::string	Parser::build_response( void)
 		if (_request.find("method")->second[0] == method[i])
 		{
 			(this->*func_method[i])();
+			display_code();
 			return (_response);
 		}
 	}
-	display_code();
 	return ("");
 }
 

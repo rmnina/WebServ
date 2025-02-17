@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 03:34:13 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 15:44:43 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,9 +197,12 @@ bool	Parser::get_file_content(const std::string &body, std::vector<char> &conten
 	size_t	MAX_FILE_SIZE = 3000;
 	char	*body_binary = &_req_binary[1];
 
+	std::stringstream ss;
+	ss << MAX_FILE_SIZE;
+
 	if (strlen(body.c_str()) > MAX_FILE_SIZE || strlen(body_binary) > MAX_FILE_SIZE)
 	{
-		std::string log = "File should contain under " + MAX_FILE_SIZE;
+		std::string log = "File should contain under " + ss.str();
 		log.append(" characters. Current : ");
 		print_log(CERR, RED, "Error", _server->getName(), log.c_str(), strlen(body_binary));
 		return (false);

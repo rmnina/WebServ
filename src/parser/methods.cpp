@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 03:37:44 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 15:51:21 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void	Parser::upload(void)
 	}
 	file.write(content.data(), content.size());
 	file.close();
-	print_log(COUT, ORANGE, "Log", _server->getName(), "File successfuly uploaded to server : ", filename);
+	print_log(COUT, YELLOW, "Log", _server->getName(), "File successfuly uploaded to server : ", filename);
 	_error_code = 201;
 }
 
