@@ -1,0 +1,495 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Thambi+2&display=swap");
+body, html {
+	font-family: "Arial", cursive;
+	font-weight: 100;
+	margin: 0;
+}
+
+body.is-preload *, body.is-preload *:before, body.is-preload *:after {
+	-moz-transition: none !important;
+	-ms-transition: none !important;
+	transition: none !important;
+}
+
+.container { padding: 0rem; }
+
+.ParallaxMainContent, .ParallaxMainContent > .container {
+	background-color: #191818;
+	color: #e3e4e8;
+	position: relative;
+	height: 100%;
+	width: 100%;
+	box-shadow: 0px 0px 9px 18px #191819;
+}
+
+.ParallaxMainContent h3 {
+	color: #6C757D;
+	text-align: center;
+}
+
+.ParallaxVideo { height: 763px; }
+
+.ParallaxVideo video {
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	filter: grayscale(100%);
+}
+
+#container-random { margin: 1rem; }
+
+#parallaxRandom { height: 595px; }
+
+#parallaxAstro, #parallaxKaamelott { height: 610px; }
+
+.topnav {
+	background-color: #191818;
+	overflow: hidden;
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
+	box-shadow: 0px -3px 9px 9px #191819;
+}
+
+.topnav a {
+	float: right;
+	color: #f2f2f2;
+	background-color: #191818;
+	text-align: center;
+	padding: 17px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
+
+.topnav a.active, .topnav a:hover {
+	background-color: #333;
+	color: white;
+}
+
+.topnav p {
+	margin-left: 15px;
+	font-size: 17px;
+	color: white;
+}
+
+.headlines p {
+	font-size: 16px;
+	text-align: center;
+}
+
+footer {
+	padding: 1rem;
+	text-align: center;
+	color: white;
+}
+
+footer a, footer a:hover {
+	text-decoration: none;
+}
+
+.wrapper-request {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 9em;
+	justify-content: center;
+	place-items: center;
+	align-items: center;
+	max-width: 90%;
+	max-width: 100%;
+	height: 70vh;
+}
+
+.wrapper-script #script {
+	display: flex;
+	flex: 3 3 200px;
+	gap: 20em;
+	align-content: flex-start;
+	justify-content: center; 
+	align-items: center;
+	margin-top: 10em; 
+	position: relative;
+	top: -8em;
+}
+
+#script {
+	margin-top: 8em; /* Réduction de l’espace trop grand */
+	scroll-margin-top: 6em; /* Évite que l’ancre cache le contenu sous la navbar */
+}
+
+#script > p { margin-top: 3em; } /* Réduction de l’espace trop grand */
+
+.wrapper-cgi {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr); /* 3 cartes par ligne */
+	gap: 1.5em; /* Espacement entre les cartes */
+	justify-content: center;
+	align-items: center;
+	max-width: 90%;
+	max-width: 100%;
+	margin-top: -5em;
+}
+
+#delete-link, .upload-button, .delete-button, #cgi-link {
+	background-color: transparent;
+	border: none;
+	position: unset;
+	color: #afb0b3;
+	text-align: left;
+	cursor: pointer;
+	font-size: 16px;
+	text-decoration: none;
+	margin-top: 7em;
+}
+
+#cgi-link {
+	/*	margin-top: 0em;i*/
+	justify-self: center; /* Centre chaque lien individuellement dans la grille */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.upload-button h3, .delete-button h3, #delete-link h3 {
+	font-size: 20px;
+	text-align: left;
+	text-decoration: none;
+}
+
+#cgi-link { margin-top: -3em; }
+
+#death, #hierophant { padding-top: 36px; } 
+
+#wheel, #wheel-astro { 
+	filter: brightness(1.4);
+	margin-top: -5px;
+}
+
+#king  { 
+	filter: brightness(1.1);
+	margin-top: -25px;
+}
+
+#moon { padding-top: 15px; } 
+
+#wheel-astro, #king-astro { padding-top: 35px; } 
+
+.form-popup {
+	display: none; 
+	position: fixed;
+	top: 50%; /* Centre verticalement */
+	left: 50%; /* Centre horizontalement */
+	transform: translate(-50%, -50%); /* Ajuste l'origine pour le centrage parfait */
+	border-radius: 5px;
+	z-index: 9; /* Assure que l’élément est au-dessus des autres */
+}
+
+/* Add styles to the pop up */
+.popup-container {
+	max-width: 500px;
+	padding: 20px;
+	background-color: #333;
+	border-radius: 5px;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.popup-container .btn {
+	background-color: #04AA6D;
+	color: white;
+	padding: 4px 24px;
+	border: none;
+	cursor: pointer;
+	margin-top: 12px;
+	width: 87px;
+	border-radius: 1px;
+	box-shadow: inherit;
+	color: white;
+	opacity: 0.8;
+	text-align: left;
+	padding-left: 8px;
+	display: flex;
+}
+
+/* Add some hover effects to buttons */
+.popup-container .btn-submit:hover,  .btn:hover, .open-button:hover { opacity: 1; }
+
+.close {
+	cursor: pointer;
+	position: absolute;
+	right: 0%;
+	padding: 2px 6px;
+	transform: translate(0%, -50%);
+	top: 20px;
+	right: 11px;
+	background: none;
+	border: none;
+	color: grey;
+}
+
+.close:hover { background: #bbb;}
+
+.presentation { 
+	padding: 1em 1em 1em 1em;
+	text-align: center;
+}
+
+#pres-cgi { padding: 6em 0 7em 0; }
+
+.welcome-header {
+	letter-spacing: 8px;
+	color: #6C757D;
+	font-size: 30px;
+}
+
+.welcome-p {
+	letter-spacing: 3px;
+	color: #afb0b3;
+	font-size: 20px;
+	text-align: center;
+}
+
+.server-explanation, .server {
+	color: #afb0b3;
+	margin-top: 3em;
+	font-size: 14px;
+}
+
+.check-button {
+	background-color: #333;
+	color: #afb0b3;
+	cursor: pointer;
+	border: black;
+	padding: 1em;
+	margin: 2em;
+	border-radius: 4px;
+}
+
+.server:hover, .check-button:hover, .card:hover h3, .card:hover p, .card:hover { color: white; }
+
+.flex-container {
+	display: flex;
+	justify-content: center;
+}
+
+.flex-container > div {
+	width: 100px;
+	line-height: 2px;
+	font-size: 14px;
+}
+
+.jdufour > a, .ahayon > a, .eltouma > a { color: #DEE2E6; }
+
+.jdufour > a:hover, .ahayon > a:hover, .eltouma > a:hover { color: #6C757D; }
+
+#random-page {
+	padding: 1em 0 1em 0;
+	padding: 0em 0 0em 0;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-content: stretch;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+#random-nb {
+	color: #afb0b3;	
+	margin: 0em;
+}
+
+#random-nb-result {
+	font-size: 20px;
+	color: #ffd700b5;
+}
+
+#hierophant { font-size: 18px; }
+
+.real-sacred-nb { font-size: 12px; }
+
+#random-nb-btn, #infinity-btn {
+	font-size: 13px;
+	margin: 1em;
+}
+
+#astro-btn {
+	font-size: 12px;
+	margin-bottom: 1em;
+	margin-top: 1em;
+}
+
+#infinity-btn { margin: 2em; }
+
+#moon-infinite { margin-top: 25px; }
+
+.loading-wrapper {
+	margin-top: -6em;
+	position: relative;
+	width:	100px;
+	height:	100px;
+	display:	flex;
+	align-items:	center;
+	justify-content:	center;
+}
+
+/* Sphère centrale */
+.sphere {
+	width: 70px;
+	height: 70px;
+	background: radial-gradient(circle, #a59e8d96, #69696914);
+	border-radius: 50%;
+	position: absolute;
+	box-shadow: 0 0 15px rgb(113 112 109 / 85%);
+}
+
+/* Loader qui tourne autour */
+.loader {
+	position: absolute;
+	width: 95px;
+	height: 95px;
+	border: 3px dotted #fcca467a; /* Bordure en pointillés */
+	border-radius: 50%;
+	border-top: 3px dotted #ffd700;
+	animation: spin 0.8s linear infinite; /* Animation */
+}
+
+/* Animation de rotation */
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+.wrapper-review {
+	display: flex;
+	flex-wrap: wrap; /* Permet le retour à la ligne si l'écran est trop petit */
+	gap: 2em; /* Espacement entre les reviews */
+	justify-content: center; /* Centre les reviews */
+	margin-top: 3em; /* Ajuste l'espace en haut */
+	margin-bottom: 20em; /* Ajuste l'espace en haut */
+}
+
+.review {
+	background: linear-gradient(338deg, #f3f3f3, #ffffff96);
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	width: 200px; /* Taille fixe pour les carrés */
+	min-height: 200px; /* Même hauteur pour tous */
+	display: flex; /* Pour centrer le texte verticalement */
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.stars {
+	color: gold;
+	font-size: 1.5em;
+}
+
+.review-text {
+	font-size: 1em;
+	margin: 10px 0;
+	color: #333;
+	text-align: left;
+	flex-grow: 1; /* Permet au texte de remplir l'espace */
+}
+
+.review-author {
+	font-weight: bold;
+	color: #666;
+}
+
+.gold {
+	color: gold;
+}
+
+.gray {
+	color: gray;
+}
+
+#pres-review {
+	margin-top: 12em; /* Ajuste l'espace en haut */
+	margin-bottom: 3em; /* Ajuste l'espace en haut */
+}
+
+#pres-review > p {
+	margin-top: -7em; /* Ajuste l'espace en haut */
+	margin-bottom: 11em; /* Ajuste l'espace en haut */
+}
+
+#pres-script {
+	margin-top: 10em; /* Ajuste l'espace en haut */
+}
+
+#trash-btn {
+	background: none;
+	border: none;
+	margin: 1em;
+}
+
+#trash { 
+	color: #b5abab;
+	font-size: 14px;
+	cursor: pointer;
+	padding-left: 1em;
+}
+
+.trash-div {
+}
+
+/*
+#kaamelott-container {
+max-width: 100%; 
+max-height: 150px;
+padding: 10px;
+margin: 20px auto;
+background: rgba(0, 0, 0, 0.7);
+color: red;
+border-radius: 10px;
+}
+ */
+
+.spiritual { color: #e3e4e8; }
+
+.spiritual:hover { color: #ffd700b5; }
+
+/* Style du texte */
+/*
+blockquote {
+font-size: 12px;
+color: #d4af37;
+color: red;
+text-align: left;
+word-wrap: break-word;
+overflow-wrap: break-word;
+margin: 0;
+}
+ */
+
+.file-items > span{
+
+	padding-right: 1em;
+}
+
+#file-list
+{
+	margin-left: 2em;
+
+	color: #b5abab;
+}
+
+@media (max-width: 1024px) {
+	.wrapper-cgi, .wrapper-request {
+		grid-template-columns: repeat(2, 1fr); /* 2 cartes par ligne sur tablettes */
+	}
+}
+
+@media (max-width: 600px) {
+	.wrapper-cgi, .wrapper-request {
+		grid-template-columns: repeat(1, 1fr); /* 1 carte par ligne sur petits écrans */
+	}
+}
+
