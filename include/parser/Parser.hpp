@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 23:03:37 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/16 15:18:24 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@
 # define MTU 1500
 # define GET	0
 # define POST	1
+
+# define COUT	0
+# define CERR	1
 
 class Parser
 {
@@ -128,10 +131,23 @@ bool 		is_directory(const std::string &path);
 bool 		is_file(const std::string &path);
 
 template <typename T>
-void	print_log(const char *color, const char *status, const std::string &servername, const char *message, const T &value) 
+void	print_log(int output, const char *color, const char *status, const std::string &servername, const char *message, const T &value) 
 {
-	std::cout << color << status << " on " << BOLD << servername << " : " 
-	<< message << BOLD << value << RESET << std::endl;
+	switch (output)
+	{
+		case CERR:
+		{
+			std::cerr << color << status << " on " << BOLD << servername << " : " 
+			<< message << BOLD << value << RESET << std::endl;
+			break;
+		}
+		case COUT:
+		{
+			std::cout << color << status << " on " << BOLD << servername << " : " 
+			<< message << BOLD << value << RESET << std::endl;
+			break;
+		}
+	}
 }
 
 #endif

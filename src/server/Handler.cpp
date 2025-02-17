@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/15 18:08:59 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/16 16:27:45 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,43 +52,14 @@ void	Handler::loadServ()
 	}
 }
 
-// Handler::Handler(const Handler &src)
-// {
-// 	*this = src;
-// }
-
-// Handler &Handler::operator=(const Handler &rhs)
-// {
-// 	this->_epfd = epoll_create1(0);
-// 	this->_epfd = rhs._epfd;
-// 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
-// 		_servers.push_back(new Server((*it)->getName(), (*it)->getHost(), (*it)->getPort(), (*it)->getConfig(), (*it)->getLocation()));
-// 	return (*this);
-// }
-
 void	Handler::add_event(int fd, int flag) 
 {
 	struct epoll_event event;
 	event.events = flag;
 	event.data.fd = fd;
 	if (epoll_ctl(_epfd, EPOLL_CTL_ADD, fd, &event) == -1) 
-		print_log(RED, "Error", "EPOLL", "Failed on adding epoll event. Socket fd: ", fd);
+		print_log(CERR, RED, "Error", "EPOLL", "Failed on adding epoll event. Socket fd: ", fd);
 }
-
-// void	Handler::modify_event(int fd, int flag)
-// {
-// 	struct epoll_event event;
-// 	event.events = flag;
-// 	event.data.fd = fd;
-// 	if (epoll_ctl(_epfd, EPOLL_CTL_MOD, fd, &event) == -1)
-// 		print_log(RED, "Error", "EPOLL", "Failed on modifying epoll event. Socket fd: ", fd);
-// }
-
-// void	Handler::delete_event(int fd)
-// {
-// 	if (epoll_ctl(_epfd, EPOLL_CTL_DEL, fd, NULL) == -1)
-// 		print_log(RED, "Error", "EPOLL", "Failed on deleting epoll event. Socket fd: ", fd);
-// }
 
 int Handler::launchServers()
 {
@@ -102,8 +73,6 @@ int Handler::launchServers()
 
 int Handler::handleEvents()
 {
-	std::vector<Server *>::iterator it;
-	
 	_epfd = epoll_create1(0);
 
 	if (_epfd == -1) 
@@ -111,7 +80,7 @@ int Handler::handleEvents()
 		std::cerr << "Error on epoll_create" << std::endl;
 		return (FAILURE);
 	}
-	for (it = _servers.begin(); it < _servers.end(); ++it)
+	for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); ++it)
 		(*it)->add_event(_epfd, (*it)->getSocket());
 
 	while (!g_sig) 
@@ -124,7 +93,8 @@ int Handler::handleEvents()
 			return (FAILURE);
 		}
 
-		for (int i = 0; i < nfds; i++) {
+		for (int i = 0; i < nfds; i++) 
+		{
 			bool handled = false;
 			for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); ++it) 
 			{
@@ -153,17 +123,13 @@ int Handler::handleEvents()
 	return (SUCCESS);
 }
 
-// Server *Handler::operator[](const int index)
-// {
-// 	if (index < 0 || index >= _nbServ || !_nbServ)
-// 		throw(std::out_of_range("Error : invalid access index on Servers"));
-// 	return (_servers[index]);
-// }
-
 Handler::~Handler()
 {
 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) 
+	{
+		print_log(COUT, TURQUOISE, "EXIT", (*it)->getName(), "Closing server...", " ");
 		delete (*it);
+	}
 	close(_epfd);
 }
 

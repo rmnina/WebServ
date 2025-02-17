@@ -6,11 +6,12 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 23:13:29 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 01:20:30 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/parser/Parser.hpp"
+#include "../../include/config/Config.hpp"
 #include <cstring>
 
 Parser::Parser( void) {}
@@ -35,7 +36,7 @@ bool	Parser::fill_method( const std::string &request)
 	}
 	if (_request.find("method") == _request.end())
 	{
-		print_log(RED, "Error", _server->getName(), "Bad method. Use GET, POST or DELETE.", ' ');
+		print_log(CERR, RED, "Error", _server->getName(), "Bad method. Use GET, POST or DELETE.", ' ');
 		return (false);
 	}
 	else
@@ -51,7 +52,7 @@ bool	Parser::fill_method( const std::string &request)
 			if (_request["method"][0] == *it)
 				return (true); 
 		}
-		print_log(RED, "Error", _server->getName(), "Unallowed method : ", _request["method"][0]);
+		print_log(CERR, RED, "Error", _server->getName(), "Unallowed method : ", _request["method"][0]);
 		return (false);
 	}
 }
@@ -75,10 +76,11 @@ bool	Parser::fill_path( const std::string &request)
 	std::ifstream	resource(path.c_str());
 	if (!resource.is_open())
 	{
-		print_log(RED, "Error", _server->getName(), "Could not open ressource located at ", path);
+		print_log(CERR, RED, "Error", _server->getName(), "Could not open ressource located at ", path);
 		return (false);
 	}
 	resource.close();
+	get_location(_request["path"][0]);
 	return (true);
 }
 
@@ -133,14 +135,14 @@ bool	Parser::fill_content_length(const std::string &request)
 
 	if (length_begin == std::string::npos)
 	{
-		print_log(RED, "Error", _server->getName(), "no Content-Length header found", ' ');
+		print_log(CERR, RED, "Error", _server->getName(), "no Content-Length header found", ' ');
 		return (false);
 	}
 	
 	size_t	length_end = request.find("\r\n", length_begin);
 	if (length_end == std::string::npos)
 	{
-		print_log(RED, "Error", _server->getName(), "malformed Content-Length header", ' ');
+		print_log(CERR, RED, "Error", _server->getName(), "malformed Content-Length header", ' ');
 		return (false);
 	}
 	std::string	length_str = request.substr(length_begin + 15, 
@@ -166,14 +168,14 @@ bool	Parser::get_file_name(const std::string &body, std::string &filename)
 	size_t	filename_pos = body.find("filename=\"");
 	if (filename_pos == std::string::npos)
 	{
-		print_log(RED, "Error", _server->getName(), "no filename in upload request", ' ');
+		print_log(CERR, RED, "Error", _server->getName(), "no filename in upload request", ' ');
 		return (false);
 	}
 
 	size_t	filename_end = body.find("\"", filename_pos + 10);
 	if (filename_end == std::string::npos)
 	{
-		print_log(RED, "Error", _server->getName(), "malformed filename in upload request", ' ');
+		print_log(CERR, RED, "Error", _server->getName(), "malformed filename in upload request", ' ');
 		return (false);
 	}
 
@@ -182,7 +184,7 @@ bool	Parser::get_file_name(const std::string &body, std::string &filename)
 	if (filename.find('/') != std::string::npos || 
 		filename.find("..") != std::string::npos)
 	{
-		print_log(RED, "Error", _server->getName(), "invalid filename in upload request", ' ');
+		print_log(CERR, RED, "Error", _server->getName(), "invalid filename in upload request", ' ');
 		return (false);
 	}
 	if (!removeSpaces(filename))
@@ -195,12 +197,11 @@ bool	Parser::get_file_content(const std::string &body, std::vector<char> &conten
 	size_t	MAX_FILE_SIZE = 3000;
 	char	*body_binary = &_req_binary[1];
 
-	std::cout << "YO1" << std::endl;
 	if (strlen(body.c_str()) > MAX_FILE_SIZE || strlen(body_binary) > MAX_FILE_SIZE)
 	{
 		std::string log = "File should contain under " + MAX_FILE_SIZE;
 		log.append(" characters. Current : ");
-		print_log(RED, "Error", _server->getName(), log.c_str(), strlen(body_binary));
+		print_log(CERR, RED, "Error", _server->getName(), log.c_str(), strlen(body_binary));
 		return (false);
 	}
 	if (_request.find("boundary") == _request.end())
@@ -226,7 +227,7 @@ bool	Parser::check_version( const std::string &request)
 {
 	if (request.find("HTTP/1.1") == std::string::npos)
 	{
-		print_log(RED, "Error", _server->getName(), "wrong HTTP version. Expected : HTTP/1.1", ' ');
+		print_log(CERR, RED, "Error", _server->getName(), "wrong HTTP version. Expected : HTTP/1.1", ' ');
 		return (false);
 	}
 	return (true);		
@@ -272,6 +273,8 @@ std::string trim_request(std::string request)
 
 void	Parser::examine_request( int client_index)
 {	
+	// get_location();
+	
 	_server_conf = _server->getConfig();
 	_location = _server->getLocation();
 	_request_body = _server->getReqBody()[client_index];
@@ -291,10 +294,13 @@ void	Parser::examine_request( int client_index)
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
 	else if (!check_version(request) || !check_req_size(request) || !check_body_size())
 		_error_code = 400; //ERROR BAD REQUEST
-	else
+	else if (_error_code != 301)
 		_error_code = 200;
 	throw_error_page();
 }
+
+
+/******----------------***** GETTERS *****----------------******/
 
 std::vector<unsigned char>							Parser::getImageResponse( void) const { return (_image_response); }
 std::map<std::string, std::vector<std::string> >	Parser::getRequest( void) const { return (_request); }

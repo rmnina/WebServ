@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 14:00:40 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/16 21:50:37 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/config/Config.hpp"
+#include "../../include/parser/Parser.hpp"
 
 Config::Config(void) {}
 
@@ -64,8 +65,8 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 
 	std::cout << "line avant le for: " << line << std::endl;
 	for (i = 0; line[i] == ' '; i++);
-	start = line.find(' ', i);
-	end = line.find_last_of(' ') + 1;
+	start = line.find(' ', i) + 1;
+	end = line.find_last_of('\n');
 	std::cout << "start: " << start << " end: " << end << "\n";
 	std::string route = line.substr(start, end - start);
 	std::cout << "route: " << route << "\n";
@@ -109,104 +110,93 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 		std::getline(conf_file, line);
 	}
 	location.push_back(loc_i);
-	for (location_data::iterator vec_it = location.begin(); vec_it != location.end(); ++vec_it) {
-        std::cout << "Map: \n";
-        for (std::map<std::string, std::vector<std::string> >::iterator map_it = vec_it->begin(); map_it != vec_it->end(); ++map_it) {
-            std::cout << "  Key: " << map_it->first << "\n  Values: ";
-            for (std::vector<std::string>::iterator vec_str_it = map_it->second.begin(); vec_str_it != map_it->second.end(); ++vec_str_it) {
-                std::cout << *vec_str_it << " ";
-				       }
-            std::cout << "\n";
-        }
-    }
-	std::cout << "\n";
 	if (!line.empty() && !line.compare(0, 1, "}"))
 		brackets = _update_brackets_state(brackets);
 }
 
 bool Config::check_valid_nb(const std::string& str) 
 {
-    if (str.empty()) 
+	if (str.empty()) 
 		return (false); 
-    for (size_t i = 0; i < str.length(); i++) {
-        if (str[i] < '0' || str[i] > '9')
+	for (size_t i = 0; i < str.length(); i++) {
+		if (str[i] < '0' || str[i] > '9')
 			return (false); 
-    }
-    return true;
+	}
+	return true;
 }
 
 bool Config::check_valid_ip(const std::string& ip) 
 {
-    if (ip.empty()) 
-		return false;
+	if (ip.empty()) 
+		return (false);
 
-    char ipCopy[16];
-    std::strncpy(ipCopy, ip.c_str(), 15);
-    ipCopy[15] = '\0'; 
+	char ipCopy[16];
+	std::strncpy(ipCopy, ip.c_str(), 15);
+	ipCopy[15] = '\0'; 
 
-    int parts = 0;
-    char* token = std::strtok(ipCopy, "."); 
-    while (token) {
-        std::string part(token);
+	int parts = 0;
+	char* token = std::strtok(ipCopy, "."); 
+	while (token) {
+		std::string part(token);
 
-        if (!check_valid_nb(part)) 
+		if (!check_valid_nb(part)) 
 			return (false);
 
-        int num = std::atoi(part.c_str());
-        if (num < 0 || num > 255) 
+		int num = std::atoi(part.c_str());
+		if (num < 0 || num > 255) 
 			return (false);
 
-        parts++;
-        token = std::strtok(NULL, ".");
-    }
-    return (parts == 4);
+		parts++;
+		token = std::strtok(NULL, ".");
+	}
+	return (parts == 4);
 }
 
 bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 {
-    if (keyword == "listen") {
-        char *endptr;
-        for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
-            long nb = strtol(it->c_str(), &endptr, 10);
-            if (*endptr != '\0' || nb < 1024 || nb > 65535)
-                return false;
-        }
-        return true;
-    } 
-    else if (keyword == "host") {
-        return (tmp.size() == 1 && (tmp[0] == "localhost" || check_valid_ip(tmp[0])));
-    } 
-    else if (keyword == "dir_listing") {
-        return (tmp.size() == 1 && (tmp[0] == "on" || tmp[0] == "off"));
-    } 
-    else if (keyword == "index") {
-        if (tmp.size() != 1 || tmp[0].substr(tmp[0].size() - 5) != ".html")
-            return false;
-        std::ifstream file(("www/" + tmp[0]).c_str());
-        return file.good();
-    } 
-    else if (keyword == "body_size") {
-        if (tmp.size() != 1)
-            return false;
-        char *endptr;
-        long nb = strtol(tmp[0].c_str(), &endptr, 10);
-        return (*endptr == '\0' && nb >= 1 && nb <= 424242);
-    } 
-    else if (keyword == "method") {
-        if (tmp.empty() || tmp.size() > 3)
-            return false;
-        for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
-            if (*it != "GET" && *it != "POST" && *it != "DELETE")
-                return false;
-        }
-    } 
-    else if (keyword == "upload") {
-        return (tmp.size() == 2 && tmp[0] == "on");
-    } 
-    else if (keyword == "server_name") {
-        return (tmp.size() == 1);
-    }
-    return true;
+	if (keyword == "listen") {
+		char *endptr;
+		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
+			long nb = strtol(it->c_str(), &endptr, 10);
+			if (*endptr != '\0' || nb < 1024 || nb > 65535)
+				return (false);
+		}
+		return (true);
+	} 
+	else if (keyword == "host") {
+		return (tmp.size() == 1 && (tmp[0] == "localhost" || check_valid_ip(tmp[0])));
+	} 
+	else if (keyword == "dir_listing") {
+		return (tmp.size() == 1 && (tmp[0] == "on" || tmp[0] == "off"));
+	} 
+	else if (keyword == "index") {
+		if (tmp.size() != 1 || tmp[0].substr(tmp[0].size() - 5) != ".html")
+			return (false);
+		std::ifstream file(("www/" + tmp[0]).c_str());
+		return file.good();
+	} 
+	else if (keyword == "body_size") {
+		if (tmp.size() != 1)
+			return (false);
+		char *endptr;
+		long nb = strtol(tmp[0].c_str(), &endptr, 10);
+		return (*endptr == '\0' && nb >= 1 && nb <= 424242);
+	} 
+	else if (keyword == "method") {
+		if (tmp.empty() || tmp.size() > 3)
+			return (false);
+		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
+			if (*it != "GET" && *it != "POST" && *it != "DELETE")
+				return (false);
+		}
+	} 
+	else if (keyword == "upload") {
+		return (tmp.size() == 2 && tmp[0] == "on");
+	} 
+	else if (keyword == "server_name") {
+		return (tmp.size() == 1);
+	}
+	return true;
 }
 
 
@@ -307,7 +297,7 @@ void    Config::fill_conf_vector(const std::string &filename)
 	
 	if (!conf_file.is_open())
 	{
-		std::cerr << "Error opening conf file" << std::endl;
+		print_log(CERR, RED, "Error", "Config", "Could not open conf file :", filename.c_str());
 		throw std::runtime_error("Could not open file");
 	}
 	
@@ -318,14 +308,6 @@ void    Config::fill_conf_vector(const std::string &filename)
 		{
 			fill_servers(conf_file, line, server, location, brackets);
 			std::map<std::string, std::vector<std::string> >::iterator it;
-			/*
-            for (it = server.begin(); it != server.end(); it++)
-            {
-                std::cout << "server key = " << it->first << std::endl;
-                for (std::vector<std::string>::iterator vIt = it->second.begin(); vIt != it->second.end(); vIt++)
-                    std::cout << "string for " << it->first << " = " << *vIt << "\n";
-            }
-	    */
 			std::getline(conf_file, line);
 		}
 		if (!server.empty())

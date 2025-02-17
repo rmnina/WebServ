@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/09 15:48:37 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/15 19:09:33 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int Parser::build_error_page( void)
 
 int	Parser::throw_error_page( void)
 {
-	int	error_code[6] = {400, 403, 404, 405, 406, 410};
+	int	error_code[7] = {400, 403, 404, 405, 406, 410, 418};
 
 	for (long unsigned int i = 0; i < sizeof(error_code) / sizeof(int); i++)
 	{

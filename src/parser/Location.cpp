@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 21:48:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/01/29 02:43:11 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 01:23:19 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 location_i_data	Parser::find_location( const std::string &path)
 {
 	location_i_data	empty;
+	(void)path;
 	
 	for (location_data::iterator it = _location.begin(); it < _location.end(); it++)
 	{
@@ -25,8 +26,7 @@ location_i_data	Parser::find_location( const std::string &path)
 			if (!location_path.compare("/"))
 				location_path = "/index.html";
 			location_path = "www" + location_path;
-			if (location_path == path)
-				return (*it);
+			return (*it);
 		}
 	}
 	return (empty);
@@ -35,16 +35,25 @@ location_i_data	Parser::find_location( const std::string &path)
 void	Parser::get_location( const std::string &path)
 {
 	location_i_data	location = find_location(path);
+	std::string	cmp;
 
 	if (location.empty())
 		return;
-
+	if (location.find("route") != location.end())
+		cmp = "www/" + location.find("route")->second[0];
 	for (location_i_data::iterator it = location.begin(); it != location.end(); it++)
 	{
 		if (it->first == "redirect")
 		{
-			_request["path"] = it->second;
-			_error_code = 301;
+			if (cmp == path)
+			{
+				std::string	tmp = "www/" + it->second[0];
+				std::vector<std::string>	tmp_vec;
+
+				tmp_vec.push_back(tmp);
+				_request["path"] = tmp_vec;
+				_error_code = 301;
+			}
 		}
 		if (it->first == "method")
 			_server_conf["method"] = it->second;

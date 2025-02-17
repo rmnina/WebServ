@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:19:27 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 23:21:43 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/16 15:27:17 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	Parser::handle_cgi_error(int *status, pid_t pid)
 		{
 			kill(pid, SIGKILL);
 			_error_code = 504;
-			print_log(RED, "Error", _server->getName(), "Gateway Timeout", ' ');
+			print_log(CERR, RED, "\nError", _server->getName(), "Gateway Timeout", ' ');
 			break ;
 		}
 	}
@@ -51,13 +51,13 @@ void	Parser::exec_cgi(std::string &filename, int method)
 
 	if (pipe(input_pipe) == -1 || pipe(output_pipe) == -1) 
 	{
-		print_log(RED, "Error", _server->getName(), "Pipe creation failed in ", __func__);
+		print_log(CERR, RED, "Error", _server->getName(), "Pipe creation failed in ", __func__);
 		return;
 	}
 	pid = fork();
 	if (pid == -1) 
 	{
-		print_log(RED, "Error", _server->getName(), "Pipe creation failed in ", __func__);
+		print_log(CERR, RED, "Error", _server->getName(), "Pipe creation failed in ", __func__);
 		return;
 	}
 	if (pid == 0) { // Child
@@ -101,7 +101,7 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		char *buff_argv = new char[filename.size() + 1];
 		char *argv[] = { strcpy(buff_argv, filename.c_str()), NULL };
 		execve(filename.c_str(), argv, envp);
-		print_log(RED, "Error", _server->getName(), "CGI script could not be executed. ", strerror(errno));
+		print_log(CERR, RED, "Error", _server->getName(), "CGI script could not be executed. ", strerror(errno));
 		delete argv[0];
 		for (int j = 0; envp[j]; j++)
 			delete envp[j];
@@ -127,7 +127,7 @@ void	Parser::exec_cgi(std::string &filename, int method)
 		close(output_pipe[0]);
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-			print_log(RED, "Error", _server->getName(), "CGI script exited with error code: ", WEXITSTATUS(status));
+			print_log(CERR, RED, "Error", _server->getName(), "CGI script exited with error code: ", WEXITSTATUS(status));
 
 		_response = cgi_output;
 	}

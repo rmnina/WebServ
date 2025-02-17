@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 23:17:23 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 01:19:59 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,10 +124,10 @@ void    Parser::display_code(void)
 {
     if (_error_code)
     {
-        if (_error_code == 200 || _error_code == 201 || _error_code == 204)
-			print_log(PINK, "Status code ", _server->getName(), " ", _error_code);
+        if (_error_code == 200 || _error_code == 201 || _error_code == 204 || _error_code == 301)
+			print_log(COUT, PINK, "Status code ", _server->getName(), " ", _error_code);
         else
-			print_log(PINK, "Error code ", _server->getName(), " ", _error_code);
+			print_log(CERR, PINK, "Error code ", _server->getName(), " ", _error_code);
     }
 }
 
@@ -153,7 +153,7 @@ std::string	Parser::build_response_header( void)
 {
 	std::ostringstream	header;
 	header << "HTTP/1.1 " <<_error_code;
-	if (_error_code == 200 || _error_code == 201 || _error_code == 204)
+	if (_error_code == 200 || _error_code == 201 || _error_code == 204 || _error_code == 301)
 		header <<" OK\r\n";
 	header << "Date: " << get_time() << "\r\n";
 	if (_category == "IMAGE")
@@ -188,15 +188,10 @@ void	Parser::build_response_content( std::string &filename)
 	std::string		line;
 	std::string		content;
 	std::ifstream 	file;
-	
-	// if (opendir(filename.c_str()) != NULL) {
-	// 	std::cout << "on entre dans le opendir\n";
-	// 	file.open(teapot.c_str());
-	// }
-	// else
+
 	file.open(filename.c_str());
 	if (!file.is_open())
-		print_log(RED, "Error", _server->getName(), "could not open requested file for response. Filename : ", filename);
+		print_log(CERR, RED, "Error", _server->getName(), "could not open requested file for response. Filename : ", filename);
 	while (std::getline(file, line))
 		content += line + "\n";
 	_response += content;
@@ -248,7 +243,6 @@ void	Parser::display_dirlist(std::string path)
 	while ((entry = readdir(dir)) != NULL)
 	{
 		std::string name(entry->d_name);
-		// std::cout << "name = " << name << std::endl;
 		if (name != "." && name != "..")
 		{
 			std::string full_path = path + "/" + name;
@@ -270,7 +264,7 @@ std::string	Parser::build_response( void)
 	std::string	method[3] = { "GET", "POST", "DELETE" };
 	_response.erase();
 
-	get_location(_request["path"][0]);
+	// get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
 	if (_server_conf.find("upload") != _server_conf.end() && 

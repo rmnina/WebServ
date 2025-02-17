@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/14 20:23:59 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/16 16:20:59 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	Parser::GETmethod( void)
 	else if (!_category.compare("CGI"))
 		exec_cgi(path, GET);
 	else
-		std::cerr << BOLD RED << "Error getting category : " << _extension << RESET << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), "Error getting category for ", _extension);
 }
 
 void	Parser::POSTmethod( void)
@@ -59,14 +59,14 @@ void	Parser::upload(void)
 	if (!fill_content_type_multipart(_request_body))
 	{
 		_error_code = 400;
-		std::cerr << "Invalid upload request headers" << "\nError code: " << _error_code << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), "Invalid upload request headers", " ");
 		return;
 	}
 
 	if (!_request["File_Type"][0].compare("text/plain"))
 	{
 		_error_code = 400;
-		std::cerr << "Invalid file. Server only accepts text/plain" << "\nError code: " << _error_code << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), "Invalid file. Server only accepts text/plain", " ");
 		return;
 	}
 	
@@ -78,7 +78,7 @@ void	Parser::upload(void)
 		!get_file_content(_request_body, content))
 	{
 		_error_code = 400;
-		std::cerr << "Could not extract file from request" << "\nError code: " << _error_code << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), "Could not exctact file from request :", filename);
 		return;
 	}
 
@@ -87,7 +87,7 @@ void	Parser::upload(void)
 		_upload_dir = "www/" + _server_conf["upload"][1];
 	else
 	{
-		std::cerr << "Upload not configured" << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), "Upload not configured", " ");
 		_error_code = 500;
 	}
 
@@ -96,7 +96,7 @@ void	Parser::upload(void)
 	{
 		if (mkdir(_upload_dir.c_str(), 0755) != 0)
 		{
-			std::cerr << "Error creating directory" << std::endl;
+			print_log(CERR, RED, "Error", _server->getName(), "Could not create directory :", _upload_dir);
 			_error_code = 500;
 		}
 	}
@@ -104,11 +104,12 @@ void	Parser::upload(void)
 	std::ofstream	file(filepath.c_str(), std::ios::binary);
 	if (!file.is_open())
 	{
-		std::cerr << "Cannot create file" << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), "Cannot create file :", filepath.c_str() + 4);
 		_error_code = 500;
 	}
 	file.write(content.data(), content.size());
 	file.close();
+	print_log(COUT, ORANGE, "Log", _server->getName(), "File successfuly uploaded to server : ", filename);
 	_error_code = 201;
 }
 
@@ -122,12 +123,12 @@ void	Parser::DELETEmethod(void)
 	if (!isFound)
 	{
 		_error_code = 403;
-		std::cerr << "Remove " << path.c_str() + 4 << ": Forbidden" << RESET << "\nError code: " << _error_code << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), "Delete is forbidden on path ", path.c_str() + 4);
 		return ;
 	}
 	int status = remove(path.c_str());
 	if (!status)
-		std::cout << path.substr(13) << ": successfully deleted" << "\nCode: " << _error_code << std::endl;
+		print_log(COUT, MAGENTA, "Log", _server->getName(), "File successfully deleted : ", path.substr(13));
 	else
-		std::cerr << path.substr(13) << ": " << strerror(errno) << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), strerror(errno), path.substr(13));
 }

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/15 18:30:41 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/16 15:04:59 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	Server::add_event(int &epfd, int fd)
 	_event.data.fd = fd;
 	_event.events = EPOLLIN | EPOLLET;
 	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &_event) == -1) 
-		print_log(RED, "Error", _name, "Failed on adding epoll event. Socket fd: ", fd);
+		print_log(CERR, RED, "Error", _name, "Failed on adding epoll event. Socket fd: ", fd);
 }
 
 void	Server::modify_event(int &epfd, int fd, uint32_t flag)
@@ -74,7 +74,7 @@ void	Server::modify_event(int &epfd, int fd, uint32_t flag)
 	_event.data.fd = fd;
 	_event.events = flag | EPOLLET;
 	if (epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &_event) == -1)
-		print_log(RED, "Error", _name, "Failed on modifying epoll event. Socket fd: ", fd);
+		print_log(CERR, RED, "Error", _name, "Failed on modifying epoll event. Socket fd: ", fd);
 }
 
 void	Server::delete_event(int &epfd, int fd)
@@ -84,7 +84,7 @@ void	Server::delete_event(int &epfd, int fd)
 	fdstring << fd;
 	
 	if (epoll_ctl(epfd, EPOLL_CTL_DEL, fd, NULL) == -1)
-		print_log(RED, "Error", _name, "Failed on deleting epoll event. Socket fd: ", fd);
+		print_log(CERR, RED, "Error", _name, "Failed on deleting epoll event. Socket fd: ", fd);
 }
 
 int Server::create_socket()
@@ -92,26 +92,26 @@ int Server::create_socket()
 	_server_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_socket == -1)
 	{
-		print_log(RED, "Error", _name, "The following socket initialisation failed. Socket fd: ", _server_socket);
+		print_log(CERR, RED, "Error", _name, "The following socket initialisation failed. Socket fd: ", _server_socket);
 		return (FAILURE);
 	}
-	print_log(BLUE, "Log :", _name, "Socket has been successfuly initialized. Socket fd: ", _server_socket);
+	print_log(COUT, BLUE, "Log :", _name, "Socket has been successfuly initialized. Socket fd: ", _server_socket);
 	if (fcntl(_server_socket, F_SETFL, O_NONBLOCK) == -1) 
 	{
-		print_log(RED, "Error: ", _name, "The server socket flagging failed: Socket fd: ", _server_socket);
+		print_log(CERR, RED, "Error: ", _name, "The server socket flagging failed: Socket fd: ", _server_socket);
 		return (FAILURE);
 	}
 	int val = 1;
 	if (setsockopt(_server_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &val, sizeof(int)) == -1) 
 	{
-		print_log(RED, "Error", _name, "The server socket port config failed. Socket fd: ", _port);
+		print_log(CERR, RED, "Error", _name, "The server socket port config failed. Socket fd: ", _port);
 		return (FAILURE);
 	}
-	print_log(BLUE, "Log :", _name, "Successfully launched with host ", _hostname);
+	print_log(COUT, BLUE, "Log :", _name, "Successfully launched with host ", _hostname);
 	std::cout << BLUE << "Server " << BOLD << _name << RESET BLUE << " with host " << _hostname << " is launched on port " << _port << RESET << std::endl;
 	if (getaddrinfo(_hostname.c_str(), _port.c_str(), NULL, &_info) != 0) 
 	{
-		print_log(RED, "Error", _name, "Could not retrieve address info for port ", _port);
+		print_log(CERR, RED, "Error", _name, "Could not retrieve address info for port ", _port);
 		return (FAILURE);
 	}
 	return (SUCCESS);
@@ -121,10 +121,10 @@ int Server::set_socket()
 {
 	if (bind(_server_socket, _info->ai_addr, _info->ai_addrlen) == -1) 
 	{
-		print_log(RED, "Error", _name, "Socket binding failed. Socket fd: ", _server_socket);
+		print_log(CERR, RED, "Error", _name, "Socket binding failed. Socket fd: ", _server_socket);
 		return (FAILURE);
 	}
-	print_log(BLUE, "Log", _name, "Socket has been successfuly binded on port ", _port);
+	print_log(COUT, BLUE, "Log", _name, "Socket has been successfuly binded on port ", _port);
 	if (listen(_server_socket, MAXREQUEST) == -1) 
 		return (FAILURE);
 	return (SUCCESS);
@@ -138,24 +138,22 @@ int	Server::accept_connection(int &epfd)
 
 	client_sock = -1;
 	
-	print_log(BLUE, "Log", _name, "Starting client accept. New Socket fd: ", client_sock);
 	client_sock = accept(_server_socket, (sockaddr *)&client_addr, &addr_len);
-	print_log(BLUE, "Log", _name, "Finished client accept. Socket fd: ", client_sock);
 	if (client_sock == -1) 
 	{
-		print_log(RED, "Error", _name, "Accept failed. Socket fd :", _port);
+		print_log(CERR, RED, "Error", _name, "Accept failed. Socket fd :", _port);
 		return (FAILURE);
 	}
 	if (fcntl(client_sock, F_SETFL, O_NONBLOCK) == -1) 
 	{
-		print_log(RED, "Error", _name, "The client socket flagging failed. Socket fd: ", _port);
+		print_log(CERR, RED, "Error", _name, "The client socket flagging failed. Socket fd: ", _port);
 		return (FAILURE);
 	}
 	for (std::vector<int>::iterator it = _client_sock.begin(); it != _client_sock.end(); ++it) 
 	{
 		if (*it == client_sock) 
 		{
-			print_log(RED, "Error", _name, "Client socket already exists. Socket fd: ", client_sock);
+			print_log(CERR, RED, "Error", _name, "Client socket already exists. Socket fd: ", client_sock);
 			close(client_sock);
 			return (CONTINUE);
 		}
@@ -172,7 +170,7 @@ int	Server::accept_connection(int &epfd)
 	tmp.push_back('\0');
 
 	_client_sock.push_back(client_sock);
-	print_log(GREEN, "Log", _name, "Client socket has been successfuly created. Socket fd: ", client_sock);
+	print_log(COUT, GREEN, "Log", _name, "Client socket has been successfuly created. Socket fd: ", client_sock);
 	_request.push_back("");
 	_req_body.push_back("");
 	_req_binary.push_back(tmp);
@@ -198,7 +196,7 @@ int	Server::receive_request(int client_index, int &epfd)
 
 	if (nb_bytes < 0) 
 	{
-		print_log(RED, "Error", _name, "Recv failed. Socket fd: ", _client_sock[client_index]);
+		print_log(CERR, RED, "Error", _name, "Recv failed. Socket fd: ", _client_sock[client_index]);
 		std::cerr << "Error on recv on " << _name << " Errno is " << errno << " fd is " << _client_sock[client_index] << std::endl;
 		delete_event(epfd, _client_sock[client_index]);
 		close(_client_sock[client_index]);
@@ -290,7 +288,7 @@ int	Server::send_response(std::string &response, int client_index, int &epfd)
 		ssize_t	bytes = send(_client_sock[client_index], chunk.c_str(), chunk.size(), 0);
 		if (bytes <= 0)
 		{
-			std::cout << RED BOLD << "Error chunk" << RESET << std::endl;
+			print_log(CERR, RED, "Error", _name, "Error sending chunks. Socket fd: ", _client_sock[client_index]);
 			return (close (_client_sock[client_index]), 1);
 		}
 		bytes_sent += packet_size;
