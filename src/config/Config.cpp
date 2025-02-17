@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 03:30:54 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 17:34:55 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,8 +230,20 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 			std::getline(conf_file, line);
 		}
 	}
-	if (!line.empty() && !line.compare(0, 1, "}"))
+	if (!line.empty() && !line.compare(0, 1, "}")) {
 		brackets = _update_brackets_state(brackets);
+	}
+	if (server.find("listen") == server.end() || server.find("host") == server.end() || server.find("root") == server.end())
+		throw std::invalid_argument("Error: make sure to to add a 'listen'/'host/'root' value in your conf file");
+	std::vector<std::string> tmp2, tmp3;
+	if (server.find("server_name") == server.end()) {
+		tmp2.push_back("");
+		server["server_name"] = tmp2;
+	}
+	if (server.find("body_size") == server.end()) {
+		tmp3.push_back("256");
+		server["body_size"] = tmp3;
+	}
 }
 
 void printConfig(const std::vector<ConfigStruct> &servers_conf)
