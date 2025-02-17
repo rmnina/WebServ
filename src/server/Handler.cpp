@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Handler.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 15:59:44 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/17 20:56:25 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,31 +25,48 @@ void	Handler::loadServ()
 {
 	
 	printConfig(_servers_conf);
-	for (std::vector<ConfigStruct>::iterator it = _servers_conf.begin(); it < _servers_conf.end();)
+	for (std::vector<ConfigStruct>::iterator it = _servers_conf.begin(); it < _servers_conf.end(); it++)
 	{
 		std::vector<ConfigStruct>::iterator loc = it + 1;
 		server_data				 			config;
 		location_data						locations;
-
+		int		i = 0;
 		std::string	name = it->get_server_value("server_name")[0];
 		std::string	hostname = it->get_server_value("host")[0];
 		std::string	port = it->get_server_value("listen")[0];
-		config = (*it).serverData;
-		if (loc != _servers_conf.end())
+
+		if (it != _servers_conf.begin())
 		{
-			for (; loc->get_container_type() == ConfigStruct::LOCATION_MAP; loc++);
-			if (loc != it + 1)
+			for (std::vector<Server *>::iterator jt = _servers.begin(); jt != _servers.end(); jt++)
 			{
-				it++;
-				locations = (*it).locationData;
+				std::cout << "boucle jt\n";
+				if ((*jt)->getConfig()["host"][0] == hostname && (*jt)->getConfig()["listen"][0] == port) {
+					std::cout << "port et host sont identiques\n";
+					i = 1;
+					break ;
+					}
 			}
 		}
-		it++;
-		// iterqtion sur les serveurs pour verifier que hosntae + port 
-		//if 
-			//tg
-		//else
+		if (i == 0)
+		{
+			config = (*it).serverData;
+			if (loc != _servers_conf.end())
+			{
+				for (; loc->get_container_type() == ConfigStruct::LOCATION_MAP; loc++);
+				if (loc != it + 1)
+				{
+					it++;
+					locations = (*it).locationData;
+				}
+			}
+			// iterqtion sur les serveurs pour verifier que hosntae + port 
+			//if 
+				//tg
+			//else
+		//	it++;
 			_servers.push_back(new Server(name, hostname, port, config, locations));
+		}
+	//	it++;
 	}
 }
 
