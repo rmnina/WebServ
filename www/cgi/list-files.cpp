@@ -17,7 +17,7 @@ int main()
 	if (!dir)
 	{
 		std::cout << "[]";
-		return 1;
+		return 0;
 	}
 
 	struct	dirent *entry;

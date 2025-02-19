@@ -41,8 +41,10 @@
 					const fileList = document.getElementById("file-list");
 					fileList.innerHTML = "";
 					console.log(`files: ${files}`);
-					if (files.length === 0 || files == null) 
+					if (files == null || files.length == 0) 
 						document.getElementById("file-list").innerHTML = "This is no more than a wasteland for now. Bring me something so that I can ERASE IT!"
+					if (files)
+					{
 					files.forEach((fileName) => {
 						const fileWrapper = document.createElement("div");
 						let fileHTML = `<div class="file-item">`;
@@ -62,6 +64,7 @@
 						fileWrapper.innerHTML = fileHTML;
 						fileList.appendChild(fileWrapper);
 					});
+					}
 				} catch (error) {
 					console.error("Error fetching file list:", error);
 				}
