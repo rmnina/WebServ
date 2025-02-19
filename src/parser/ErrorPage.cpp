@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 03:41:31 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/19 17:33:11 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int Parser::build_error_page( void)
 {	
 	std::ostringstream os;
-	std::cout << __func__ << " " << __LINE__ << ": _error_code = " << _error_code << "\n";
 	os << _error_code;
 
 	std::string	code_str = os.str();

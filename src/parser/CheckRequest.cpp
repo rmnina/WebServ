@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/19 15:57:07 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/19 18:12:03 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,14 @@ bool	Parser::get_file_name(const std::string &body, std::string &filename)
 	return (true);
 }
 
+size_t	ft_strlen(const char *str)
+{
+	int i = 0;
+
+	for (; str && str[i]; i++);
+	return (i);
+}
+
 bool	Parser::get_file_content(const std::string &body, std::vector<char> &content)
 {
 	size_t	MAX_FILE_SIZE = 3000;
@@ -200,7 +208,9 @@ bool	Parser::get_file_content(const std::string &body, std::vector<char> &conten
 	std::stringstream ss;
 	ss << MAX_FILE_SIZE;
 
-	if (strlen(body.c_str()) > MAX_FILE_SIZE || strlen(body_binary) > MAX_FILE_SIZE)
+	if (!body_binary || body.size() == 0)
+		return (false);
+	if (!body.empty() && body_binary && (body.size() > MAX_FILE_SIZE || ft_strlen(body_binary) > MAX_FILE_SIZE))
 	{
 		std::string log = "File should contain under " + ss.str();
 		log.append(" characters. Current : ");
@@ -222,7 +232,7 @@ bool	Parser::get_file_content(const std::string &body, std::vector<char> &conten
 	if (!content_end)
 		content_end = body_binary + strlen(body_binary);
 	content.assign(content_start, content_end);
-	
+
 	return (true);
 }
 
@@ -239,7 +249,10 @@ bool	Parser::check_version( const std::string &request)
 bool	Parser::check_req_size( const std::string &request)
 {
 	if (request.size() > MAX_REQ_SIZE)
+	{
+		print_log(CERR, RED, "Error", _server->getName(), "Request too big.", " ");
 		return (false);
+	}
 	return (true);
 }
 
@@ -257,7 +270,10 @@ bool	Parser::check_body_size( void)
 	file.write(content.c_str(), content.size());
 	file.close();
 	if (_request_body.size() > body_size)
+	{
+		print_log(CERR, RED, "Error", _server->getName(), "Request body too big.", " ");
 		return (false);
+	}
 	return (true);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/19 16:08:12 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/19 17:37:11 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # define DISCONNECT 3
 
 # define MAXREQUEST 10
-# define MAX_REQ_SIZE 20000
+# define MAX_REQ_SIZE 200000
 
 class Server
 {
