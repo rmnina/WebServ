@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/16 15:18:24 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/18 13:48:45 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,13 +137,13 @@ void	print_log(int output, const char *color, const char *status, const std::str
 	{
 		case CERR:
 		{
-			std::cerr << color << status << " on " << BOLD << servername << " : " 
+			std::cerr << color << ITALIC << status << RESET << color <<" on " << BOLD << servername << " : " << RESET << color
 			<< message << BOLD << value << RESET << std::endl;
 			break;
 		}
 		case COUT:
 		{
-			std::cout << color << status << " on " << BOLD << servername << " : " 
+			std::cout << color << ITALIC << status << RESET << color << " on " << BOLD << servername << " : " << RESET << color
 			<< message << BOLD << value << RESET << std::endl;
 			break;
 		}

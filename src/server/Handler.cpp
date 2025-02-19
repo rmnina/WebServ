@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Handler.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 20:56:25 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:44:21 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,14 @@ void	Handler::loadServ()
 		{
 			for (std::vector<Server *>::iterator jt = _servers.begin(); jt != _servers.end(); jt++)
 			{
-				std::cout << "boucle jt\n";
-				if ((*jt)->getConfig()["host"][0] == hostname && (*jt)->getConfig()["listen"][0] == port) {
-					std::cout << "port et host sont identiques\n";
+				if ((*jt)->getConfig()["host"][0] == hostname && (*jt)->getConfig()["listen"][0] == port) 
+				{
+					std::string value = hostname + ":" + port;
+					print_log(CERR, ORANGE, "Warning", name, "A server linked to this host and port already exists : ", value);
+					print_log(CERR, ORANGE, "Warning", name, "Server has not been launched. ", " ");
 					i = 1;
 					break ;
-					}
+				}
 			}
 		}
 		if (i == 0)

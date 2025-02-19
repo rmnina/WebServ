@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 01:12:29 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/15 19:10:33 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/18 18:20:53 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,11 @@ int	main(int argc, char **argv)
 			filename = argv[1];
 		else
 			filename = "test.conf";
-		
+		if (MAX_REQ_SIZE < 10)
+		{
+			std::cerr << BOLD RED << "Error : MAX_REQ_SIZE can't be below 10" << RESET << std::endl;
+			return (1);
+		}
 		config.fill_conf_vector(filename);
 		Handler	handler(config.get_servers_conf());	
 		try 

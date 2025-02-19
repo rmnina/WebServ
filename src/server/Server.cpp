@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/16 15:04:59 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/18 15:44:15 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ int Server::create_socket()
 		return (FAILURE);
 	}
 	print_log(COUT, BLUE, "Log :", _name, "Successfully launched with host ", _hostname);
-	std::cout << BLUE << "Server " << BOLD << _name << RESET BLUE << " with host " << _hostname << " is launched on port " << _port << RESET << std::endl;
+	std::cout << TURQUOISE << "Server " << BOLD << _name << RESET TURQUOISE << " with host " << _hostname << " is launched on port " << _port << RESET << std::endl;
 	if (getaddrinfo(_hostname.c_str(), _port.c_str(), NULL, &_info) != 0) 
 	{
 		print_log(CERR, RED, "Error", _name, "Could not retrieve address info for port ", _port);
@@ -158,12 +158,6 @@ int	Server::accept_connection(int &epfd)
 			return (CONTINUE);
 		}
 	}
-	// int optval = 1;
-	// if (setsockopt(client_sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int)) == -1)
-	// {
-	// 	print_log(RED, "Error", _name, "The client socket port config failed. Socket fd: ", _port);
-	// 	return (FAILURE);
-	// }
 	add_event(epfd, client_sock);
 
 	std::vector<char>	tmp;
@@ -190,6 +184,11 @@ int	Server::receive_request(int client_index, int &epfd)
 	_nb_bytes[client_index] += nb_bytes;
 	_request[client_index].append(buffer);
 
+	if (_request.size() > MAX_REQ_SIZE)
+	{
+		std::cout << "ICIIIII" << std::endl;
+		return (SUCCESS);
+	}
 	size_t conn_pos = _request[client_index].find("Connection: keep-alive");
 	if (conn_pos != std::string::npos) 
 		_keep_alive[client_index] = true;
