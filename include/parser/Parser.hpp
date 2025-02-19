@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:05 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/18 13:48:45 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/19 16:26:18 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ class Parser
 		std::string					get_content_type( const std::string &filename);
 		void						get_content_category( void);
 		size_t						get_content_length( const std::string &filename);
-		location_i_data				find_location( const std::string &path);
+		location_i_data				find_location( const std::string &path, location_data::iterator &it);
 		void						get_location( const std::string &filename);
 		std::string					build_response_header( void);
 		std::string					build_response( void);
