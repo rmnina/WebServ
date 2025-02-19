@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 16:23:04 by eltouma          ###   ########.fr       */
+/*   Updated: 2025/02/19 15:57:07 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,6 +278,7 @@ void	Parser::examine_request( int client_index)
 {	
 	// get_location();
 	
+	_error_code = -1;
 	_server_conf = _server->getConfig();
 	_location = _server->getLocation();
 	_request_body = _server->getReqBody()[client_index];

@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/18 18:21:51 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/19 16:08:12 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class Server
 		std::vector<std::vector<char> > _req_binary;
 		std::vector<bool>				_keep_alive;;
 		struct addrinfo					*_info;
+		struct addrinfo					_hints;
 		struct epoll_event				_event;
 
 		bool							_error_page;
