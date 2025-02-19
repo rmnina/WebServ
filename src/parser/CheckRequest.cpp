@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/19 18:12:03 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/19 23:10:35 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,9 +208,7 @@ bool	Parser::get_file_content(const std::string &body, std::vector<char> &conten
 	std::stringstream ss;
 	ss << MAX_FILE_SIZE;
 
-	if (!body_binary || body.size() == 0)
-		return (false);
-	if (!body.empty() && body_binary && (body.size() > MAX_FILE_SIZE || ft_strlen(body_binary) > MAX_FILE_SIZE))
+	if (strlen(body.c_str()) > MAX_FILE_SIZE || strlen(body_binary) > MAX_FILE_SIZE)
 	{
 		std::string log = "File should contain under " + ss.str();
 		log.append(" characters. Current : ");
@@ -218,12 +216,18 @@ bool	Parser::get_file_content(const std::string &body, std::vector<char> &conten
 		return (false);
 	}
 	if (_request.find("boundary") == _request.end())
+	{
+		print_log(CERR, RED, "Error", _server->getName(), "Boundary not find in body", " ");
 		return (false);
+	}
 	std::string	boundary = _request["boundary"][0];
 	
 	char	*content_start = std::strstr(body_binary, "\r\n\r\n");
 	if (!content_start)
-		return (false);	
+	{
+		print_log(CERR, RED, "Error", _server->getName(), "Invalid format in request body", " ");
+		return (false);
+	}
 	content_start += 4;
 
 	std::string end_boundary = boundary + "--";
