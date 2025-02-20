@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 17:04:45 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 19:35:05 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,6 @@ int	Server::receive_request(int client_index, int &epfd)
 	if (nb_bytes < 0) 
 	{
 		print_log(CERR, RED, "Error", _name, "Recv failed. Socket fd: ", _client_sock[client_index]);
-		std::cerr << "Error on recv on " << _name << " Errno is " << errno << " fd is " << _client_sock[client_index] << std::endl;
 		delete_event(epfd, _client_sock[client_index]);
 		close(_client_sock[client_index]);
 		_client_sock.erase(_client_sock.begin() + client_index);
