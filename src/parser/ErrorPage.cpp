@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/19 17:33:11 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 13:30:57 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ int Parser::build_error_page( void)
 
 	std::string	code_str = os.str();
 	
-	int	code[8] = {400, 403, 404, 405, 406, 410, 504, 418};
-	std::string	message[8] = {"Bad request syntax", "Forbidden", "Resource not found",
-							"Method not allowed", "Format not acceptable", "Resource gone", "Gateway Timeout", "I'm a teapot"};
+	int	code[9] = {400, 403, 404, 405, 406, 410, 413, 504, 418};
+	std::string	message[9] = {"Bad request syntax", "Forbidden", "Resource not found",
+							"Method not allowed", "Format not acceptable", "Resource gone", 
+							"Content too large", "Gateway Timeout", "I'm a teapot"};
 	
 	std::string		tmp_filename = _server_conf["root"][0] + "/" + "error.html";
 	std::ifstream   error_file(tmp_filename.c_str());
@@ -59,7 +60,7 @@ int Parser::build_error_page( void)
 
 int	Parser::throw_error_page( void)
 {
-	int	error_code[7] = {400, 403, 404, 405, 406, 410, 418};
+	int	error_code[8] = {400, 403, 404, 405, 406, 410, 413, 418};
 
 	for (long unsigned int i = 0; i < sizeof(error_code) / sizeof(int); i++)
 	{

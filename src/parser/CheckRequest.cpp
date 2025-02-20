@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 13:26:01 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 13:30:05 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,8 +324,10 @@ void	Parser::examine_request( int client_index)
 		_error_code = 418;
 	else if (!fill_method(request))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
-	else if (!check_version(request) || !check_req_size(request) || !check_body_size())
+	else if (!check_version(request)) 
 		_error_code = 400; //ERROR BAD REQUEST
+	else if (!check_req_size(request) || !check_body_size())
+		_error_code = 413;
 	else if (_error_code != 301)
 		_error_code = 200;
 	closedir(dir);
