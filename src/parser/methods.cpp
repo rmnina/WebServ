@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/07 22:20:49 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 15:51:21 by jdufour          ###   ########.fr       */
+/*   Created: 2025/02/20 16:04:36 by jdufour           #+#    #+#             */
+/*   Updated: 2025/02/20 16:12:25 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../../include/parser/Parser.hpp"
 
@@ -78,7 +79,7 @@ void	Parser::upload(void)
 		!get_file_content(_request_body, content))
 	{
 		_error_code = 400;
-		print_log(CERR, RED, "Error", _server->getName(), "Could not exctact file from request :", filename);
+		print_log(CERR, RED, "Error", _server->getName(), "Could not extract file from request :", filename);
 		return;
 	}
 
@@ -116,10 +117,24 @@ void	Parser::upload(void)
 void	Parser::DELETEmethod(void)
 {
 	std::string path = _request["path"][0];
-	size_t pos = path.find("/delete");
-	if (pos != std::string::npos)
-		path = _server_conf["root"][0] + path.substr(pos + 7);
+	if (!_request_body.empty())
+	{
+		size_t pos = _request_body.find("file=");
+		if (pos != std::string::npos)
+		{
+			std::cout << "pos = " << pos << " body = " << _request_body << std::endl;
+			path = _request_body.substr(pos + 5);
+			std::cout << BLUE BOLD << "Path is " << path << RESET << std::endl;
+		}
+	}
+	else
+	{
+		size_t pos = path.find("/delete");
+		if (pos != std::string::npos)
+			path = _server_conf["root"][0] + path.substr(pos + 7);
+	}
 	int isFound = path.find(_upload_dir) != std::string::npos;
+	std::cout << BLUE BOLD << "Upload dir is " << _upload_dir << " Path is " << path << RESET << std::endl;
 	if (!isFound)
 	{
 		_error_code = 403;
