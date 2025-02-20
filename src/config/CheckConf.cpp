@@ -6,12 +6,13 @@
 /*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 16:07:16 by ahayon            #+#    #+#             */
-/*   Updated: 2025/02/20 16:09:44 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/20 19:06:25 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/config/Config.hpp"
 #include "../../include/parser/Parser.hpp"
+#include <fstream>
 
 
 bool Config::check_valid_nb(const std::string& str) 
@@ -54,6 +55,8 @@ bool Config::check_valid_ip(const std::string& ip)
 
 bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
 {
+    std::string errors[9] = {"400", "403", "404", "405", "406", "410", "413", "504", "418"};
+    
 	if (keyword == "listen") {
 		char *endptr;
 		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
@@ -96,5 +99,28 @@ bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string
 	else if (keyword == "server_name") {
 		return (tmp.size() == 1);
 	}
+    else if (keyword == "error") {
+        if (tmp.size() != 2) {
+            std::cout << "c'est size\n";
+            return (false);
+        }
+        std::vector<std::string>::iterator it = tmp.begin();
+        for (int i = 0; i < 9; i++) {
+            if (*it == errors[i])
+                break ;
+            if (i == 8) {
+                std::cout << "c'est i\n";
+                return (false);
+            }
+        }
+        it++;
+        std::cout << "*it = " << *it << std::endl;
+        std::ifstream file((*it).c_str());
+        if (!file.is_open()) {
+            std::cout << "c'est file\n";
+            return (false);
+        }
+        file.close();
+    }
 	return true;
 }
