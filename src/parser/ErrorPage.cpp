@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:03:57 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 13:30:57 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 19:07:27 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int Parser::build_error_page( void)
 	std::string		tmp_filename = _server_conf["root"][0] + "/" + "error.html";
 	std::ifstream   error_file(tmp_filename.c_str());
 	if (!error_file.is_open())
-		std::cerr << "Error opening error file" << std::endl;
+		print_log(CERR, RED, "Error", _server->getName(), "Could not open error page : ", tmp_filename);
 	
 	std::ostringstream	tmp;
 	tmp << error_file.rdbuf();
@@ -60,8 +60,32 @@ int Parser::build_error_page( void)
 
 int	Parser::throw_error_page( void)
 {
+	std::ostringstream os;
+	os << _error_code;
+
+	std::string	code_str = os.str();
+	
 	int	error_code[8] = {400, 403, 404, 405, 406, 410, 413, 418};
 
+	if (_server_conf.find("error") != _server_conf.end())
+	{
+		if (code_str == _server_conf["error"][0])
+		{
+			std::string	tmp_filename = _server_conf["root"][0] + "/" + _server_conf["error"][1];
+			std::ifstream   error_file(tmp_filename.c_str());
+			if (!error_file.is_open())
+			{
+				print_log(CERR, RED, "Error", _server->getName(), "Could not open error page : ", tmp_filename);
+				return (FAILURE);
+			}
+			else
+			{
+				_request["path"][0] = tmp_filename;
+				error_file.close();
+				return (FAILURE);
+			}
+		}
+	}
 	for (long unsigned int i = 0; i < sizeof(error_code) / sizeof(int); i++)
 	{
 		if (_error_code == error_code[i])

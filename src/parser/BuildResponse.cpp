@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 21:15:07 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 16:04:38 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 19:08:31 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,6 @@ bool    Parser::is_file(const std::string &path)
     return S_ISREG(path_stat.st_mode);
 }
 
-
-
 std::string	Parser::build_response_header( void)
 {
 	std::ostringstream	header;
@@ -264,7 +262,6 @@ std::string	Parser::build_response( void)
 	std::string	method[3] = { "GET", "POST", "DELETE" };
 	_response.erase();
 
-	// get_location(_request["path"][0]);
 	void (Parser::*func_method[])(void) = { &Parser::GETmethod, &Parser::POSTmethod, &Parser::DELETEmethod };
 
 	if (_server_conf.find("upload") != _server_conf.end() && 
@@ -279,7 +276,15 @@ std::string	Parser::build_response( void)
 		display_code();
 		return (_response);
 	}
-
+	if (_server_conf.find("error") != _server_conf.end())
+	{
+		if (_request["path"][0] == _server_conf["root"][0] + "/" + _server_conf["error"][1])
+		{
+			build_response_content(_request["path"][0]);
+			display_code();
+			return (_response);
+		}
+	}
 	for (long unsigned int i = 0; i < method->size(); i++)
 	{
 		if (_request.find("method")->second[0] == method[i])
