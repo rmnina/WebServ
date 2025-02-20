@@ -24,7 +24,11 @@ run_curl() {
 	if [ "$method" == "GET" ]; then
 		curl -s -o /dev/null "$url"
 	elif [ "$method" == "POST" ]; then
-		curl -s -o /dev/null -X POST -d "$data" "$url"
+		if [[ "$data" == *"@"* ]]; then
+			curl -s -o /dev/null -X POST -F "$data" "$url"
+		else
+			curl -s -o /dev/null -X POST -d "$data" "$url"
+		fi
 	elif [ "$method" == "DELETE" ]; then
 		if [ -n "$data" ]; then
 			curl -s -o /dev/null -X DELETE -d "$data" "$url"
@@ -53,10 +57,10 @@ for server in "${servers[@]}"; do
     run_curl "$location/index.html" "GET"
     run_curl "$location/kaamelott.html" "GET"
     run_curl "$location/cgi/astro.php" "POST" "sign=Leo"
-    run_curl "$location/delete.html" "DELETE" "file=www/LAME_UPLOAD/coucou.txt"
     run_curl "$location/index.html" "DELETE"
-    # curl -X POST -F "file=@/chemin/vers/mon_fichier.jpg" "http://127.0.0.1:8082/upload"
-    run_curl "file=@test.sh" "POST" -F "$location/index.html"
+    run_curl "$location/index.html" "POST" "file=@www/cgi/random_number.cpp"
+    run_curl "$location/index.html" "POST" "file=@www/cgi/kaamelott.js"
+    run_curl "$location/delete.html" "DELETE" "file=www/$upload_on/random_number.cpp"
 
     # Error requests
     run_curl "$location/cgi/astro.php" "POST" "sign=NOSIGN"
