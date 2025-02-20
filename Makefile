@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+         #
+#    By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 19:01:05 by jdufour           #+#    #+#              #
-#    Updated: 2025/02/17 03:44:16 by jdufour          ###   ########.fr        #
+#    Updated: 2025/02/20 16:27:14 by ahayon           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ SRCS_PATH = $(shell find src -type d)
 CGI_PATH = www/cgi
 
 # Main files
-SRCS = Config.cpp ConfigStruct.cpp Handler.cpp \
+SRCS = Config.cpp ConfigStruct.cpp Handler.cpp CheckConf.cpp \
 	Server.cpp Signal.cpp CheckRequest.cpp \
 	ErrorPage.cpp BuildResponse.cpp Location.cpp \
 	CgiHandler.cpp methods.cpp main.cpp
