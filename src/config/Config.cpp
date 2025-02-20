@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 16:42:34 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/20 19:18:07 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 			{
 				std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
 				if (!check_keyword_validity(keyword, tmp)) {
-					throw std::invalid_argument("Unauthorized argument in conf file");
+					throw std::invalid_argument("Unauthorized argument in conf file for " + keyword);
 				}
 				server[keyword] = tmp;
 			}

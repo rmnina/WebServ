@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CheckConf.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 16:07:16 by ahayon            #+#    #+#             */
-/*   Updated: 2025/02/20 19:06:25 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/20 19:25:52 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string
 	else if (keyword == "index") {
 		if (tmp.size() != 1 || tmp[0].substr(tmp[0].size() - 5) != ".html")
 			return (false);
-		// std::ifstream file(("www/" + tmp[0]).c_str());
-		// return file.good();
 	} 
 	else if (keyword == "body_size") {
 		if (tmp.size() != 1)
@@ -101,7 +99,6 @@ bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string
 	}
     else if (keyword == "error") {
         if (tmp.size() != 2) {
-            std::cout << "c'est size\n";
             return (false);
         }
         std::vector<std::string>::iterator it = tmp.begin();
@@ -109,18 +106,9 @@ bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string
             if (*it == errors[i])
                 break ;
             if (i == 8) {
-                std::cout << "c'est i\n";
                 return (false);
             }
         }
-        it++;
-        std::cout << "*it = " << *it << std::endl;
-        std::ifstream file((*it).c_str());
-        if (!file.is_open()) {
-            std::cout << "c'est file\n";
-            return (false);
-        }
-        file.close();
     }
 	return true;
 }
