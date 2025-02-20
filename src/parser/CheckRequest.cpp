@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 13:23:45 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 13:26:01 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,7 +306,7 @@ void	Parser::examine_request( int client_index)
 	_keep_alive = _server->getConnectionStatus()[client_index];
 	_req_binary = _server->getReqBinary()[client_index];
 
-	if (_server_conf.find("dir_listing") != _server_conf.end())
+	if (_server_conf.find("autoindex") != _server_conf.end())
 	{
 		if (_server_conf["autoindex"][0] == "on")
 			autoindex = true;
