@@ -1,70 +1,67 @@
 #!/bin/bash
 
-# Exit when any command fails
-# set -ex
-
-# Colors variables
+# Colors
 green='\e[32m'
 red='\e[31m'
 blue='\e[34m'
 reset='\e[0m'
 
-# Server1 variables
-server1_port='8082'
-server1_host='127.0.0.1'
-server1_location='http://127.0.0.1:8082'
-server1_upload_on='LAME_UPLOAD'
+# Define servers in an array (host, port, location, upload_dir)
+servers=(
+	"Server1 127.0.0.1 8082 http://127.0.0.1:8082 LAME_UPLOAD"
+	"Server2 127.0.0.2 8081 http://127.0.0.2:8081 BADASS_UPLOAD"
+	"Server3 127.0.0.2 8081 http://127.0.0.2:8081 TEGE_UPLOAD"
+	"Server4 127.0.0.3 8080 http://127.0.0.3:8080 TIGHT_UPLOAD"
+)
 
-# Server2 variables
-server2_port='8081'
-server2_host='127.0.0.2'
-server2_location='http://127.0.0.2:8081'
-server2_upload_on='LAME_UPLOAD'
+# Function to run curl commands
+run_curl() {
+	local url=$1
+	local method=$2
+	local data=$3
+	local flag=$4
 
-# Server3 variables
-server3_port='8081'
-server3_host='127.0.0.2'
-server3_location='http://127.0.0.2:8081'
-server3_upload_on='LAME_UPLOAD'
+	if [ "$method" == "GET" ]; then
+		curl -s -o /dev/null "$url"
+	elif [ "$method" == "POST" ]; then
+		curl -s -o /dev/null -X POST -d "$data" "$url"
+	elif [ "$method" == "DELETE" ]; then
+		if [ -n "$data" ]; then
+			curl -s -o /dev/null -X DELETE -d "$data" "$url"
+		else
+			curl -s -o /dev/null -X DELETE "$url"
+		fi
+	else
+		curl -s -o /dev/null -X "$method" "$url"
+	fi
 
-# Echo an error message before exiting
-if [ ! "$0" ]; then
-	trap 'printf "\"${red}${last_command}${reset}\" command failed with exit code $?."' EXIT
-else
-	trap 'printf "${green}success${reset}\n"' EXIT
-fi
+	if [ $? -eq 0 ]; then
+		echo -e "${green}✓ SUCCESS${reset}: $method $url"
+	else
+		echo -e "${red}✗ FAIL${reset}: $method $url"
+	fi
+}
 
-curl "$server1_location"
-curl --resolve index.html:"$server1_port":"$server1_host" http://index.html:"$server1_port"/
-curl "$server1_location"/kaamelott.html
-curl -X POST -d "sign=Leo" "$server1_location"/cgi/astro.php
+# Loop through each server
+for server in "${servers[@]}"; do
+	read -r name host port location upload_on <<< "$server"
 
-# ERREUR
-curl -X POST -d "sign=NOSIGN" "$server1_location"/cgi/astro.php
-curl -X POSTIIIIII -d "sign=Leo" "$server1_location"/cgi/astro.php
-curl "$server1_location"/index.html -X DELETE
-curl "$server1_location"/delete/"${server1_upload_on}"/loveeeeeeeeeers.jpeg -X DELETE
+	echo -e "\n${blue}Testing $name: $location${reset}"
 
-# server2
-curl "$server2_location"
-curl --resolve index.html:"$server2_port":"$server2_host" http://index.html:"$server2_port"/
-curl "$server2_location"/kaamelott.html
-curl -X POST -d "sign=Leo" "$server2_location"/cgi/astro.php
+    # Valid requests
+    run_curl "$location" "GET"
+    run_curl "$location/index.html" "GET"
+    run_curl "$location/kaamelott.html" "GET"
+    run_curl "$location/cgi/astro.php" "POST" "sign=Leo"
+    run_curl "$location/delete.html" "DELETE" "file=www/LAME_UPLOAD/coucou.txt"
+    run_curl "$location/index.html" "DELETE"
+    # curl -X POST -F "file=@/chemin/vers/mon_fichier.jpg" "http://127.0.0.1:8082/upload"
+    run_curl "file=@test.sh" "POST" -F "$location/index.html"
 
-# ERREUR
-curl -X POST -d "sign=NOSIGN" "$server2_location"/cgi/astro.php
-curl -X POSTIIIIII -d "sign=Leo" "$server2_location"/cgi/astro.php
-curl "$server2_location"/index.html -X DELETE
-curl "$server2_location"/delete/"${server2_upload_on}"/loveeeeeeeeeers.jpeg -X DELETE
+    # Error requests
+    run_curl "$location/cgi/astro.php" "POST" "sign=NOSIGN"
+    run_curl "$location/cgi/astro.php" "POSTIIIIII" "sign=Leo"
+    run_curl "$location/index.html" "DELETE"
+    run_curl "$location/delete/$upload_on/loveeeeeeeeeers.jpeg" "DELETE"
+done
 
-# server3
-curl "$server3_location"
-curl --resolve index.html:"$server3_port":"$server3_host" http://index.html:"$server3_port"/
-curl "$server3_location"/kaamelott.html
-curl -X POST -d "sign=Leo" "$server3_location"/cgi/astro.php
-
-# ERREUR
-curl -X POST -d "sign=NOSIGN" "$server3_location"/cgi/astro.php
-curl -X POSTIIIIII -d "sign=Leo" "$server3_location"/cgi/astro.php
-curl "$server3_location"/index.html -X DELETE
-curl "$server3_location"/delete/"${server3_upload_on}"/loveeeeeeeeeers.jpeg -X DELETE
