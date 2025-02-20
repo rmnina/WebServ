@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 17:24:37 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 16:42:34 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,43 +19,6 @@ Config::Config(void) {}
 
 // Config  &Config::operator=( const Config &rhs){}
 
-std::vector<ConfigStruct>	Config::get_servers_conf(void) const
-{
-	return (_servers_conf);
-}
-
-bool    Config::_server_allowed(const std::string &keyword) 
-{
-	const std::string			array[13] = {"listen", "Cross-Origin-Resource-Policy", "server_name", "dir_listing", "error", "method",
-											"upload", "root", "body_size", "index", "location", "host"};
-	std::vector<std::string>	allowed(array, array + 13);
-
-	for (std::vector<std::string>::iterator it = allowed.begin(); it < allowed.end(); it++)
-	{
-		if (!keyword.compare(*it))
-			return (true);
-	}
-	return (false);
-}
-
-bool    Config::_location_allowed(const std::string &keyword) 
-{
-	const std::string			array[8] = {"dir_listing", "error", "method", "upload", "root", 
-											"default_file", "cgi", "redirect"};
-	std::vector<std::string>	allowed(array, array + 8);
-
-	for (std::vector<std::string>::iterator it = allowed.begin(); it < allowed.end(); it++)
-	{
-		if (!keyword.compare(*it))
-			return (true);
-	}
-	return (false);
-}
-
-bool	Config::_update_brackets_state(bool brackets) 
-{ 
-	return (brackets ? false : true); 
-}
 
 void	Config::fill_locations(std::ifstream &conf_file, std::string &line, location_data &location, bool &brackets)
 {
@@ -100,90 +63,6 @@ void	Config::fill_locations(std::ifstream &conf_file, std::string &line, locatio
 	if (!line.empty() && !line.compare(0, 1, "}"))
 		brackets = _update_brackets_state(brackets);
 }
-
-bool Config::check_valid_nb(const std::string& str) 
-{
-	if (str.empty()) 
-		return (false); 
-	for (size_t i = 0; i < str.length(); i++) {
-		if (str[i] < '0' || str[i] > '9')
-			return (false); 
-	}
-	return true;
-}
-
-bool Config::check_valid_ip(const std::string& ip) 
-{
-	if (ip.empty()) 
-		return (false);
-
-	char ipCopy[16];
-	std::strncpy(ipCopy, ip.c_str(), 15);
-	ipCopy[15] = '\0'; 
-
-	int parts = 0;
-	char* token = std::strtok(ipCopy, "."); 
-	while (token) {
-		std::string part(token);
-
-		if (!check_valid_nb(part)) 
-			return (false);
-
-		int num = std::atoi(part.c_str());
-		if (num < 0 || num > 255) 
-			return (false);
-
-		parts++;
-		token = std::strtok(NULL, ".");
-	}
-	return (parts == 4);
-}
-
-bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string> tmp)
-{
-	if (keyword == "listen") {
-		char *endptr;
-		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
-			long nb = strtol(it->c_str(), &endptr, 10);
-			if (*endptr != '\0' || nb < 1024 || nb > 65535)
-				return (false);
-		}
-		return (true);
-	} 
-	else if (keyword == "host") {
-		return (tmp.size() == 1 && (tmp[0] == "localhost" || check_valid_ip(tmp[0])));
-	} 
-	else if (keyword == "dir_listing") {
-		return (tmp.size() == 1 && (tmp[0] == "on" || tmp[0] == "off"));
-	} 
-	else if (keyword == "index") {
-		if (tmp.size() != 1 || tmp[0].substr(tmp[0].size() - 5) != ".html")
-			return (false);
-	} 
-	else if (keyword == "body_size") {
-		if (tmp.size() != 1)
-			return (false);
-		char *endptr;
-		long nb = strtol(tmp[0].c_str(), &endptr, 10);
-		return (*endptr == '\0' && nb >= 1 && nb <= 424242);
-	} 
-	else if (keyword == "method") {
-		if (tmp.empty() || tmp.size() > 3)
-			return (false);
-		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); ++it) {
-			if (*it != "GET" && *it != "POST" && *it != "DELETE")
-				return (false);
-		}
-	} 
-	else if (keyword == "upload") {
-		return (tmp.size() == 2 && tmp[0] == "on");
-	} 
-	else if (keyword == "server_name") {
-		return (tmp.size() == 1);
-	}
-	return true;
-}
-
 
 void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_data &server, location_data &locations, bool &brackets)
 {
@@ -297,29 +176,3 @@ void    Config::fill_conf_vector(const std::string &filename)
 }
 
 Config::~Config(void) {}
-
-
-std::vector<std::string>	string_to_vector(const std::string &string, const char delimiter, size_t space_pos)
-{
-	std::vector<std::string>	result;
-
-	if (space_pos >= string.size())
-		return (result);
-
-	size_t	start = space_pos;
-
-	if (string[start] == delimiter)
-		start++;
-
-	size_t	end = string.find(delimiter, start);
-
-	while (end != std::string::npos)
-	{
-		result.push_back(string.substr(start, end - start));
-		start = end + 1;
-		end = string.find(delimiter, start);
-	}
-	if (start < string.length())
-		result.push_back(string.substr(start));
-	return (result);
-}
