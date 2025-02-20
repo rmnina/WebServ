@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiHandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 22:19:27 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 15:46:25 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 13:22:43 by ahayon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ void	Parser::exec_cgi(std::string &filename, int method)
 
 		char *buff_argv = new char[filename.size() + 1];
 		char *argv[] = { strcpy(buff_argv, filename.c_str()), NULL };
+		for (int fd = 3; fd < 1024; fd++)
+			close (fd);
 		execve(filename.c_str(), argv, envp);
 		print_log(CERR, RED, "Error", _server->getName(), "CGI script could not be executed. ", strerror(errno));
 		delete argv[0];
