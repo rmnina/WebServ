@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/19 16:10:21 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 17:04:45 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,8 @@ int Server::create_socket()
 		print_log(CERR, RED, "Error", _name, "The server socket port config failed. Socket fd: ", _port);
 		return (FAILURE);
 	}
-	print_log(COUT, BLUE, "Log :", _name, "Successfully launched with host ", _hostname);
-	std::cout << TURQUOISE << "Server " << BOLD << _name << RESET TURQUOISE << " with host " << _hostname << " is launched on port " << _port << RESET << std::endl;
+	std::string	log = _hostname + ":" + _port;
+	print_log(COUT, TURQUOISE, "Log :", _name, "Successfully launched with host:port ", log);
 	if (getaddrinfo(_hostname.c_str(), _port.c_str(), &_hints, &_info) != 0) 
 	{
 		print_log(CERR, RED, "Error", _name, "Could not retrieve address info for port ", _port);

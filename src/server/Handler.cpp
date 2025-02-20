@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 00:56:49 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 17:24:14 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,8 @@ void	Handler::loadServ()
 					locations = (*it).locationData;
 				}
 			}
-			// iterqtion sur les serveurs pour verifier que hosntae + port 
-			//if 
-				//tg
-			//else
-		//	it++;
 			_servers.push_back(new Server(name, hostname, port, config, locations));
 		}
-	//	it++;
 	}
 }
 

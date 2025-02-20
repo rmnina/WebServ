@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 21:48:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/19 16:26:34 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 17:02:11 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,24 +44,26 @@ void	Parser::get_location( const std::string &path)
 			return;
 		if (location.find("route") != location.end())
 			cmp = _server_conf["root"][0] + "/" + location.find("route")->second[0];
-		for (location_i_data::iterator it = location.begin(); it != location.end(); it++)
+		if (cmp == path)
 		{
-			if (it->first == "redirect")
+			for (location_i_data::iterator it = location.begin(); it != location.end(); it++)
 			{
-				if (cmp == path)
+				if (it->first == "redirect")
 				{
-					std::string	tmp = _server_conf["root"][0] + "/" + it->second[0];
-					std::vector<std::string>	tmp_vec;
-				
-					tmp_vec.push_back(tmp);
-					_request["path"] = tmp_vec;
-					_error_code = 301;
+					{
+						std::string	tmp = _server_conf["root"][0] + "/" + it->second[0];
+						std::vector<std::string>	tmp_vec;
+					
+						tmp_vec.push_back(tmp);
+						_request["path"] = tmp_vec;
+						_error_code = 301;
+					}
 				}
+				if (it->first == "method")
+					_server_conf["method"] = it->second;
+				else
+					_server_conf[it->first] = it->second;
 			}
-			if (it->first == "method")
-				_server_conf["method"] = it->second;
-			else
-				_server_conf[it->first] = it->second;
 		}
 	}
 }

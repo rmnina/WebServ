@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reqBody = file_get_contents('php://stdin');
     parse_str($reqBody, $_POST);
         $sign = $_POST['sign'];
-    	$link_add = 'https://www.miviludes.interieur.gouv.fr/';
+    	$link_add = 'https://contacts-demarches.interieur.gouv.fr/miviludes/informer-la-miviludes-d-une-derive-sectaire/';
 
         switch ($sign) {
             case 'Aries':

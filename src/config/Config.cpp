@@ -99,7 +99,6 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 			{
 				std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
 				if (!check_keyword_validity(keyword, tmp)) {
-					std::cout << "keyword qui foire = " << keyword << std::endl;
 					throw std::invalid_argument("Unauthorized argument in conf file");
 				}
 				server[keyword] = tmp;
