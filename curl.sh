@@ -61,11 +61,14 @@ for server in "${servers[@]}"; do
     run_curl "$location/index.html" "POST" "file=@www/cgi/random_number.cpp"
     run_curl "$location/index.html" "POST" "file=@www/cgi/kaamelott.js"
     run_curl "$location/delete.html" "DELETE" "file=www/$upload_on/random_number.cpp"
+    run_curl "$location/delete.html" "DELETE" "file=www/$upload_on/kaamelott.js"
 
     # Error requests
     run_curl "$location/cgi/astro.php" "POST" "sign=NOSIGN"
     run_curl "$location/cgi/astro.php" "POSTIIIIII" "sign=Leo"
     run_curl "$location/index.html" "DELETE"
     run_curl "$location/delete/$upload_on/loveeeeeeeeeers.jpeg" "DELETE"
+    rm -rf "www/$upload_on"
 done
 
+rm -rf "www/BADASS_UPLOAD"
