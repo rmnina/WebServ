@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 00:38:50 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/18 13:44:21 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 00:56:49 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ Handler::Handler(const std::vector<ConfigStruct> servers_conf) : _servers_conf(s
 
 void	Handler::loadServ()
 {
-	
-	printConfig(_servers_conf);
 	for (std::vector<ConfigStruct>::iterator it = _servers_conf.begin(); it < _servers_conf.end(); it++)
 	{
 		std::vector<ConfigStruct>::iterator loc = it + 1;

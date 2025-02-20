@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/19 23:10:35 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 01:52:44 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,6 +297,7 @@ std::string trim_request(std::string request)
 void	Parser::examine_request( int client_index)
 {	
 	// get_location();
+	bool	autoindex = false;
 	
 	_error_code = -1;
 	_server_conf = _server->getConfig();
@@ -304,16 +305,26 @@ void	Parser::examine_request( int client_index)
 	_request_body = _server->getReqBody()[client_index];
 	_keep_alive = _server->getConnectionStatus()[client_index];
 	_req_binary = _server->getReqBinary()[client_index];
+
+	if (_server_conf.find("dir_listing") != _server_conf.end())
+	{
+		if (_server_conf["autoindex"][0] == "on")
+			autoindex = true;
+	}
 	
 	std::string	request = _server->getRequest()[client_index];
 	if (request.empty())
 		return ;
 	std::string trim_req = _server_conf["root"][0] + trim_request(request);
+	DIR	*dir = opendir(trim_req.c_str());
 	init_mime_types();
 	if (!fill_path(request))
 		_error_code = 404; //ERROR PAGE RESOURCE NOT FOUND
-	else if (trim_req != _server_conf["root"][0] + "/" && opendir(trim_req.c_str()) != NULL)
+	else if (trim_req != _server_conf["root"][0] + "/" && dir != NULL && autoindex == false)
+	{
 		_error_code = 418;
+		closedir(dir);
+	}
 	else if (!fill_method(request))
 		_error_code = 405; //ERROR PAGE METHOD NOT ALLOWED
 	else if (!check_version(request) || !check_req_size(request) || !check_body_size())

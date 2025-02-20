@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahayon <ahayon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/17 17:34:55 by ahayon           ###   ########.fr       */
+/*   Updated: 2025/02/20 00:56:39 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,47 +245,6 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 		server["body_size"] = tmp3;
 	}
 }
-
-void printConfig(const std::vector<ConfigStruct> &servers_conf)
-{	
-	for (size_t i = 0; i < servers_conf.size(); ++i)
-	{
-		const ConfigStruct &config = servers_conf[i];
-
-		std::cout << "ConfigStruct #" << i + 1 << ":\n";
-
-		if (config.ContainerType == ConfigStruct::SERVER_VECTOR)
-		{
-			std::cout << "  Type: SERVER_VECTOR\n";
-			for (server_data::const_iterator it = config.serverData.begin(); it != config.serverData.end(); ++it)
-			{
-				std::cout << "  Key: " << it->first << "\n";
-				std::cout << "  Values: ";
-				for (std::vector<std::string>::const_iterator vit = it->second.begin(); vit != it->second.end(); ++vit)
-					std::cout << *vit << " ";
-				std::cout << "\n";
-			}
-		}
-		else if (config.ContainerType == ConfigStruct::LOCATION_MAP)
-		{
-			std::cout << "  Type: LOCATION_MAP\n";
-			for (location_data::const_iterator it = config.locationData.begin(); it != config.locationData.end(); ++it)
-			{
-				std::cout << "  Location Map:\n";
-				for (server_data::const_iterator sit = it->begin(); sit != it->end(); ++sit)
-				{
-					std::cout << "    Key: " << sit->first << "\n";
-					std::cout << "    Values: ";
-					for (std::vector<std::string>::const_iterator vit = sit->second.begin(); vit != sit->second.end(); ++vit)
-						std::cout << *vit << " ";
-					std::cout << "\n";
-				}
-			}
-		}
-		std::cout << "\n";
-	}
-}
-
 
 void    Config::fill_conf_vector(const std::string &filename) 
 {
