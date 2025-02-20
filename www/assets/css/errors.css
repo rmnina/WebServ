@@ -23,6 +23,7 @@
     background: linear-gradient(to bottom, rgba(255, 0, 0, 0) 96%, #191818 99%);
 }
 
+
 .image img {
 	width: 400px;
 	height: 400px;
@@ -30,7 +31,7 @@
 	height: 80%;
 	border-radius: 5px;
 	filter: grayscale(100%);
-	background: linear-gradient(to bottom, rgba(255,0,0,0) 0%,rgba(255,0,0,0.65) 100%);
+    	background: linear-gradient(to bottom, rgba(255, 0, 0, 0) 96%, #191818 99%);
 }
 			.wrapper {
 				background-image: url("images/bg.png");
@@ -1264,3 +1265,8 @@
 				}
 
 			}
+
+#fool {
+	width: 50%;
+	height: 50%;
+}

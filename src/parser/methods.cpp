@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 16:04:36 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 17:02:52 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 19:45:48 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void	Parser::DELETEmethod(void)
 	}
 	int status = remove(path.c_str());
 	if (!status)
-		print_log(COUT, MAGENTA, "Log", _server->getName(), "File successfully deleted : ", path.substr(13));
+		print_log(COUT, MAGENTA, "Log", _server->getName(), "File successfully deleted : ", path.substr(17));
 	else
 		print_log(CERR, RED, "Error", _server->getName(), strerror(errno), path.substr(13));
 }
