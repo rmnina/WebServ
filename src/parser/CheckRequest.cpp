@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:12 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 16:03:57 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 17:01:57 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ bool	Parser::fill_method( const std::string &request)
 		if (pos == _server_conf.end())
 			return (true);
 		allowed_method = pos->second;
-		for (std::vector<std::string>::iterator it = allowed_method.begin(); it < allowed_method.end(); ++it)
-			std::cout << BOLD YELLOW << "METHOD " << *it << RESET << std::endl;
 		for (std::vector<std::string>::iterator it = allowed_method.begin(); it < allowed_method.end(); it++)
 		{
 			if (_request["method"][0] == *it)
@@ -209,8 +207,6 @@ bool	Parser::get_file_content(const std::string &body, std::vector<char> &conten
 
 	std::stringstream ss;
 	ss << MAX_FILE_SIZE;
-
-	std::cout << BOLD YELLOW << body_binary << "\nsize is "<< strlen(body_binary) << RESET << std::endl;
 
 	if (strlen(body.c_str()) > MAX_FILE_SIZE || strlen(body_binary) > MAX_FILE_SIZE)
 	{

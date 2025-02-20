@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 16:04:36 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 16:12:25 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 17:02:52 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,11 +121,7 @@ void	Parser::DELETEmethod(void)
 	{
 		size_t pos = _request_body.find("file=");
 		if (pos != std::string::npos)
-		{
-			std::cout << "pos = " << pos << " body = " << _request_body << std::endl;
 			path = _request_body.substr(pos + 5);
-			std::cout << BLUE BOLD << "Path is " << path << RESET << std::endl;
-		}
 	}
 	else
 	{
@@ -134,7 +130,6 @@ void	Parser::DELETEmethod(void)
 			path = _server_conf["root"][0] + path.substr(pos + 7);
 	}
 	int isFound = path.find(_upload_dir) != std::string::npos;
-	std::cout << BLUE BOLD << "Upload dir is " << _upload_dir << " Path is " << path << RESET << std::endl;
 	if (!isFound)
 	{
 		_error_code = 403;

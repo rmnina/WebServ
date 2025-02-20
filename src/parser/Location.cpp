@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 21:48:10 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 14:49:17 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 17:02:11 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,7 @@ void	Parser::get_location( const std::string &path)
 					}
 				}
 				if (it->first == "method")
-				{
 					_server_conf["method"] = it->second;
-					for (int i = 0; i < 2; i++)
-						std::cout << "METHOD " << _server_conf["method"][i] << std::endl;
-				}
 				else
 					_server_conf[it->first] = it->second;
 			}

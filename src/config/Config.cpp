@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 00:56:39 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 17:24:37 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,8 +159,6 @@ bool	Config::check_keyword_validity(std::string keyword, std::vector<std::string
 	else if (keyword == "index") {
 		if (tmp.size() != 1 || tmp[0].substr(tmp[0].size() - 5) != ".html")
 			return (false);
-		// std::ifstream file(("www/" + tmp[0]).c_str());
-		// return file.good();
 	} 
 	else if (keyword == "body_size") {
 		if (tmp.size() != 1)
@@ -222,7 +220,6 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 			{
 				std::vector<std::string> tmp(string_to_vector(line, ' ', space_pos));
 				if (!check_keyword_validity(keyword, tmp)) {
-					std::cout << "keyword qui foire = " << keyword << std::endl;
 					throw std::invalid_argument("Unauthorized argument in conf file");
 				}
 				server[keyword] = tmp;
