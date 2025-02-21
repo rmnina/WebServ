@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 19:35:05 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/21 11:49:28 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,9 +311,11 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 		Parser	parser(this);
 		parser.examine_request(client_index);
 		std::string response = parser.build_response_header();
-		send(_client_sock[client_index], response.c_str(), response.size(), 0); 
-		response = parser.build_response();
-		send_response(response, client_index, epfd);
+		if (send(_client_sock[client_index], response.c_str(), response.size(), 0) >= 0)
+		{
+			response = parser.build_response();
+			send_response(response, client_index, epfd);
+		}
 		_request[client_index].clear();
 		_nb_bytes[client_index] = 0;
 		_req_body[client_index].clear();
