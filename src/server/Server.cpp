@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/21 11:58:37 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/21 12:58:11 by eltouma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,7 +278,7 @@ int	Server::send_response(std::string &response, int client_index, int &epfd)
 		chunk += response.substr(bytes_sent, packet_size);
 		chunk += "\r\n";
 
-		ssize_t	bytes = send(_client_sock[client_index], chunk.c_str(), chunk.size(), 0);
+		ssize_t	bytes = send(_client_sock[client_index], chunk.c_str(), chunk.size(), MSG_NOSIGNAL);
 		if (bytes <= 0)
 		{
 			print_log(CERR, RED, "Error", _name, "Error sending chunks. Socket fd: ", _client_sock[client_index]);
@@ -287,7 +287,7 @@ int	Server::send_response(std::string &response, int client_index, int &epfd)
 		bytes_sent += packet_size;
 	}
 	std::string end_chunk = "0\r\n\r\n";
-	if (send(_client_sock[client_index], end_chunk.c_str(), end_chunk.size(), 0) < 0)
+	if (send(_client_sock[client_index], end_chunk.c_str(), end_chunk.size(), MSG_NOSIGNAL) < 0)
 	{
 		close (_client_sock[client_index]);
 		delete_event(epfd, _client_sock[client_index]); 
@@ -316,7 +316,7 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 		Parser	parser(this);
 		parser.examine_request(client_index);
 		std::string response = parser.build_response_header();
-		ssize_t	bytes = send(_client_sock[client_index], response.c_str(), response.size(), 0); 
+		ssize_t	bytes = send(_client_sock[client_index], response.c_str(), response.size(), MSG_NOSIGNAL);
 		if (bytes <= 0)
 		{
 			_request[client_index].clear();
