@@ -6,7 +6,7 @@
 /*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 18:49:08 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/21 11:49:28 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/21 11:58:37 by jdufour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,13 +282,18 @@ int	Server::send_response(std::string &response, int client_index, int &epfd)
 		if (bytes <= 0)
 		{
 			print_log(CERR, RED, "Error", _name, "Error sending chunks. Socket fd: ", _client_sock[client_index]);
-			return (close (_client_sock[client_index]), 1);
+			return (close (_client_sock[client_index]), delete_event(epfd, _client_sock[client_index]), _client_sock.erase(_client_sock.begin() + client_index), 1);
 		}
 		bytes_sent += packet_size;
 	}
 	std::string end_chunk = "0\r\n\r\n";
-	send(_client_sock[client_index], end_chunk.c_str(), end_chunk.size(), 0);
-	if (_keep_alive[client_index])
+	if (send(_client_sock[client_index], end_chunk.c_str(), end_chunk.size(), 0) < 0)
+	{
+		close (_client_sock[client_index]);
+		delete_event(epfd, _client_sock[client_index]); 
+		_client_sock.erase(_client_sock.begin() + client_index);
+	}
+	else if (_keep_alive[client_index])
 		modify_event(epfd, _client_sock[client_index], EPOLLIN);
 	else
 	{
@@ -311,17 +316,29 @@ int	Server::handle_existing_client( int event_fd, int &epfd)
 		Parser	parser(this);
 		parser.examine_request(client_index);
 		std::string response = parser.build_response_header();
-		if (send(_client_sock[client_index], response.c_str(), response.size(), 0) >= 0)
+		ssize_t	bytes = send(_client_sock[client_index], response.c_str(), response.size(), 0); 
+		if (bytes <= 0)
+		{
+			_request[client_index].clear();
+			_nb_bytes[client_index] = 0;
+			_req_body[client_index].clear();
+			_req_binary[client_index].clear();
+			_keep_alive[client_index] = false;
+			close (_client_sock[client_index]);
+			delete_event(epfd, _client_sock[client_index]); 
+			_client_sock.erase(_client_sock.begin() + client_index);
+		}
+		else
 		{
 			response = parser.build_response();
 			send_response(response, client_index, epfd);
+			_request[client_index].clear();
+			_nb_bytes[client_index] = 0;
+			_req_body[client_index].clear();
+			_req_binary[client_index].clear();
+			_keep_alive[client_index] = false;
+			return (SUCCESS);
 		}
-		_request[client_index].clear();
-		_nb_bytes[client_index] = 0;
-		_req_body[client_index].clear();
-		_req_binary[client_index].clear();
-		_keep_alive[client_index] = false;
-		return (SUCCESS);
 	}
 	if (received == CONTINUE || received == DISCONNECT)
 		return (CONTINUE);
