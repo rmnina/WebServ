@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdufour <jdufour@student.42.fr>            +#+  +:+       +#+        */
+/*   By: skiam <skiam@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 02:54:52 by jdufour           #+#    #+#             */
-/*   Updated: 2025/02/20 19:18:07 by jdufour          ###   ########.fr       */
+/*   Updated: 2025/02/20 22:51:48 by skiam            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	Config::fill_servers(std::ifstream &conf_file, std::string &line, server_da
 		server["server_name"] = tmp2;
 	}
 	if (server.find("body_size") == server.end()) {
-		tmp3.push_back("256");
+		tmp3.push_back("20000");
 		server["body_size"] = tmp3;
 	}
 }
