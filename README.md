@@ -24,7 +24,7 @@ Each server is represented by a class that contains:
 - An epoll_event structure for tracking events on sockets.
 
 Basically:
-```
+```C++
 class Server
 {
 	private:		
