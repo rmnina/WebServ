@@ -11,11 +11,11 @@ This project was carried out with the awesome [@eltouma](https://github.com/elto
 
 The project has three main components:
 
-### Configuration file management
+<ins>### Configuration file management</ins>
 Allows you to **define server settings**: ports, directories, authorized HTTP methods, request size limits, error handling, etc.
 Configurations are stored in a structure (ConfigStruct) that manages keys and values, as well as **locations** (blocks specific to certain routes).
 
-### Servers and their monitoring
+<ins>### Servers and their monitoring</ins>
 Each server is represented by a class that contains:
 
 - Configuration information, name, IP (hostname), and port.
@@ -47,7 +47,7 @@ class Server
 
 All servers are supervised by an **epoll instance**, which allows events on all sockets to be detected efficiently **(I/O multiplexing)**.
 
-### HTTP parser
+<ins>### HTTP parser</ins>
 The parser is responsible for:
 - Checking the validity of requests received according to the server configuration.
 - Building HTTP responses with the correct status code, headers (MIME type, packet transfer, etc.) and content (body).
